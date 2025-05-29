@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="view_room_booking_line_list" model="ir.ui.view">
+        <field name="name">room.booking.line.list</field>
+        <field name="model">room.booking.line</field>
+        <field name="arch" type="xml">
+            <list string="Room Booking Lines" create="0">
+                <field name="room_id"/>
+                <field name="customer"/>
+                <field name="checkin_date"/>
+                <field name="checkout_date"/>
+                <field name="uom_qty"/>
+                <field name="uom_id" optional="show"/>
+                <field name="phone_id" optional="show"/>
+                <field name="price_unit" optional="show"/>
+                <field name="discount" optional="show"/>
+                <field name="price_subtotal" optional="hide"/>
+                <field name="price_tax" optional="hide"/>
+                <field name="price_total" optional="show"/>
+                <field name="booking_ref" optional="show"/>
+                <field name="state"/>
+            </list>
+        </field>
+    </record>
+
+    <!--    Folio Search View-->
+    <record id="view_room_booking_line_search" model="ir.ui.view">
+        <field name="name">room.booking.line.search</field>
+        <field name="model">room.booking.line</field>
+        <field name="arch" type="xml">
+            <search string="Room Booking Lines">
+                <field name="customer"/>
+                <field name="room_id"/>
+                <group expand="1" string="Group By">
+                    <filter name="group_by_customer" string="Customer"
+                            context="{'group_by': 'customer'}"/>
+                    <filter name="group_by_check-in_date" string="Check-in Date"
+                            context="{'group_by': 'checkin_date'}"/>
+                    <filter name="group_by_check-out_date" string="Check-out Date"
+                            context="{'group_by': 'checkout_date'}"/>
+                    <filter name="group_by_state" string="State" context="{'group_by': 'state'}"/>
+
+                </group>
+            </search>
+        </field>
+    </record>
+
+     <record id="view_kanban_hotel_folio" model="ir.ui.view">
+            <field name="name">room.booking.folio.kanban</field>
+            <field name="model">room.booking.line</field>
+            <field name="arch" type="xml">
+                <kanban class="o_kanban_mobile" default_group_by="state" create="0">
+                    <templates>
+                        <t t-name="card">
+                            <div class="row">
+                                <div class="col-8">
+                                    <h3>
+                                        <field class="fw-bolder" name="room_id"/>
+                                    </h3>
+                                </div>
+                                <div class="col-4 text-end">
+                                    <field class="badge rounded-pill" name="state"/>
+                                </div>
+                            </div>
+                            <div>
+                                <b>
+                                    Customer:
+                                </b>
+                                <field name="customer"/>
+                                <br/>
+                                <b>
+                                    Mobile:
+                                </b>
+                                <field name="phone_id"/>
+                            </div>
+                        </t>
+                    </templates>
+                </kanban>
+            </field>
+        </record>
+
+    <record id="action_room_booking_line_list" model="ir.actions.act_window">
+        <field name="name">Room Booking Lines</field>
+        <field name="res_model">room.booking.line</field>
+        <field name="view_mode">list,kanban</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first Room Booking Line
+            </p>
+        </field>
+    </record>
+
+
+    <menuitem id="menu_room_booking_line"
+              name="Folio"
+              parent="hotel_management_menu_root"
+              action="action_room_booking_line_list"
+              sequence="20"/>
+</odoo>

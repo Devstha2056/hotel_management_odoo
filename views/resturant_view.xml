@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="view_restaurant_order_tree" model="ir.ui.view">
+        <field name="name">restaurant.order.tree</field>
+        <field name="model">restaurant.order</field>
+        <field name="arch" type="xml">
+            <list string="Restaurant Orders">
+                <field name="order_no"/>
+                <field name="folio_ids"/>
+                <field name="partner_id"/>
+                <field name="guest_name"/>
+                <field name="o_date"/>
+                <field name="room_no"/>
+                <field name="folio_id"/>
+                <field name="waiter_name"/>
+                <field name="state"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_restaurant_order_form" model="ir.ui.view">
+        <field name="name">restaurant.order.form</field>
+        <field name="model">restaurant.order</field>
+        <field name="arch" type="xml">
+            <form string="Restaurant Order">
+                <header>
+                    <button name="action_confirm"
+                            type="object"
+                            string="Confirm"
+                            invisible="state != 'draft'"
+                            class="btn btn-primary"/>
+
+                    <button name="action_create_kot_bot_orders"
+                            type="object"
+                            string="Generate KOT/BOT"
+                            invisible="state != 'confirm'"
+
+                            class="btn btn-primary"/>
+
+
+                    <button name="action_cancel"
+                            type="object"
+                            string="Cancel"
+                            invisible="state == 'cancel'"
+                            class="btn btn-primary"/>
+
+                    <button name="action_order_done"
+                            type="object"
+                            string="Order Done"
+
+                            class="btn btn-primary"/>
+
+                    <field name="state" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="order_no"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <field name="folio_ids"/>
+                        <field name="room_no"/>
+                        <field name="partner_id"/>
+                        <field name="folio_id"/>
+                        <field name="guest_name"/>
+                        <field name="o_date"/>
+                        <field name="waiter_name"/>
+                    </group>
+                    <notebook>
+                        <page name="food" string="Food">
+                            <field name="food_order_restaurant_line_ids"  colspan="4" string="Food Lines">
+                                <list editable="bottom">
+                                    <field name="food_id" string="Product" required="1"
+                                           options="{'no_open': True,'no_create': True}"/>
+                                    <field name="description"/>
+                                    <field name="uom_qty" string="Qty" force_save="1"/>
+                                    <field name="uom_id" string="Unit of Measure"
+                                           options="{'no_open': True,'no_create': True}"/>
+                                    <field name="price_unit"/>
+                                    <field name="tax_ids" widget="many2many_tags"
+                                           options="{'no_create': True}"/>
+                                    <field name="price_subtotal" widget="monetary"/>
+                                    <field name="price_total" widget="monetary"
+                                           groups="account.group_account_manager"/>
+                                </list>
+                            </field>
+                            <div class="oe_clear"/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+
+    <record id="action_restaurant_order" model="ir.actions.act_window">
+        <field name="name">Restaurant Orders</field>
+        <field name="res_model">restaurant.order</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Create a new restaurant order</p>
+        </field>
+    </record>
+
+
+</odoo>

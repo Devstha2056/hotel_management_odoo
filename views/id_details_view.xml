@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!-- id_master_views.xml -->
+<odoo>
+    <record id="view_id_master_tree" model="ir.ui.view">
+        <field name="name">id.master.tree</field>
+        <field name="model">id.master</field>
+        <field name="arch" type="xml">
+            <list string="ID Document Types">
+                <field name="name"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_id_master_form" model="ir.ui.view">
+        <field name="name">id.master.form</field>
+        <field name="model">id.master</field>
+        <field name="arch" type="xml">
+            <form string="ID Document Type">
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_id_master" model="ir.actions.act_window">
+        <field name="name">ID Document Types</field>
+        <field name="res_model">id.master</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <menuitem id="menu_id_master" name="Document Types" parent="hotel_config_menu" action="action_id_master"/>
+
+
+<!--     <record id="pos_order_form_inherit" model="ir.ui.view">-->
+<!--        <field name="name">pos.order.form.inherit</field>-->
+<!--        <field name="model">pos.order</field>-->
+<!--        <field name="inherit_id" ref="point_of_sale.view_pos_pos_form"/>-->
+<!--        <field name="arch" type="xml">-->
+<!--            <xpath expr="//field[@name='pos_reference']" position='after'>-->
+<!--                <field string='Hash' name="l10n_fr_hash" groups="base.group_no_one"/>-->
+<!--            </xpath>-->
+<!--        </field>-->
+<!--    </record>-->
+
+</odoo>
+
+

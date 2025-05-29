@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <!--    Maintenance Request Form View-->
+    <record id="view_maintenance_request_form" model="ir.ui.view">
+        <field name="name">maintenance.request.form</field>
+        <field name="model">maintenance.request</field>
+        <field name="arch" type="xml">
+            <form string="Maintenance Request">
+                <header>
+                    <button name="action_assign_team" type="object" string="Assign Team"
+                            class="btn-primary" invisible="state != 'draft'"/>
+
+                    <button name="action_assign_user" type="object" string="Assign User"
+                            class="btn-primary" invisible="state != 'team_leader_approve'"/>
+
+                    <button name="action_start" type="object" string="Start"
+                            class="btn-success" invisible="state != 'pending'"/>
+
+                    <button name="action_support" type="object" string="Send to Support"
+                            class="btn-secondary" invisible="state != 'ongoing'"/>
+
+                    <button name="action_assign_support" type="object" string="Assign Support"
+                            class="btn-secondary" invisible="state != 'support'"/>
+
+                    <button name="action_complete" type="object" string="Complete"
+                            class="btn-info" invisible="state != 'support'"/>
+
+                    <button name="action_verify" type="object" string="Verify and Done"
+                            class="btn-success" invisible="state != 'verify'"/>
+
+                    <button name="action_canceled" type="object" string="Cancelled"
+                            class="btn-success" invisible="state != 'draft'"/>
+
+                     <field name="state" widget="statusbar"/>
+
+                </header>
+                <sheet>
+
+                    <group>
+                        <field name="sequence" readonly="1"/>
+                        <field name="date"/>
+
+                        <field name="type"/>
+                    </group>
+
+                    <group invisible="type != 'room'">
+                        <field name="room_maintenance_ids" widget="many2many_tags"/>
+                    </group>
+
+                    <group invisible="type != 'vehicle'">
+                        <field name="vehicle_maintenance_id"/>
+                    </group>
+
+                    <group invisible="type != 'hotel'">
+                        <field name="hotel_maintenance"/>
+                    </group>
+
+                    <group invisible="type != 'cleaning'">
+                        <field name="cleaning_maintenance"/>
+                    </group>
+
+                    <group>
+                        <group>
+
+                            <field name="team_id"/>
+                            <field name="team_head_id" readonly="1"/>
+                            <field name="assigned_user_id" domain="[('id', 'in', domain_partner_ids)]"/>
+                        </group>
+                        <group>
+                            <field name="support_team_ids" widget="many2many_tags"/>
+                            <field name="support_reason"/>
+                            <field name="remarks"/>
+                        </group>
+                    </group>
+                </sheet>
+
+            </form>
+        </field>
+    </record>
+    <!--    Maintenance Request Menu Action-->
+    <record id="maintenance_request_action" model="ir.actions.act_window">
+        <field name="name">Maintenance Request</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">maintenance.request</field>
+        <field name="view_mode">list,form</field>
+    </record>
+    <!--    Maintenance Request Menu-->
+    <menuitem id="maintenance_request_menu"
+              name="Maintenance Request"
+              parent="maintenance_menu"
+              action="maintenance_request_action"/>
+
+
+</odoo>

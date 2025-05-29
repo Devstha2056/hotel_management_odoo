@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <!--    Products menu action-->
+    <record id="lunch_product_action" model="ir.actions.act_window">
+        <field name="name">Products</field>
+        <field name="res_model">product.template</field>
+        <field name="view_mode">list,kanban,form</field>
+        <field name="domain">[('is_foodtype', '=', True)]</field>
+        <field name="context">{'default_is_foodtype': True}</field>
+        <field name="help" type="html">
+            <p class="oe_view_nocontent_create">
+                No Products found ! Let's create one
+            </p>
+        </field>
+    </record>
+
+    <!--    Products Menu-->
+    <menuitem id="lunch_product_menu"
+              name="Foods"
+              action="lunch_product_action"
+              parent="food_menu"
+              sequence="10"/>
+
+
+
+    <record model="ir.ui.view" id="view_hotel_food_type_list">
+            <field name="name">hotel.food.category.list</field>
+            <field name="model">hotel.food.category</field>
+            <field name="arch" type="xml">
+                <list string="Food Type">
+                    <field name="name"/>
+                </list>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="view_hotel_food_type_form">
+            <field name="name">hotel.food.category.form</field>
+            <field name="model">hotel.food.category</field>
+            <field name="arch" type="xml">
+                <form string="Hotel Food Type">
+                    <sheet>
+                        <div class="oe_title">
+                            <label for="name" class="oe_edit_only"/>
+                            <h1>
+                                <field name="name"/>
+                            </h1>
+                        </div>
+                        <group>
+                            <group name="parent" colspan="4">
+                                <field name="parent_id" domain="[('isfoodtype','=',True)]"/>
+                                <field name="isfoodtype"/>
+                            </group>
+                            <group name="account_property" string="Account Properties"
+                                   colspan="2">
+                                <field name="property_account_income_categ_id" domain="[('deprecated','=',False)]"/>
+                                <field name="property_account_expense_categ_id" domain="[('deprecated','=',False)]"/>
+                            </group>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        <record model="ir.actions.act_window" id="hotel_food_category_action">
+            <field name="name">Food Type</field>
+            <field name="res_model">hotel.food.category</field>
+            <field name="view_mode">list,form</field>
+        </record>
+
+     <menuitem id="food_category_product_menu"
+              name="Food category"
+              action="hotel_management_odoo.hotel_food_category_action"
+              parent="food_menu"
+              sequence="10"/>
+</odoo>
+

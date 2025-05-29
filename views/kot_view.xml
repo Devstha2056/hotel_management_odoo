@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<odoo>
+
+    <record id="view_hotel_restaurant_kot_list" model="ir.ui.view">
+        <field name="name">hotel.restaurant.kitchen.order.tickets.list</field>
+        <field name="model">hotel.restaurant.kitchen.order.tickets</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="order_no"/>
+                <field name="res_no"/>
+                <field name="kot_date"/>
+                <field name="room_no"/>
+                <field name="w_name"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_form_hotel_restaurant_kot" model="ir.ui.view">
+        <field name="name">hotel.restaurant.kitchen.order.tickets.form</field>
+        <field name="model">hotel.restaurant.kitchen.order.tickets</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="order_no" readonly="1"/>
+                            <field name="res_no"/>
+                            <field name="kot_date"/>
+                            <field name="product_nature"/>
+
+                        </group>
+                        <group>
+                            <field name="room_no" readonly="1"/>
+                            <field name="w_name" readonly="1"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page name="food" string="Food">
+                            <field name="food_booking_kot_line_ids" colspan="4"
+                                   string="Food Lines">
+                                <list editable="bottom">
+                                    <field name="food_id" string="Product"
+                                           required="1"
+                                    />
+                                    <field name="uom_qty" string="Qty"
+                                           force_save="1"/>
+                                    <field name="uom_id"
+                                           string="Unit of Measure"
+                                           options="{'no_open': True,'no_create': True}"/>
+                                    <field name="price_unit"/>
+
+                                </list>
+                            </field>
+                            <div class="oe_clear"/>
+                        </page>
+                    </notebook>
+                </sheet>
+
+            </form>
+        </field>
+    </record>
+
+    <record id="hotel_kot_action" model="ir.actions.act_window">
+        <field name="name">Kitchen Order Tickets</field>
+        <field name="res_model">hotel.restaurant.kitchen.order.tickets</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Create your first KOT</p>
+        </field>
+    </record>
+
+
+    <record id="view_hotel_restaurant_bot_list" model="ir.ui.view">
+        <field name="name">hotel.restaurant.bar.order.tickets.list</field>
+        <field name="model">hotel.restaurant.bar.order.tickets</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="order_no"/>
+                <field name="res_no"/>
+                <field name="kot_date"/>
+                <field name="room_no"/>
+                <field name="w_name"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_form_hotel_restaurant_bot" model="ir.ui.view">
+        <field name="name">hotel.restaurant.bar.order.tickets.form</field>
+        <field name="model">hotel.restaurant.bar.order.tickets</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="order_no" readonly="1"/>
+                            <field name="res_no"/>
+                            <field name="kot_date"/>
+                            <field name="product_nature"/>
+
+                        </group>
+                        <group>
+                            <field name="room_no" readonly="1"/>
+                            <field name="w_name" readonly="1"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page name="food" string="Food">
+                            <field name="food_booking_bot_line_ids" colspan="4"
+                                   string="Food Lines">
+                                <list editable="bottom">
+                                    <field name="food_id" string="Product"
+                                           required="1"
+                                    />
+                                    <field name="uom_qty" string="Qty"
+                                           force_save="1"/>
+                                    <field name="uom_id"
+                                           string="Unit of Measure"
+                                           options="{'no_open': True,'no_create': True}"/>
+                                    <field name="price_unit"/>
+
+                                </list>
+                            </field>
+                            <div class="oe_clear"/>
+                        </page>
+                    </notebook>
+
+                </sheet>
+            </form>
+            <!--             <chatter/>-->
+        </field>
+    </record>
+
+    <record id="hotel_bot_action" model="ir.actions.act_window">
+        <field name="name">Bar Order Tickets</field>
+        <field name="res_model">hotel.restaurant.bar.order.tickets</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Create your first BOT</p>
+        </field>
+    </record>
+
+
+    <record id="hotel_kot_list_action" model="ir.actions.act_window">
+        <field name="name">KOT</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">product.template</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('product_nature', '=', 'kot')]</field>
+
+        <field name="help" type="html">
+            <p class="oe_view_nocontent_create">
+                No KOT products found! Let's create one.
+            </p>
+        </field>
+    </record>
+    <record id="hotel_bot_list_action" model="ir.actions.act_window">
+        <field name="name">BOT</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">product.template</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('product_nature', '=', 'bot')]</field>
+
+        <field name="help" type="html">
+            <p class="oe_view_nocontent_create">
+                No BOT products found! Let's create one.
+            </p>
+        </field>
+    </record>
+</odoo>

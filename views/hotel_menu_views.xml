@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <!--    Main Menu-->
+    <menuitem id="hotel_management_menu_root"
+              name="Hotel Management"
+              web_icon="hotel_management_odoo,static/description/icon.png"
+              sequence="10"/>
+    <!--    Configuration menu-->
+    <menuitem id="hotel_config_menu"
+              name="Configuration"
+              sequence="50"
+              parent="hotel_management_menu_root"/>
+    <!--    Food menu-->
+    <menuitem id="food_menu"
+              name="Food"
+              sequence="20"
+              parent="hotel_config_menu"/>
+    <!--    Fleet menu-->
+    <menuitem id="fleet_vehicle_menu"
+              name="Vehicle"
+              sequence="30"
+              parent="hotel_config_menu"/>
+
+    <menuitem id="menu_restaurant_root"
+              name="Restaurant"
+              parent="hotel_management_menu_root"/>
+
+    <menuitem id="menu_restaurant_order"
+              name="Orders"
+              parent="menu_restaurant_root"
+              action="action_restaurant_order"/>
+
+    <menuitem id="menu_kot_order"
+              name="KOT"
+              parent="menu_restaurant_root"
+              action="hotel_kot_action"/>
+
+    <menuitem id="menu_Bot_order"
+              name="BOT"
+              parent="menu_restaurant_root"
+              action="hotel_bot_action"/>
+
+    <menuitem id="menu_kot_product_order"
+              name="KOT Product List"
+              parent="menu_restaurant_root"
+              action="hotel_kot_list_action"/>
+
+    <menuitem id="menu_bot_product_order"
+              name="BOT Product List"
+              parent="menu_restaurant_root"
+              action="hotel_bot_list_action"/>
+
+
+    <menuitem id="menu_hotel_plan"
+              name="Hotel Plans"
+              parent="hotel_config_menu"
+              action="action_hotel_plan"/>
+
+    <menuitem id="menu_meal_plan"
+              name="Meal Plans"
+              parent="hotel_config_menu"
+              action="action_meal_plan"/>
+
+
+</odoo>

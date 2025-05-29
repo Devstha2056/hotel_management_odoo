@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+     <record id="view_sale_order_form_inherit" model="ir.ui.view">
+        <field name="name">sale.order.form.inherit</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_order_form"/>
+        <field name="arch" type="xml">
+            <!-- Inserting after the general_information page -->
+            <xpath expr="//field[@name='partner_id']" position="after">
+                    <field name="booking_reference" />
+
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_product_template_form_inherit_room" model="ir.ui.view">
+        <field name="name">product.template.form.inherit.room</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="product.product_template_only_form_view"/>
+        <field name="arch" type="xml">
+            <!-- Inserting after the general_information page -->
+            <xpath expr="//field[@name='categ_id']" position="after">
+
+                    <field name="floor_id" options="{'no_create': True}" invisible="is_foodtype == True"/>
+                    <field name="amenity_id_group" options="{'no_create': True}" invisible="is_foodtype == True"/>
+                    <field name="product_nature" options="{'no_create': True}" invisible="is_roomtype == True"/>
+
+
+            </xpath>
+
+            <xpath expr="//field[@name='purchase_ok']" position="before">
+                <field name="is_roomtype" string="Room Type"/>
+                 <label for="is_roomtype" >
+                 </label>
+                <field name="is_foodtype" string="Food Type"/>
+                 <label for="is_foodtype">
+                 </label>
+            </xpath>
+        </field>
+    </record>
+    <!-- Action to open product.template view filtered for rooms -->
+    <record id="hotel_room_action" model="ir.actions.act_window">
+        <field name="name">Rooms</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">product.template</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('is_roomtype', '=', True)]</field>
+        <field name="context">{'default_is_roomtype': True}</field>
+        <field name="help" type="html">
+            <p class="oe_view_nocontent_create">
+                No Rooms found! Let's create one.
+            </p>
+        </field>
+    </record>
+
+    <!-- Menu item under your hotel_config_menu -->
+    <menuitem id="hotel_room_menu"
+              name="Room"
+              action="hotel_room_action"
+              parent="hotel_config_menu"
+              sequence="20"/>
+    <record model="ir.ui.view" id="view_hotel_room_type_list">
+        <field name="name">hotel.room.category.list</field>
+        <field name="model">hotel.room.category</field>
+        <field name="arch" type="xml">
+            <list string="Room Type">
+                <field name="name"/>
+            </list>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="view_hotel_room_type_form">
+        <field name="name">hotel.room.category.form</field>
+        <field name="model">hotel.room.category</field>
+        <field name="arch" type="xml">
+            <form string="Hotel Room Type">
+                <sheet>
+                    <div class="oe_title">
+                        <label for="name" class="oe_edit_only"/>
+                        <h1>
+                            <field name="name"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group name="parent" colspan="4">
+                            <field name="parent_id" domain="[('isroomtype','=',True)]"/>
+                            <field name="isroomtype"/>
+                        </group>
+                        <group name="account_property" string="Account Properties"
+                               colspan="2">
+                            <field name="property_account_income_categ_id" domain="[('deprecated','=',False)]"/>
+                            <field name="property_account_expense_categ_id" domain="[('deprecated','=',False)]"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record model="ir.actions.act_window" id="hotel_room_type_category_action">
+        <field name="name">Room Type</field>
+        <field name="res_model">hotel.room.category</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <menuitem id="hotel_room_type_category_menu"
+              name="Room Category"
+              action="hotel_management_odoo.hotel_room_type_category_action"
+              parent="hotel_config_menu"
+              sequence="20"/>
+</odoo>
