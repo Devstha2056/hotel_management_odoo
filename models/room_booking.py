@@ -51,7 +51,7 @@ class RoomBooking(models.Model):
 
     ],string='Via',default='direct')
 
-    agent_id = fields.Many2one('res.partner',string='Agent' ,readonly=True)
+    agent_id = fields.Many2one('res.partner',string='Agent' ,readonly=True,domain="[('isagenttype','=',True)]")
 
     source = fields.Selection([
         ('internal_reservation',"Internal Reservation"),

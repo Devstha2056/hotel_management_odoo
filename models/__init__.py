@@ -20,4 +20,5 @@ from . import id_details_line
 from . import restaurant
 from . import kot_bot
 from . import hotel_plan
+from . import inherit_model
 

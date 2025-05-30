@@ -1,15 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
 
-     <record id="view_sale_order_form_inherit" model="ir.ui.view">
+    <record id="view_sale_order_form_inherit" model="ir.ui.view">
         <field name="name">sale.order.form.inherit</field>
         <field name="model">sale.order</field>
         <field name="inherit_id" ref="sale.view_order_form"/>
         <field name="arch" type="xml">
             <!-- Inserting after the general_information page -->
             <xpath expr="//field[@name='partner_id']" position="after">
-                    <field name="booking_reference" />
+                <field name="booking_reference"/>
 
+            </xpath>
+        </field>
+    </record>
+    <record id="view_partner_form_agent_type" model="ir.ui.view">
+        <field name="name">res.partner.form.inherit.agent.type</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='company_type']" position="after">
+                <field name="isagenttype" string="Agent"/>
+                   <label for="isagenttype">
+                </label>
             </xpath>
         </field>
     </record>
@@ -22,20 +34,20 @@
             <!-- Inserting after the general_information page -->
             <xpath expr="//field[@name='categ_id']" position="after">
 
-                    <field name="floor_id" options="{'no_create': True}" invisible="is_foodtype == True"/>
-                    <field name="amenity_id_group" options="{'no_create': True}" invisible="is_foodtype == True"/>
-                    <field name="product_nature" options="{'no_create': True}" invisible="is_roomtype == True"/>
+                <field name="floor_id" options="{'no_create': True}" invisible="is_foodtype == True"/>
+                <field name="amenity_id_group" options="{'no_create': True}" invisible="is_foodtype == True"/>
+                <field name="product_nature" options="{'no_create': True}" invisible="is_roomtype == True"/>
 
 
             </xpath>
 
             <xpath expr="//field[@name='purchase_ok']" position="before">
                 <field name="is_roomtype" string="Room Type"/>
-                 <label for="is_roomtype" >
-                 </label>
+                <label for="is_roomtype">
+                </label>
                 <field name="is_foodtype" string="Food Type"/>
-                 <label for="is_foodtype">
-                 </label>
+                <label for="is_foodtype">
+                </label>
             </xpath>
         </field>
     </record>
@@ -60,6 +72,7 @@
               action="hotel_room_action"
               parent="hotel_config_menu"
               sequence="20"/>
+
     <record model="ir.ui.view" id="view_hotel_room_type_list">
         <field name="name">hotel.room.category.list</field>
         <field name="model">hotel.room.category</field>
