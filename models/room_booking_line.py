@@ -1,3 +1,4 @@
+
 from odoo import api, fields, models, tools, _
 from odoo.exceptions import ValidationError
 from datetime import datetime,timedelta,date
@@ -41,9 +42,9 @@ class RoomBookingLine(models.Model):
 
     meal_plan_price = fields.Float(string="Meal Plan Price", compute="_compute_price", store=True)
 
-    meal_plan_ids = fields.Many2one(related='hotel_id.meal_plan_id', string="Meal Plan", readonly=False,store=True, required=True)
+    meal_plan_ids = fields.Many2one(related='hotel_id.meal_plan_id', string="Meal Plan",store=True, readonly=False, required=True)
 
-    occupancy_id = fields.Selection(related='hotel_id.occupancy', string='Occupancy', readonly=False,store=True, required=True)
+    occupancy_id = fields.Selection(related='hotel_id.occupancy', string='Occupancy',store=True, readonly=False,required=True)
 
     categ_id = fields.Many2one('product.category', string='Category', domain="[('isroomtype','=',True)]")
 
@@ -104,10 +105,7 @@ class RoomBookingLine(models.Model):
         for record in self:
             record.today = fields.Date.context_today(self)
 
-# add thiss
-
-
-    @api.depends('occupancy_id', 'meal_plan_ids', 'categ_id')
+    @api.depends('occupancy_id', 'meal_plan_ids', 'categ_id','room_id')
     def _compute_price(self):
         for rec in self:
             rec.meal_plan_price = 0.0  # Always assign something to avoid compute error
@@ -121,9 +119,12 @@ class RoomBookingLine(models.Model):
 
                 if rule:
                     rec.meal_plan_price = rule.price
-# to here
 
-    @api.onchange("room_id")
+    @api.onchange('occupancy_id', 'meal_plan_ids', 'categ_id','room_id')
+    def onchange_compute_price(self):
+        self._compute_price()
+
+    @api.onchange('occupancy_id', 'meal_plan_ids', 'categ_id','room_id')
     def _get_list_price(self):
         for line in self:
             if line.room_id:
@@ -282,4 +283,3 @@ class RoomBookingLine(models.Model):
     #                             "Sorry You cannot create a reservation for this"
     #                             "date due to an existing reservation between "
     #                             "this date")
-
