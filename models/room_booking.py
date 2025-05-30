@@ -1,6 +1,4 @@
 from datetime import datetime,timedelta,date
-from email.policy import default
-
 from odoo import api, fields, models, _
 from odoo.exceptions import ValidationError,UserError
 from odoo.tools.safe_eval import pytz
