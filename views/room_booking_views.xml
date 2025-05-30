@@ -145,6 +145,7 @@
                                         <field name="meal_plan_price" invisible="1"/>
                                         <field name="meal_plan_ids"/>
                                         <field name="categ_id"/>
+                                        <field name="today_date" invisible="1"/>
                                         <field name="room_id" string="Room" required="1"
 
                                                options="{'no_open': True, 'no_create': True}"/>

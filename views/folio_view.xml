@@ -39,7 +39,7 @@
                     <filter name="group_by_check-out_date" string="Check-out Date"
                             context="{'group_by': 'checkout_date'}"/>
                     <filter name="group_by_state" string="State" context="{'group_by': 'state'}"/>
-
+                    <filter name="today" string="Today" domain="[('today_date', '=', today)]"/>
                 </group>
             </search>
         </field>
@@ -83,6 +83,18 @@
         <field name="name">Room Booking Lines</field>
         <field name="res_model">room.booking.line</field>
         <field name="view_mode">list,kanban</field>
+         <field name="context">{'search_default_today': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first Room Booking Line
+            </p>
+        </field>
+    </record>
+
+   <record id="action_room_booking_line_list_unfilter" model="ir.actions.act_window">
+        <field name="name">Room Booking Lines</field>
+        <field name="res_model">room.booking.line</field>
+        <field name="view_mode">list,kanban</field>
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">
                 Create your first Room Booking Line
@@ -91,9 +103,6 @@
     </record>
 
 
-    <menuitem id="menu_room_booking_line"
-              name="Folio"
-              parent="hotel_management_menu_root"
-              action="action_room_booking_line_list"
-              sequence="20"/>
+
+
 </odoo>

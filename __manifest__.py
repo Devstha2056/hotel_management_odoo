@@ -12,7 +12,7 @@
     'company': 'Cybrosys Techno Solutions',
     'maintainer': 'Cybrosys Techno Solutions',
     'website': 'https://www.cybrosys.com',
-    'depends': ['account', 'event', 'fleet', 'product', 'stock', 'sale_management', ],
+    'depends': ['account', 'event', 'fleet', 'product', 'stock', 'sale_management','purchase' ],
     'data': [
         'security/hotel_management_odoo_groups.xml',
         'security/hotel_management_odoo_security.xml',

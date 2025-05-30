@@ -26,6 +26,7 @@ class RoomBookingLine(models.Model):
 
     booking_ref = fields.Char(related='booking_id.name', store=True, readonly=True)
 
+    today_date=fields.Date(string='Today' ,default=fields.Date.today)
 
     checkin_date = fields.Datetime(string="Check In",
                                    help="You can choose the date,"
@@ -96,6 +97,12 @@ class RoomBookingLine(models.Model):
                                                "will be visible")
 
     discount = fields.Float(string="Discount (%)", default=0.0)
+
+    today = fields.Date(string='Today', compute='_compute_today')
+
+    def _compute_today(self):
+        for record in self:
+            record.today = fields.Date.context_today(self)
 
 # add thiss
 
