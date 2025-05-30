@@ -40,14 +40,13 @@ class RoomBookingLine(models.Model):
 
     meal_plan_price = fields.Float(string="Meal Plan Price", compute="_compute_price", store=True)
 
-    meal_plan_ids = fields.Many2one(related='hotel_id.meal_plan_id', string="Meal Plan", readonly=False, required=True)
+    meal_plan_ids = fields.Many2one(related='hotel_id.meal_plan_id', string="Meal Plan", readonly=False,store=True, required=True)
 
-    occupancy_id = fields.Selection(related='hotel_id.occupancy', string='Occupancy', readonly=False, required=True)
+    occupancy_id = fields.Selection(related='hotel_id.occupancy', string='Occupancy', readonly=False,store=True, required=True)
 
     categ_id = fields.Many2one('product.category', string='Category', domain="[('isroomtype','=',True)]")
 
     room_id = fields.Many2one('product.product',string='Room',domain="[('is_roomtype','=',True),('categ_id', '=', categ_id)]")
-
 
     uom_qty = fields.Float(string="Duration", help="The quantity converted into the UoM used by " "the product",
                            readonly=True, compute='_onchange_checkin_date')

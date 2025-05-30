@@ -17,7 +17,7 @@ class RoomBooking(models.Model):
 
     name = fields.Char(string="Folio Number", readonly=True, index=True,
                        default="New", help="Name of Folio")
-
+    issuing_auth = fields.Char('Sale Person', default=lambda self: self.env.user.name)
 
 
     company_id = fields.Many2one('res.company', string="Company",
@@ -31,7 +31,7 @@ class RoomBooking(models.Model):
                                         " ('company_id', 'in', "
                                         "(False, company_id))]")
     #customaddons
-    meal_plan_ids=fields.Many2one('meal.plan',string="Meal Plan",ondelate='cascade',required=True)
+    meal_plan_ids=fields.Many2one(related='room_line_ids.meal_plan_ids',string="Meal Plan",ondelate='cascade')
 
     email_id = fields.Char(related='partner_id.email', string='Email', readonly=False, required=True,help="Email of Customer")
 
@@ -707,7 +707,7 @@ class RoomBooking(models.Model):
         if booking_list:
             sale_order = self.env['sale.order'].create({
                 'partner_id': self.partner_id.id,
-                'booking_reference':self.nameh,
+                'booking_reference':self.name,
                 'date_order': fields.Datetime.now(),
                 'origin': self.name,
             })

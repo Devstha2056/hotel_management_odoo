@@ -11,7 +11,7 @@
                 <field name="guest_name"/>
                 <field name="o_date"/>
                 <field name="room_no"/>
-                <field name="folio_id"/>
+
                 <field name="waiter_name"/>
                 <field name="state"/>
             </list>
@@ -59,10 +59,9 @@
                         </h1>
                     </div>
                     <group>
-                        <field name="folio_ids"/>
                         <field name="room_no"/>
                         <field name="partner_id"/>
-                        <field name="folio_id"/>
+                        <field name="folio_ids"/>
                         <field name="guest_name"/>
                         <field name="o_date"/>
                         <field name="waiter_name"/>

@@ -24,6 +24,23 @@
             </form>
         </field>
     </record>
+<!--    <record id="view_hotel_id_details_line_form" model="ir.ui.view">-->
+<!--        <field name="name">hotel.id.details.line.form</field>-->
+<!--        <field name="model">hotel.id.details.line</field>-->
+<!--        <field name="arch" type="xml">-->
+<!--            <form>-->
+<!--                <group>-->
+<!--                    <field name="guest_name" string="Guest Name"/>-->
+<!--                    <field name="doc_type_id" string="Document Type"/>-->
+<!--                    <field name="card_name" string="Document Number"/>-->
+<!--                    <field name="issuing_auth" string="Issuing Authorized"/>-->
+<!--                    <field name="gender" string="Gender"/>-->
+<!--                    <field name="valid_from" string="Valid From"/>-->
+<!--                    <field name="valid_to" string="Valid To"/>-->
+<!--                </group>-->
+<!--            </form>-->
+<!--        </field>-->
+<!--    </record>-->
 
     <record id="action_id_master" model="ir.actions.act_window">
         <field name="name">ID Document Types</field>
@@ -34,16 +51,16 @@
     <menuitem id="menu_id_master" name="Document Types" parent="hotel_config_menu" action="action_id_master"/>
 
 
-<!--     <record id="pos_order_form_inherit" model="ir.ui.view">-->
-<!--        <field name="name">pos.order.form.inherit</field>-->
-<!--        <field name="model">pos.order</field>-->
-<!--        <field name="inherit_id" ref="point_of_sale.view_pos_pos_form"/>-->
-<!--        <field name="arch" type="xml">-->
-<!--            <xpath expr="//field[@name='pos_reference']" position='after'>-->
-<!--                <field string='Hash' name="l10n_fr_hash" groups="base.group_no_one"/>-->
-<!--            </xpath>-->
-<!--        </field>-->
-<!--    </record>-->
+    <!--     <record id="pos_order_form_inherit" model="ir.ui.view">-->
+    <!--        <field name="name">pos.order.form.inherit</field>-->
+    <!--        <field name="model">pos.order</field>-->
+    <!--        <field name="inherit_id" ref="point_of_sale.view_pos_pos_form"/>-->
+    <!--        <field name="arch" type="xml">-->
+    <!--            <xpath expr="//field[@name='pos_reference']" position='after'>-->
+    <!--                <field string='Hash' name="l10n_fr_hash" groups="base.group_no_one"/>-->
+    <!--            </xpath>-->
+    <!--        </field>-->
+    <!--    </record>-->
 
 </odoo>
 

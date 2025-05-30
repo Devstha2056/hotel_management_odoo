@@ -90,15 +90,15 @@
                             <field name="agent_id" readonly="state != 'draft'" invisible="via == 'direct'"/>
                             <field name="source" readonly="state != 'draft'"/>
                             <field name="meal_plan_ids" readonly="state != 'draft'"/>
-
-                            <field name="need_service"
-                                   invisible=" state not in ['check_in']" readonly="state == 'done'"/>
-                            <field name="need_fleet"
-                                   invisible=" 1" readonly="state == 'done'"/>
-                            <field name="need_food"
-                                   invisible=" state not in ['check_in']" readonly="state == 'done'"/>
-                            <field name="need_event"
-                                   invisible="1" readonly="state == 'done'"/>
+                            <field name="issuing_auth" readonly="state != 'draft'"/>
+                            <!--                            <field name="need_service"-->
+                            <!--                                   invisible=" state not in ['check_in']" readonly="state == 'done'"/>-->
+                            <!--                            <field name="need_fleet"-->
+                            <!--                                   invisible=" 1" readonly="state == 'done'"/>-->
+                            <!--                            <field name="need_food"-->
+                            <!--                                   invisible=" state not in ['check_in']" readonly="state == 'done'"/>-->
+                            <!--                            <field name="need_event"-->
+                            <!--                                   invisible="1" readonly="state == 'done'"/>-->
                         </group>
                         <group>
                             <field name="note" readonly="state == 'done'"/>
@@ -110,7 +110,7 @@
                             <field name="room_line_ids" mode="list,form" colspan="4"
                                    string="Room Lines"
                                    context="{'default_checkin_date':checkin_date, 'default_checkout_date':checkout_date, 'default_uom_qty':duration}">
-                                <list >
+                                <list>
                                     <field name="room_id" string="Room" widget="product_configurator"
                                            required="1"
                                            options="{'no_open': True, 'no_create': True}" readonly="state == 'done'"
@@ -141,10 +141,10 @@
                                 </list>
                                 <form>
                                     <group>
-                                         <field name="occupancy_id"/>
-                                         <field name="meal_plan_price" invisible="1"/>
-                                         <field name="meal_plan_ids"/>
-                                         <field name="categ_id"/>
+                                        <field name="occupancy_id"/>
+                                        <field name="meal_plan_price" invisible="1"/>
+                                        <field name="meal_plan_ids"/>
+                                        <field name="categ_id"/>
                                         <field name="room_id" string="Room" required="1"
 
                                                options="{'no_open': True, 'no_create': True}"/>
@@ -192,7 +192,7 @@
                             <div class="oe_clear"/>
                         </page>
                         <page name="id_detail" string="ID Details">
-                            <field name="card_name_line_ids" colspan="4" string="ID Lines">
+                            <field name="card_name_line_ids"  colspan="4" string="ID Lines">
                                 <list editable="bottom">
                                     <field name="guest_name" string="Guest Name"/>
                                     <field name="doc_type_id" string="Document Type"/>
@@ -202,10 +202,10 @@
                                     <field name="valid_from" string="Valid From"/>
                                     <field name="valid_to" string="Valid To"/>
                                 </list>
+
                             </field>
                         </page>
-                        <page name="food" string="Food"
-                              invisible="need_food == False ">
+                        <page name="food" string="Food">
                             <field name="food_order_line_ids" colspan="4"
                                    string="Food Lines">
                                 <list editable="bottom">
@@ -280,84 +280,82 @@
                             </group>
                             <div class="oe_clear"/>
                         </page>
-                        <page name="fleet" string="Fleet"
-                              invisible="need_fleet == False">
-                            <field name="vehicle_line_ids" colspan="4"
-                                   string="Fleet Lines">
-                                <list editable="bottom">
-                                    <field name="fleet_id" string="Vehicle"
-                                           required="1"
-                                           options="{'no_open': True,'no_create': True}"/>
-                                    <field name="description"/>
-                                    <field name="uom_qty" string="Allotted KM"
-                                           force_save="1"/>
-                                    <field name="uom_id"
-                                           string="Unit of Measure"
-                                           options="{'no_open': True, 'no_create': True}"/>
-                                    <field name="price_unit"/>
-                                    <field name="tax_ids"
-                                           options="{'no_create': True}"
-                                           widget="many2many_tags"/>
-                                    <field name="price_subtotal"
-                                           widget="monetary"/>
-                                    <field groups="account.group_account_manager"
-                                           name="price_total"
-                                           widget="monetary"/>
-                                </list>
-                            </field>
-                            <group colspan="2"
-                                   class="oe_subtotal_footer oe_right">
-                                <field name="amount_untaxed_fleet"
-                                       sum="Untaxed amount for Fleet"
-                                       widget="monetary"/>
-                                <field name="amount_taxed_fleet"
-                                       widget="monetary"/>
-                                <label for="amount_total_fleet"/>
-                                <field name="amount_total_fleet" nolabel="1"
-                                       sum="Total amount" widget="monetary"/>
-                            </group>
-                            <div class="oe_clear"/>
-                        </page>
-                        <page name="event" string="Events"
-                              invisible=" need_event == False ">
-                            <field name="event_line_ids" colspan="4"
-                                   string="Event Lines">
-                                <list editable="bottom">
-                                    <field name="event_id" string="Event"
-                                           required="1"
-                                           options="{'no_open': True,'no_create': True}"/>
-                                    <field name="description"/>
-                                    <field name="ticket_id" string="Ticket"
-                                           required="1"/>
-                                    <field name="uom_qty" string="Qty"
-                                           force_save="1"/>
-                                    <field name="uom_id"
-                                           string="Unit of Measure"
-                                           options="{'no_open': True, 'no_create': True}"/>
-                                    <field name="price_unit"/>
-                                    <field name="tax_ids"
-                                           options="{'no_create': True}"
-                                           widget="many2many_tags"/>
-                                    <field name="price_subtotal"
-                                           widget="monetary"/>
-                                    <field groups="account.group_account_manager"
-                                           name="price_total"
-                                           widget="monetary"/>
-                                </list>
-                            </field>
-                            <group colspan="2"
-                                   class="oe_subtotal_footer oe_right">
-                                <field name="amount_untaxed_event"
-                                       sum="Untaxed amount for Event"
-                                       widget="monetary"/>
-                                <field name="amount_taxed_event"
-                                       widget="monetary"/>
-                                <label for="amount_total_event"/>
-                                <field name="amount_total_event" nolabel="1"
-                                       sum="Total amount" widget="monetary"/>
-                            </group>
-                            <div class="oe_clear"/>
-                        </page>
+                        <!--                        <page name="fleet" string="Fleet">-->
+                        <!--                            <field name="vehicle_line_ids" colspan="4"-->
+                        <!--                                   string="Fleet Lines">-->
+                        <!--                                <list editable="bottom">-->
+                        <!--                                    <field name="fleet_id" string="Vehicle"-->
+                        <!--                                           required="1"-->
+                        <!--                                           options="{'no_open': True,'no_create': True}"/>-->
+                        <!--                                    <field name="description"/>-->
+                        <!--                                    <field name="uom_qty" string="Allotted KM"-->
+                        <!--                                           force_save="1"/>-->
+                        <!--                                    <field name="uom_id"-->
+                        <!--                                           string="Unit of Measure"-->
+                        <!--                                           options="{'no_open': True, 'no_create': True}"/>-->
+                        <!--                                    <field name="price_unit"/>-->
+                        <!--                                    <field name="tax_ids"-->
+                        <!--                                           options="{'no_create': True}"-->
+                        <!--                                           widget="many2many_tags"/>-->
+                        <!--                                    <field name="price_subtotal"-->
+                        <!--                                           widget="monetary"/>-->
+                        <!--                                    <field groups="account.group_account_manager"-->
+                        <!--                                           name="price_total"-->
+                        <!--                                           widget="monetary"/>-->
+                        <!--                                </list>-->
+                        <!--                            </field>-->
+                        <!--                            <group colspan="2"-->
+                        <!--                                   class="oe_subtotal_footer oe_right">-->
+                        <!--                                <field name="amount_untaxed_fleet"-->
+                        <!--                                       sum="Untaxed amount for Fleet"-->
+                        <!--                                       widget="monetary"/>-->
+                        <!--                                <field name="amount_taxed_fleet"-->
+                        <!--                                       widget="monetary"/>-->
+                        <!--                                <label for="amount_total_fleet"/>-->
+                        <!--                                <field name="amount_total_fleet" nolabel="1"-->
+                        <!--                                       sum="Total amount" widget="monetary"/>-->
+                        <!--                            </group>-->
+                        <!--                            <div class="oe_clear"/>-->
+                        <!--                        </page>-->
+                        <!--                        <page name="event" string="Events">-->
+                        <!--                            <field name="event_line_ids" colspan="4"-->
+                        <!--                                   string="Event Lines">-->
+                        <!--                                <list editable="bottom">-->
+                        <!--                                    <field name="event_id" string="Event"-->
+                        <!--                                           required="1"-->
+                        <!--                                           options="{'no_open': True,'no_create': True}"/>-->
+                        <!--                                    <field name="description"/>-->
+                        <!--                                    <field name="ticket_id" string="Ticket"-->
+                        <!--                                           required="1"/>-->
+                        <!--                                    <field name="uom_qty" string="Qty"-->
+                        <!--                                           force_save="1"/>-->
+                        <!--                                    <field name="uom_id"-->
+                        <!--                                           string="Unit of Measure"-->
+                        <!--                                           options="{'no_open': True, 'no_create': True}"/>-->
+                        <!--                                    <field name="price_unit"/>-->
+                        <!--                                    <field name="tax_ids"-->
+                        <!--                                           options="{'no_create': True}"-->
+                        <!--                                           widget="many2many_tags"/>-->
+                        <!--                                    <field name="price_subtotal"-->
+                        <!--                                           widget="monetary"/>-->
+                        <!--                                    <field groups="account.group_account_manager"-->
+                        <!--                                           name="price_total"-->
+                        <!--                                           widget="monetary"/>-->
+                        <!--                                </list>-->
+                        <!--                            </field>-->
+                        <!--                            <group colspan="2"-->
+                        <!--                                   class="oe_subtotal_footer oe_right">-->
+                        <!--                                <field name="amount_untaxed_event"-->
+                        <!--                                       sum="Untaxed amount for Event"-->
+                        <!--                                       widget="monetary"/>-->
+                        <!--                                <field name="amount_taxed_event"-->
+                        <!--                                       widget="monetary"/>-->
+                        <!--                                <label for="amount_total_event"/>-->
+                        <!--                                <field name="amount_total_event" nolabel="1"-->
+                        <!--                                       sum="Total amount" widget="monetary"/>-->
+                        <!--                            </group>-->
+                        <!--                            <div class="oe_clear"/>-->
+                        <!--                        </page>-->
                     </notebook>
                 </sheet>
             </form>

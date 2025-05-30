@@ -30,12 +30,16 @@ class RestaurantOrder(models.Model):
 
     folio_ids = fields.Many2one('room.booking', string='Booking Reference')
 
-    folio_id = fields.Char(related='room_no.booking_ref', string='Hotel Booking Ref')
-
-
     food_order_restaurant_line_ids = fields.One2many('food.booking.line','restaurant_order_id',
                                                      string='Restaurant Order Line',help='Linked food items for this kitchen order' )
 
+    @api.onchange('room_no')
+    def _onchange_room_no_set_folio_id(self):
+        for rec in self:
+            if rec.room_no and rec.room_no.booking_id:
+                rec.folio_ids = rec.room_no.booking_id
+            else:
+                rec.folio_ids = False
 
 
     @api.model
