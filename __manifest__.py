@@ -1,4 +1,3 @@
-
 {
     'name': 'Hotel Management',
     'version': '1.1',
@@ -12,7 +11,7 @@
     'company': 'Cybrosys Techno Solutions',
     'maintainer': 'Cybrosys Techno Solutions',
     'website': 'https://www.cybrosys.com',
-    'depends': ['account', 'event', 'fleet', 'product', 'stock', 'sale_management','purchase' ],
+    'depends': ['account', 'event', 'fleet', 'product', 'stock', 'sale_management', 'purchase'],
     'data': [
         'security/hotel_management_odoo_groups.xml',
         'security/hotel_management_odoo_security.xml',
@@ -23,6 +22,7 @@
         'views/kot_view.xml',
         'views/hotel_plan_view.xml',
         'views/hotel_reservation_line_view.xml',
+        'views/folio_view.xml',
         'views/hotel_menu_views.xml',
         'views/hotel_amenity_views.xml',
         'views/hotel_service_views.xml',
@@ -31,7 +31,7 @@
         'views/lunch_product_views.xml',
         'views/fleet_vehicle_model_views.xml',
         'views/room_booking_views.xml',
-        'views/folio_view.xml',
+
         'views/maintenance_team_views.xml',
         'views/maintenance_request_views.xml',
         'views/cleaning_team_views.xml',
