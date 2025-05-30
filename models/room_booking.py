@@ -37,6 +37,8 @@ class RoomBooking(models.Model):
     street_id = fields.Char(related='partner_id.street', string='Street', readonly=False, required=False,help="Street of Customer")
     city_id = fields.Char(related='partner_id.city', string='City', readonly=False, required=False,help="City of Customer")
 
+    country_id = fields.Char(related='partner_id.country', string='Country', readonly=False, required=False,help="Country Name OF Customer")
+
     adults=fields.Integer(string='Adults',help="Number of Adults")
 
     child=fields.Integer(string='Child',help="Number of Children")
