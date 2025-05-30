@@ -17,12 +17,12 @@ https://www.gnu.org/licenses/lgpl-3.0-standalone.html
 
 Company
 -------
-* `CRMiC <https://crmictech.com>`__
+* `CRMIC <https://crmictech.com>`__
 
 Credits
 -------
 * Developer: Devendra Shrestha
-  Contact: info@crmictech.com
+  Contact: devendra.shrestha@crmictech.com
 
 Contacts
 --------
