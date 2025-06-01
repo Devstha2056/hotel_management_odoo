@@ -29,7 +29,7 @@
                     <!--                            invisible="state not in ['draft', 'check_out'] or invoice_button_visible == True"/>-->
                     <button name="action_create_quotation" string="Quotation"
                             type="object" class="btn-primary"
-                            invisible="state not in ['draft', 'check_out'] or invoice_button_visible == True"/>
+                            invisible="quotation_state == 'sale'"/>
                     <button name="action_cancel" string="Cancel"
                             invisible="state not in ['draft','reserved']"
                             type="object" class="btn-secondary"/>

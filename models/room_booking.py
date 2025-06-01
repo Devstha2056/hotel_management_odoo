@@ -17,6 +17,14 @@ class RoomBooking(models.Model):
                        default="New", help="Name of Folio")
     issuing_auth = fields.Char('Sale Person', default=lambda self: self.env.user.name)
 
+    sale_order_id = fields.Many2one("sale.order", string="Sale Order", ondelete="set null")
+
+    quotation_state = fields.Selection(
+        related='sale_order_id.state',
+        string="Order Status",
+        help="Status of the Order",
+        store=True  # <-- ADD THIS
+    )
 
     company_id = fields.Many2one('res.company', string="Company",
                                  help="Choose the Company",

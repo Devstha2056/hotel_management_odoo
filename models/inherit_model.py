@@ -41,6 +41,10 @@ class SaleOrder(models.Model):
 
     booking_reference=fields.Char(string='Booking Reference')
 
+    booking_id = fields.Many2one("room.booking", string="Booking",
+                                 help="Indicates the Room",
+                                 ondelete="cascade")
+
 class ResPartner(models.Model):
     _inherit = 'res.partner'
 
