@@ -17,7 +17,7 @@ class RoomBooking(models.Model):
                        default="New", help="Name of Folio")
     issuing_auth = fields.Char('Sale Person', default=lambda self: self.env.user.name)
 
-    sale_order_id = fields.Many2one("sale.order", string="Sale Order", ondelete="set null")
+
 
     quotation_state = fields.Selection(
         related='sale_order_id.state',
@@ -44,7 +44,9 @@ class RoomBooking(models.Model):
     phone_id = fields.Char(related='partner_id.phone', string='Mobile', readonly=False, required=True,help="Phone Number of Customer")
     street_id = fields.Char(related='partner_id.street', string='Street', readonly=False, required=False,help="Street of Customer")
     city_id = fields.Char(related='partner_id.city', string='City', readonly=False, required=False,help="City of Customer")
-
+    country_id = fields.Many2one('res.country', related='partner_id.country_id', help="PAN no. of Company")
+    pan_id = fields.Char(related='partner_id.vat', string='PAN', readonly=False, required=False,
+                         help="PAN no. of Company")
     # country_id = fields.Char(related='partner_id.country', string='Country', readonly=False, required=False,help="Country Name OF Customer")
 
     adults=fields.Integer(string='Adults',help="Number of Adults")
@@ -53,13 +55,17 @@ class RoomBooking(models.Model):
 
     note=fields.Text(string='Note',help="Write some of Note")
 
-    via=fields.Selection([
-        ('direct',"Direct"),
-        ('agent','Agent'),
+    via = fields.Selection([
+        ('fit', "FIT"),
+        ('agent', 'Agent'),
+        ('company', 'Company'),
 
-    ],string='Via',default='direct')
+    ], string='Via', required=True, default='fit')
 
     agent_id = fields.Many2one('res.partner',string='Agent' ,readonly=True,domain="[('isagenttype','=',True)]")
+    agent_company_id = fields.Many2one('res.partner', string='Company Agent', readonly=True,
+                                       domain="[('isagenttype','=',True)]")
+
 
     source = fields.Selection([
         ('internal_reservation',"Internal Reservation"),
@@ -121,7 +127,6 @@ class RoomBooking(models.Model):
                                        string="Sale Order",
                                        help="Indicates the Sale",
                                        copy=False)
-
 
 
     duration_visible = fields.Float(string="Duration",
@@ -636,26 +641,26 @@ class RoomBooking(models.Model):
         raise ValidationError(_("Please Enter Room Details"))
 
     def action_done(self):
-        """Button action_confirm function"""
-        for rec in self.env['account.move'].search(
-                [('ref', '=', self.name)]):
 
 
-            if rec.payment_state != 'not_paid':
-                self.write({"state": "done"})
-                self.is_checkin = False
-                if self.room_line_ids:
-                    return {
-                        'type': 'ir.actions.client',
-                        'tag': 'display_notification',
-                        'params': {
-                            'type': 'success',
-                            'message': "Booking Checked Out Successfully!",
-                            'next': {'type': 'ir.actions.act_window_close'},
-                        }
-                    }
-            raise ValidationError(_('Your Invoice is Due for Payment.'))
-        self.write({"state": "done"})
+        for rec in self:
+            if rec.quotation_state != 'sale':
+                raise ValidationError(_('Your Payment is Due, please solve it first.'))
+
+        _logger.info(f'=======aaaaaaaaaaalllllllllllllllllllll============{ self.name}==================')
+        self.write({"state": "done", "is_checkin": False})
+
+        if self.room_line_ids:
+            return {
+                'type': 'ir.actions.client',
+                'tag': 'display_notification',
+                'params': {
+                    'type': 'success',
+                    'message': "Booking Checked Out Successfully!",
+                    'next': {'type': 'ir.actions.act_window_close'},
+                }
+            }
+
 
     def action_checkout(self):
         """Button action_heck_out function"""

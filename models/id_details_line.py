@@ -26,5 +26,14 @@ class HotelIdDetails(models.Model):
 
     valid_to = fields.Date('Valid To')
 
+    state = fields.Selection(selection=[('draft', 'Draft'),
+                                        ('reserved', 'Reserved'),
+                                        ('check_in', 'Check In'),
+                                        ('check_out', 'Check Out'),
+                                        ('cancel', 'Cancelled'),
+                                        ('done', 'Done')], string='State',
+                             help="State of the Booking",
+                             default='draft', tracking=True)
+
 
 

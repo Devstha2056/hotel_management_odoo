@@ -1,7 +1,7 @@
 
 from odoo import api, fields, models, tools, _
 from odoo.exceptions import ValidationError
-from datetime import datetime,timedelta,date
+from datetime import datetime,time,timedelta,date
 import logging
 
 logger = logging.getLogger(__name__)
@@ -216,8 +216,8 @@ class RoomBookingLine(models.Model):
             if not line.room_id or not line.checkin_date or not line.checkout_date:
                 continue
 
-            if line.checkout_date < line.checkin_date:
-                raise ValidationError(_("Checkout must be greater or equal to check-in date"))
+            if line.checkout_date <= line.checkin_date:
+                raise ValidationError(_("Checkout date must be after check-in date."))
 
             # Search for overlapping bookings for the same room
             overlapping_bookings = self.env['room.booking.line'].search([
@@ -251,35 +251,17 @@ class RoomBookingLine(models.Model):
             ])
             if overlapping:
                 raise ValidationError(_("Room is not available for the selected dates."))
-    # @api.onchange('checkin_date', 'checkout_date', 'room_id')
-    # def onchange_checkin_date(self):
-    #     """On change of check-in date, check-out date, or room ID,
-    #        this method validates if the selected room is available
-    #        for the given dates. It searches for existing bookings
-    #        in the 'reserved' or 'check_in' state and checks for date
-    #        conflicts. If a conflict is found, a ValidationError is raised."""
-    #     records = self.env['room.booking'].search(
-    #         [('state', 'in', ['reserved', 'check_in'])])
-    #     for rec in self:
-    #         for line in rec.room_line_ids:
-    #             rec_checkin_date = line.checkin_date
-    #         # for rec in records:
-    #         rec_room_id = rec.room_line_ids.room_id
-    #         # rec_checkin_date = rec.room_line_ids.checkin_date
-    #         rec_checkout_date = rec.room_line_ids.checkout_date
-    #         if rec_room_id and rec_checkin_date and rec_checkout_date:
-    #             # Check for conflicts with existing room lines
-    #             for line in self:
-    #                 if line.id != rec.id and line.room_id == rec_room_id:
-    #                     # Check if the dates overlap
-    #                     if (rec_checkin_date <= line.checkin_date <= rec_checkout_date or
-    #                             rec_checkin_date <= line.checkout_date <= rec_checkout_date):
-    #                         raise ValidationError(
-    #                             _("Sorry, You cannot create a reservation for "
-    #                               "this date since it overlaps with another "
-    #                               "reservation..!!"))
-    #                     if rec_checkout_date <= line.checkout_date and rec_checkin_date >= line.checkin_date:
-    #                         raise ValidationError(
-    #                             "Sorry You cannot create a reservation for this"
-    #                             "date due to an existing reservation between "
-    #                             "this date")
+
+    @api.onchange('checkin_date')
+    def _onchange_checkin_set_time(self):
+        for line in self:
+            if line.checkin_date:
+                checkin_date = fields.Datetime.from_string(line.checkin_date)
+                line.checkin_date = datetime.combine(checkin_date.date(), time(hour=14))  # 2:00 PM
+
+    @api.onchange('checkout_date')
+    def _onchange_checkout_set_time(self):
+        for line in self:
+            if line.checkout_date:
+                checkout_date = fields.Datetime.from_string(line.checkout_date)
+                line.checkout_date = datetime.combine(checkout_date.date(), time(hour=12))
