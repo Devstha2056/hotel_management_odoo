@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="report_estimated_bill" model="ir.actions.report">
+        <field name="name">Print Estimated Bill</field>
+        <field name="model">sale.order</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">hotel_management_odoo.report_estimated_bill_template</field>
+        <field name="report_file">hotel_management_odoo.report_estimated_bill_template</field>
+        <!--        <field name="binding_model_id" ref="model_sale_order"/>-->
+        <!--        <field name="binding_type">report</field>-->
+    </record>
+
+    <template id="report_estimated_bill_template">
+        <t t-call="web.external_layout">
+            <main>
+                <div class="page" style="padding:10px;">
+                    <div class="col-6">
+                        <img t-att-src="'/hotel_management_odoo/static/description/icon.png'" style="height: 120px;"/>
+                    </div>
+                    <div style="margin: 20px 0 100px 0;">
+                        <h1>
+                            <b>Hotel Niwas</b>
+                        </h1>
+                        <h5>Lakeside, Pokhara, Nepal</h5>
+                    </div>
+                    <div class="oe_structure"/>
+                    <h3 style=" text-align: center;">Estimated Bill</h3>
+                    <br/>
+                    <div>
+                        <t t-foreach="docs" t-as="doc">
+                            <h5>
+                                 <b>Sale Number:</b>
+                                <t t-esc="doc.name"/>
+                            </h5>
+                            <p>
+                                <b>Customer Name:</b>
+                                <t t-esc="doc.partner_id.display_name"/>
+                            </p>
+                            <p>
+                                <b>Quotation Date:</b>
+                                <t t-esc="doc.date_order"/>
+                            </p>
+                        </t>
+                    </div>
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Product</th>
+                                <th>Quantity</th>
+                                <th>Unit Price</th>
+                                <th>Discount %</th>
+                                <th>Total Amount</th>
+                            </tr>
+                        </thead>
+                        <tr t-foreach="doc.order_line" t-as="line">
+                            <td>
+                                <t t-esc="line.product_template_id.display_name"/>
+                            </td>
+                            <td>
+                                <t t-esc="line.product_uom_qty"/>
+                            </td>
+                            <td>
+                                <t t-esc="line.price_unit"/>
+                            </td>
+                             <td>
+                                <t t-esc="line.discount"/>
+                            </td>
+
+                            <td>
+                                <t t-esc="line.price_subtotal"/>
+                            </td>
+                        </tr>
+                    </table>
+
+                    <t t-set="total_subtotal" t-value="0.0"/>
+                    <t t-set="total_discount" t-value="0.0"/>
+                    <t t-set="total_tax" t-value="0.0"/>
+                    <t t-set="total_total" t-value="0.0"/>
+
+                    <t t-foreach="doc.order_line" t-as="line">
+                        <t t-set="unit_price" t-value="line.price_unit or 0.0"/>
+                        <t t-set="qty" t-value="line.product_uom_qty or 0.0"/>
+                        <t t-set="discount" t-value="line.discount or 0.0"/>
+                        <t t-set="subtotal" t-value="line.price_subtotal or 0.0"/>
+                        <t t-set="tax" t-value="line.price_tax or 0.0"/>
+                        <t t-set="total" t-value="line.price_total or 0.0"/>
+
+                        <t t-set="total_subtotal" t-value="total_subtotal + subtotal"/>
+                        <t t-set="total_discount" t-value="total_discount + ((unit_price * qty * discount) / 100.0)"/>
+                        <t t-set="total_tax" t-value="total_tax + tax"/>
+                        <t t-set="total_total" t-value="total_total + total"/>
+                    </t>
+
+                    <div style="text-align:right;">
+                        <p>
+                            <strong>Sub Total:</strong>
+                            <span>
+                                <t t-esc="total_subtotal"/>
+                            </span>
+                        </p>
+                        <p>
+                            <strong>Discount:</strong>
+                            <span>
+                                <t t-esc="total_discount"/>
+                            </span>
+                        </p>
+                           <p>
+                            <strong>Taxable Amount:</strong>
+                            <span>
+                                <t t-esc="total_subtotal"/>
+                            </span>
+                        </p>
+
+                        <p>
+                            <strong>VAT (13%):</strong>
+                            <span>
+                                <t t-esc="total_tax"/>
+                            </span>
+                        </p>
+                        <p>
+                            <strong>
+                                <u>GRAND TOTAL:</u>
+                            </strong>
+                            <span>
+                                <t t-esc="total_total"/>
+                            </span>
+                        </p>
+                    </div>
+                    <footer style="margin-top: 100px;">
+                        <strong>Remarks:</strong>
+                    </footer>
+                </div>
+            </main>
+        </t>
+    </template>
+
+
+</odoo>
+
