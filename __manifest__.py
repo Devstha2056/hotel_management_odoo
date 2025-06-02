@@ -44,6 +44,7 @@
         'views/reporting_views.xml',
         'report/room_booking_reports.xml',
         'report/sale_order_reports.xml',
+        'report/estimated_bill.xml',
     ],
     'assets': {
         'web.assets_backend': [
