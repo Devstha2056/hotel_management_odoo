@@ -262,22 +262,22 @@
                                 <list editable="bottom">
                                     <field name="service_id" string="Product"
                                            required="1"   domain="[('is_servicetype', '=', True)]"
-                                           options="{'no_open': True,'no_create': True}" readonly="state not in ('draft', 'reserved')"/>
-                                    <field name="description" readonly="state not in ('draft', 'reserved')"/>
+                                           options="{'no_open': True,'no_create': True}" readonly="state in ('draft', 'reserved')"/>
+                                    <field name="description" readonly="state in ('draft', 'reserved')"/>
                                     <field name="uom_qty" string="Qty"
-                                           force_save="1" readonly="state not in ('draft', 'reserved')"/>
+                                           force_save="1" readonly="state in ('draft', 'reserved')"/>
                                     <field name="uom_id"
                                            string="Unit of Measure"
                                            options="{'no_open': True,'no_create': True}" readonly="state not in ('draft', 'reserved')"/>
-                                    <field name="price_unit" readonly="state not in ('draft', 'reserved')"/>
+                                    <field name="price_unit" readonly="state in ('draft', 'reserved')"/>
                                     <field name="tax_ids"
                                            options="{'no_create': True}"
-                                           widget="many2many_tags" readonly="state not in ('draft', 'reserved')"/>
+                                           widget="many2many_tags" readonly="state in ('draft', 'reserved')"/>
                                     <field name="price_subtotal"
-                                           widget="monetary" readonly="state not in ('draft', 'reserved')"/>
+                                           widget="monetary" readonly="state in ('draft', 'reserved')"/>
                                     <field groups="account.group_account_manager"
                                            name="price_total"
-                                           widget="monetary" readonly="state not in ('draft', 'reserved')"/>
+                                           widget="monetary" readonly="state in ('draft', 'reserved')"/>
                                 </list>
                             </field>
                             <group colspan="2"

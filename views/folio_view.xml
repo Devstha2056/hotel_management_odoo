@@ -34,6 +34,8 @@
                 <group expand="1" string="Group By">
                     <filter name="group_by_customer" string="Customer"
                             context="{'group_by': 'customer'}"/>
+                    <filter name="group_by_room" string="Room"
+                            context="{'group_by': 'room_id'}"/>
                     <filter name="group_by_check-in_date" string="Check-in Date"
                             context="{'group_by': 'checkin_date'}"/>
                     <filter name="group_by_check-out_date" string="Check-out Date"
