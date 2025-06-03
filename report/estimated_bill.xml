@@ -7,8 +7,6 @@
         <field name="report_type">qweb-pdf</field>
         <field name="report_name">hotel_management_odoo.report_estimated_bill_template</field>
         <field name="report_file">hotel_management_odoo.report_estimated_bill_template</field>
-        <!--        <field name="binding_model_id" ref="model_sale_order"/>-->
-        <!--        <field name="binding_type">report</field>-->
     </record>
 
     <template id="report_estimated_bill_template">
@@ -40,6 +38,10 @@
                             <p>
                                 <b>Quotation Date:</b>
                                 <t t-esc="doc.date_order"/>
+                            </p>
+                              <p>
+                                <b>Booking Reference:</b>
+                                <t t-esc="doc.booking_reference"/>
                             </p>
                         </t>
                     </div>

@@ -32,6 +32,7 @@ class HotelRestaurantKitchenOrderTickets(models.Model):
         string='Food Booking Lines',
         help='Linked food items for this kitchen order'
     )
+    active = fields.Boolean(string='Active', default=True)
 
     @api.model
     def create(self, vals_list):
@@ -39,6 +40,12 @@ class HotelRestaurantKitchenOrderTickets(models.Model):
             if vals.get("order_no", "New") == "New":
                 vals["order_no"] = self.env["ir.sequence"].next_by_code("hotel.restaurant.kitchen.order.tickets") or 'New'
         return super().create(vals_list)
+
+    def unlink(self):
+        if not self.env.user.has_group('base.group_no_one'):
+            raise UserError("You are not allowed to delete Restaurant Orders.")
+        return super(HotelRestaurantKitchenOrderTickets, self).unlink()
+
 
 
 
@@ -72,7 +79,7 @@ class HotelRestaurantBarOrderTickets(models.Model):
         string='Food Booking Lines',
         help='Linked food items for this kitchen order'
     )
-
+    active = fields.Boolean(string='Active', default=True)
 
     @api.model
     def create(self, vals_list):
@@ -80,3 +87,8 @@ class HotelRestaurantBarOrderTickets(models.Model):
             if vals.get("order_no", "New") == "New":
                 vals["order_no"] = self.env["ir.sequence"].next_by_code("hotel.restaurant.bar.order.tickets") or 'New'
         return super().create(vals_list)
+
+    def unlink(self):
+        if not self.env.user.has_group('base.group_no_one'):
+            raise UserError("You are not allowed to delete Restaurant Orders.")
+        return super(HotelRestaurantBarOrderTickets, self).unlink()

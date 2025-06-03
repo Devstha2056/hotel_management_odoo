@@ -64,6 +64,7 @@
                     <group>
                         <!-- Invisible Fields -->
                         <field name="is_checkin" invisible="1"/>
+                        <field name="active" invisible="1"/>
                         <field name="company_id" invisible="1"/>
                         <field name="checkin_date" invisible="1"/>
                         <field name="checkout_date" invisible="1"/>
@@ -154,6 +155,7 @@
                                         <field name="occupancy_id" readonly="state not in ('draft', 'reserved')" />
                                         <field name="meal_plan_price" invisible="1"/>
                                         <field name="meal_plan_ids" />
+                                        
                                         <field name="categ_id"/>
                                         <field name="today_date" invisible="1"/>
                                         <field name="room_id" string="Room" required="1"

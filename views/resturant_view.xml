@@ -59,6 +59,7 @@
                         </h1>
                     </div>
                     <group>
+                         <field name="active" invisible="1"/>
                         <field name="room_no"/>
                         <field name="partner_id"/>
                         <field name="folio_ids"/>

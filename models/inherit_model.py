@@ -1,5 +1,5 @@
 from odoo import api, fields, models, tools, _
-from odoo.exceptions import ValidationError
+from odoo.exceptions import ValidationError,UserError
 
 class ProductTemplate(models.Model):
     _inherit = 'product.template'
@@ -26,6 +26,10 @@ class ProductTemplate(models.Model):
                               help="Nature of Product",
                               tracking=True)
 
+    def unlink(self):
+        if not self.env.user.has_group('base.group_no_one'):
+            raise UserError("You are not allowed to delete Restaurant Orders.")
+        return super(ProductTemplate, self).unlink()
 
 
 class ProductCategory(models.Model):
@@ -42,7 +46,7 @@ class SaleOrder(models.Model):
     booking_reference=fields.Char(string='Booking Reference')
 
     booking_id = fields.Many2one("room.booking", string="Booking",
-                                 help="Indicates the Room",
+                                 help="Indicates the Room",readonly=True,
                                  ondelete="cascade")
 
 class ResPartner(models.Model):

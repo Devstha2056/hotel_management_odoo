@@ -1,6 +1,6 @@
 
 from odoo import api, fields, models, tools
-
+from odoo.exceptions import ValidationError, UserError
 
 class FoodBookingLine(models.Model):
     """Model that handles the food booking"""
@@ -100,6 +100,7 @@ class FoodBookingLine(models.Model):
                                                "will be visible")
 
     discount = fields.Float(string="Discount (%)", default=0.0)
+    active = fields.Boolean(string='Active', default=True)
 
     @api.onchange("food_id")
     def _get_list_price(self):
@@ -149,6 +150,10 @@ class FoodBookingLine(models.Model):
         return (self.search([]).filtered(lambda r: r.booking_id.state not in [
             'check_out', 'cancel', 'done']).ids)
 
+    def unlink(self):
+        if not self.env.user.has_group('base.group_no_one'):
+            raise UserError("You are not allowed to delete Restaurant Orders.")
+        return super(FoodBookingLine, self).unlink()
 
 
 # @api.depends('uom_qty', 'price_unit', 'tax_ids', )

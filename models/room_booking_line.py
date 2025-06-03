@@ -1,9 +1,9 @@
 
 from odoo import api, fields, models, tools, _
-from odoo.exceptions import ValidationError
+from odoo.exceptions import ValidationError,UserError
 from datetime import datetime,time,timedelta,date
 import logging
-
+import pytz
 logger = logging.getLogger(__name__)
 
 class RoomBookingLine(models.Model):
@@ -100,6 +100,8 @@ class RoomBookingLine(models.Model):
     discount = fields.Float(string="Discount (%)", default=0.0)
 
     today = fields.Date(string='Today', compute='_compute_today')
+
+    active = fields.Boolean(string='Active', default=True)
 
     def _compute_today(self):
         for record in self:
@@ -254,14 +256,28 @@ class RoomBookingLine(models.Model):
 
     @api.onchange('checkin_date')
     def _onchange_checkin_set_time(self):
-        for line in self:
-            if line.checkin_date:
-                checkin_date = fields.Datetime.from_string(line.checkin_date)
-                line.checkin_date = datetime.combine(checkin_date.date(), time(hour=14))  # 2:00 PM
+        user_tz = self.env.user.tz or 'UTC'
+        tz = pytz.timezone(user_tz)
+        for rec in self:
+            if rec.checkin_date:
+                # Build a datetime with 2:00 PM in user's timezone
+                local_dt = tz.localize(datetime.combine(rec.checkin_date.date(), time(14, 0)))
+                # Convert to UTC
+                utc_dt = local_dt.astimezone(pytz.utc)
+                # Make it naive (strip timezone info)
+                rec.checkin_date = utc_dt.replace(tzinfo=None)
 
     @api.onchange('checkout_date')
     def _onchange_checkout_set_time(self):
-        for line in self:
-            if line.checkout_date:
-                checkout_date = fields.Datetime.from_string(line.checkout_date)
-                line.checkout_date = datetime.combine(checkout_date.date(), time(hour=12))
+        user_tz = self.env.user.tz or 'UTC'
+        tz = pytz.timezone(user_tz)
+        for rec in self:
+            if rec.checkout_date:
+                local_dt = tz.localize(datetime.combine(rec.checkout_date.date(), time(12, 0)))
+                utc_dt = local_dt.astimezone(pytz.utc)
+                rec.checkout_date = utc_dt.replace(tzinfo=None)
+
+    def unlink(self):
+        if not self.env.user.has_group('base.group_no_one'):
+            raise UserError("You are not allowed to delete Restaurant Orders.")
+        return super(RoomBookingLine, self).unlink()

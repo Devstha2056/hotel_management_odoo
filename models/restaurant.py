@@ -31,6 +31,8 @@ class RestaurantOrder(models.Model):
     food_order_restaurant_line_ids = fields.One2many('food.booking.line','restaurant_order_id',
                                                      string='Restaurant Order Line',help='Linked food items for this kitchen order' )
 
+    active = fields.Boolean(string='Active', default=True)
+
     @api.onchange('room_no')
     def _onchange_room_no_set_folio_id(self):
         for rec in self:
@@ -64,7 +66,11 @@ class RestaurantOrder(models.Model):
                 if food_order:
                     food_order.food_order_line_ids = [(4, line.id) for line in record.food_order_restaurant_line_ids]
 
+    def unlink(self):
 
+        if not self.env.user.has_group('base.group_no_one'):
+            raise UserError("You are not allowed to delete Restaurant Orders.")
+        return super(RestaurantOrder, self).unlink()
 
     def action_create_kot_bot_orders(self):
         for record in self:

@@ -162,7 +162,7 @@ class RoomBooking(models.Model):
                                     "booking_id", string="Room",
                                     help="Hotel room reservation detail.")
 
-
+    active = fields.Boolean(string='Active', default=True)
 # New field added
     room_checkin_date = fields.Datetime(
         string="Check-In", compute="_compute_checkin_checkout_dates", store=True
@@ -793,6 +793,11 @@ class RoomBooking(models.Model):
             }
         }
 
+
+    def unlink(self):
+        if not self.env.user.has_group('base.group_no_one'):
+            raise UserError("You are not allowed to delete Restaurant Orders.")
+        return super(RoomBooking, self).unlink()
 
     def get_details(self):
         """ Returns different counts for displaying in dashboard"""

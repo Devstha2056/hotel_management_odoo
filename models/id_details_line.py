@@ -1,5 +1,5 @@
 from odoo import api, fields, models, tools
-
+from odoo.exceptions import ValidationError,UserError
 
 class HotelIdDetails(models.Model):
     """Model that handles the food booking"""
@@ -35,5 +35,9 @@ class HotelIdDetails(models.Model):
                              help="State of the Booking",
                              default='draft', tracking=True)
 
+    active = fields.Boolean(string='Active', default=True)
 
-
+    def unlink(self):
+        if not self.env.user.has_group('base.group_no_one'):
+            raise UserError("You are not allowed to delete Restaurant Orders.")
+        return super(HotelIdDetails, self).unlink()

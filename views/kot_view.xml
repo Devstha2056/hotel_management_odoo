@@ -28,6 +28,7 @@
                             <field name="res_no"/>
                             <field name="kot_date"/>
                             <field name="product_nature"/>
+                             <field name="active" invisible="1"/>
 
                         </group>
                         <group>
@@ -97,6 +98,7 @@
                             <field name="res_no"/>
                             <field name="kot_date"/>
                             <field name="product_nature"/>
+                             <field name="active" invisible="1"/>
 
                         </group>
                         <group>

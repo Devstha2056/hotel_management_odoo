@@ -1,5 +1,5 @@
 from odoo import api, fields, models, tools
-
+from odoo.exceptions import ValidationError,UserError
 
 class ServiceBookingLine(models.Model):
     """Model that handles the service booking form"""
@@ -25,9 +25,11 @@ class ServiceBookingLine(models.Model):
                              string="Unit of Measure",
                              help="This will set the unit of measure used",
                              default=_get_default_uom_id)
-    price_unit = fields.Float(string='Price', related='service_id.unit_price',
-                              digits='Product Price',
-                              help="The price of the selected service.")
+    price_unit = fields.Float(
+        string='Price',
+        digits='Product Price',
+        help="The price of the selected service."
+    )
 
     tax_ids = fields.Many2many('account.tax',
                                'hotel_service_order_line_taxes_rel',
@@ -61,6 +63,14 @@ class ServiceBookingLine(models.Model):
                                           help="If true, Booking line will be"
                                                " visible")
 
+    active = fields.Boolean(string='Active', default=True)
+
+    @api.onchange('service_id')
+    def _onchange_service_id_set_price(self):
+        for rec in self:
+            if rec.service_id:
+                rec.price_unit = rec.service_id.unit_price
+
     @api.depends('uom_qty', 'price_unit', 'tax_ids')
     def _compute_price_subtotal(self):
         """Compute the amounts of the room booking line."""
@@ -93,4 +103,10 @@ class ServiceBookingLine(models.Model):
                 'partner_id': self.booking_id.partner_id,
                 'currency_id': self.currency_id,
             },
-        )
+     )
+
+
+    def unlink(self):
+        if not self.env.user.has_group('base.group_no_one'):
+            raise UserError("You are not allowed to delete Restaurant Orders.")
+        return super(ServiceBookingLine, self).unlink()

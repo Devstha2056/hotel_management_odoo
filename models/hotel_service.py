@@ -1,6 +1,6 @@
 
 from odoo import fields, models
-
+from odoo.exceptions import ValidationError,UserError
 
 class HotelService(models.Model):
     """Model that holds the all hotel services"""
@@ -22,3 +22,10 @@ class HotelService(models.Model):
                                  domain=[('type_tax_use', '=', 'sale')],
                                  default=lambda self:
                                  self.env.company.account_sale_tax_id)
+
+    active = fields.Boolean(string='Active', default=True)
+
+    def unlink(self):
+        if not self.env.user.has_group('base.group_no_one'):
+            raise UserError("You are not allowed to delete Restaurant Orders.")
+        return super(HotelService, self).unlink()

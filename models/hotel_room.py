@@ -1,7 +1,5 @@
-
 from odoo import api, fields, models, tools, _
-from odoo.exceptions import ValidationError
-
+from odoo.exceptions import ValidationError, UserError
 
 class HotelRoom(models.Model):
     """Model that holds all details regarding hotel room"""
@@ -64,6 +62,8 @@ class HotelRoom(models.Model):
     description = fields.Html(string='Description', help="Add description",
                               translate=True)
 
+    active = fields.Boolean(string='Active', default=True)
+
     @api.constrains("num_person")
     def _check_capacity(self):
         """Check capacity function"""
@@ -83,6 +83,10 @@ class HotelRoom(models.Model):
         else:
             self.num_person = 4
 
+    def unlink(self):
+        if not self.env.user.has_group('base.group_no_one'):
+            raise UserError("You are not allowed to delete Restaurant Orders.")
+        return super(HotelRoom, self).unlink()
 
 
 class HotelRoomCategory(models.Model):
@@ -93,6 +97,12 @@ class HotelRoomCategory(models.Model):
 
     cat_id = fields.Many2one('product.category', string="Category", required=True, ondelete="cascade")
     isroomtype = fields.Boolean(related='cat_id.isroomtype', store=True, readonly=False, string="Room Type" ,default=True)
+    active = fields.Boolean(string='Active', default=True)
+
+    def unlink(self):
+        if not self.env.user.has_group('base.group_no_one'):
+            raise UserError("You are not allowed to delete Restaurant Orders.")
+        return super(HotelRoomCategory, self).unlink()
 
 
 class HotelFoodCategory(models.Model):
@@ -103,4 +113,10 @@ class HotelFoodCategory(models.Model):
 
     cat_id = fields.Many2one('product.category', string="Category", required=True, ondelete="cascade")
     isfoodtype = fields.Boolean(related='cat_id.isfoodtype', store=True, readonly=False, string="Food Type" ,default=True)
+    active = fields.Boolean(string='Active', default=True)
+
+    def unlink(self):
+        if not self.env.user.has_group('base.group_no_one'):
+            raise UserError("You are not allowed to delete Restaurant Orders.")
+        return super(HotelFoodCategory, self).unlink()
 
