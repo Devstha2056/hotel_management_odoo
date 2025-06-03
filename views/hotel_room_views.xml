@@ -49,6 +49,9 @@
                 <field name="is_foodtype" string="Food Type"/>
                 <label for="is_foodtype">
                 </label>
+                <field name="is_servicetype" string="Service Type"/>
+                <label for="is_servicetype">
+                </label>
             </xpath>
         </field>
     </record>

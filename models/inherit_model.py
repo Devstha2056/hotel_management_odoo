@@ -17,6 +17,8 @@ class ProductTemplate(models.Model):
 
     is_foodtype = fields.Boolean(default=False, string="Food Type",help="Check if the FoodType")
 
+    is_servicetype = fields.Boolean(default=False, string="Service Type",help="Check if the Service Type")
+
     floor_id=fields.Many2one('hotel.floor',string='Floor Name')
 
     amenity_id_group=fields.Many2one('hotel.amenity.group',string='Amenity')

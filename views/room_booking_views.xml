@@ -261,7 +261,7 @@
                                    string="Service Lines">
                                 <list editable="bottom">
                                     <field name="service_id" string="Product"
-                                           required="1"
+                                           required="1"   domain="[('is_servicetype', '=', True)]"
                                            options="{'no_open': True,'no_create': True}"/>
                                     <field name="description"/>
                                     <field name="uom_qty" string="Qty"
