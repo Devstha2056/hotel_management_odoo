@@ -1,5 +1,5 @@
 from odoo import api, fields, models, tools
-from odoo.exceptions import ValidationError,UserError
+from odoo.exceptions import ValidationError, UserError
 
 class ServiceBookingLine(models.Model):
     """Model that handles the service booking form"""
@@ -8,68 +8,77 @@ class ServiceBookingLine(models.Model):
 
     @tools.ormcache()
     def _get_default_uom_id(self):
-        """Returns default product uom unit"""
+        """Method for getting the default uom id"""
         return self.env.ref('uom.product_uom_unit')
 
     booking_id = fields.Many2one("room.booking", string="Booking",
-                                 help="Indicates the Room Booking",
+                                 help="Shows the room Booking",
                                  ondelete="cascade")
-    service_id = fields.Many2one('hotel.service', string="Service",
-                                 help="Indicates the Service")
-    description = fields.Char(string='Description', related='service_id.name',
-                              help="Description of the Service")
-    uom_qty = fields.Float(string="Qty", default=1.0,
+
+    product_nature = fields.Selection(
+        related='service_id.product_tmpl_id.product_nature',
+        string='Product Nature',
+        store=True,
+        readonly=True,
+    )
+
+
+    service_id = fields.Many2one('product.product', string="Product",
+                              help="Indicates the Food Product")
+    description = fields.Char(string='Description',
+                              help="Description of Food Product",
+                              related='service_id.display_name')
+    uom_qty = fields.Float(string="Qty", default=1,
                            help="The quantity converted into the UoM used by "
                                 "the product")
     uom_id = fields.Many2one('uom.uom', readonly=True,
                              string="Unit of Measure",
-                             help="This will set the unit of measure used",
-                             default=_get_default_uom_id)
-    price_unit = fields.Float(
-        string='Price',
-        digits='Product Price',
-        help="The price of the selected service."
-    )
+                             default=_get_default_uom_id, help="This will set "
+                                                               "the unit of"
+                                                               " measure used")
+    price_unit = fields.Float(string='Rent',
+                              digits='Product Price',
+                              help="The rent price of the selected room.")
 
     tax_ids = fields.Many2many('account.tax',
-                               'hotel_service_order_line_taxes_rel',
+                               'hotel_room_order_line_taxes_rel',
                                'service_id', 'tax_id',
-                               related='service_id.taxes_ids', string='Taxes',
-                               help="Default taxes used when selling the "
-                                    "services.",
-                               domain=[('type_tax_use', '=', 'sale')])
+                               related='service_id.taxes_id',
+                               string='Taxes',
+                               help="Default taxes used when selling the room."
+                               , domain=[('type_tax_use', '=', 'sale')])
 
     currency_id = fields.Many2one(string='Currency',
-                                  related='booking_id.pricelist_id.currency_id',
-                                  help='The currency used')
+                                  related='booking_id.pricelist_id.currency_id'
+                                  , help='The currency used')
     price_subtotal = fields.Float(string="Subtotal",
                                   compute='_compute_price_subtotal',
-                                  help="Total Price Excluding Tax",
+                                  help="Total Price excluding Tax",
                                   store=True)
+
     price_tax = fields.Float(string="Total Tax",
                              compute='_compute_price_subtotal',
                              help="Tax Amount",
                              store=True)
     price_total = fields.Float(string="Total",
                                compute='_compute_price_subtotal',
-                               help="Total Price Including Tax",
+                               help="Total Price including Tax",
                                store=True)
     state = fields.Selection(related='booking_id.state',
                              string="Order Status",
                              help=" Status of the Order",
                              copy=False)
-    booking_line_visible = fields.Boolean(default=False,
-                                          string="Booking Line Visible",
-                                          help="If true, Booking line will be"
-                                               " visible")
+
+    discount = fields.Float(string="Discount (%)", default=0.0)
 
     active = fields.Boolean(string='Active', default=True)
 
-    @api.onchange('service_id')
-    def _onchange_service_id_set_price(self):
-        for rec in self:
-            if rec.service_id:
-                rec.price_unit = rec.service_id.unit_price
+    @api.onchange("service_id")
+    def _get_list_price(self):
+        for line in self:
+            if line.service_id:
+                line.price_unit = line.service_id.list_price
+                line.tax_ids = line.service_id.taxes_id
 
     @api.depends('uom_qty', 'price_unit', 'tax_ids')
     def _compute_price_subtotal(self):
@@ -103,8 +112,12 @@ class ServiceBookingLine(models.Model):
                 'partner_id': self.booking_id.partner_id,
                 'currency_id': self.currency_id,
             },
-     )
+        )
 
+    def search_service_orders(self):
+        """Returns list of food orders"""
+        return (self.search([]).filtered(lambda r: r.booking_id.state not in [
+            'check_out', 'cancel', 'done']).ids)
 
     def unlink(self):
         if not self.env.user.has_group('base.group_no_one'):

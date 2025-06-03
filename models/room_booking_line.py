@@ -140,9 +140,9 @@ class RoomBookingLine(models.Model):
         for record in self:
             if record.checkin_date and record.checkout_date:
                 if record.checkout_date < record.checkin_date:
-                    raise ValidationError(
-                        _("Checkout must be greater or equal to check-in date"))
-
+                    # raise ValidationError(
+                    #     _("Checkout must be greater or equal to check-in date"))
+                  pass
                 diffdate = record.checkout_date - record.checkin_date
                 qty = diffdate.days
                 if diffdate.total_seconds() > 0:

@@ -155,7 +155,7 @@
                                         <field name="occupancy_id" readonly="state not in ('draft', 'reserved')" />
                                         <field name="meal_plan_price" invisible="1"/>
                                         <field name="meal_plan_ids" />
-                                        
+
                                         <field name="categ_id"/>
                                         <field name="today_date" invisible="1"/>
                                         <field name="room_id" string="Room" required="1"
@@ -260,7 +260,7 @@
                             <field name="service_line_ids" colspan="4"
                                    string="Service Lines">
                                 <list editable="bottom">
-                                    <field name="service_id" string="Service"
+                                    <field name="service_id" string="Product"
                                            required="1"
                                            options="{'no_open': True,'no_create': True}"/>
                                     <field name="description"/>
@@ -282,13 +282,13 @@
                             </field>
                             <group colspan="2"
                                    class="oe_subtotal_footer oe_right">
-                                <field name="amount_untaxed_service"
-                                       sum="Untaxed amount for Service"
+                                <field name="amount_untaxed_food"
+                                       sum="Untaxed amount for Food"
                                        widget="monetary"/>
-                                <field name="amount_taxed_service"
+                                <field name="amount_taxed_food"
                                        widget="monetary"/>
-                                <label for="amount_total_service"/>
-                                <field name="amount_total_service" nolabel="1"
+                                <label for="amount_total_food"/>
+                                <field name="amount_total_food" nolabel="1"
                                        sum="Total amount" widget="monetary"/>
                             </group>
                             <div class="oe_clear"/>
