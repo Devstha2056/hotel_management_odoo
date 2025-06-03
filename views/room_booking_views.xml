@@ -154,8 +154,13 @@
                                 <form>
                                     <group>
                                         <field name="occupancy_id" readonly="state not in ('draft', 'reserved')" />
+<<<<<<< HEAD
                                         <field name="meal_plan_price" invisible="1" readonly="state not in ('draft', 'reserved')"/>
                                         <field name="meal_plan_ids" readonly="state not in ('draft', 'reserved')"/>
+=======
+                                        <field name="meal_plan_price" invisible="1" />
+                                        <field name="meal_plan_ids" />
+>>>>>>> 382631e (dev)
 
                                         <field name="categ_id" readonly="state not in ('draft', 'reserved')"/>
                                         <field name="today_date" invisible="1"/>
