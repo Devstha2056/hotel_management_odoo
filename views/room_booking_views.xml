@@ -154,17 +154,16 @@
                                 <form>
                                     <group>
                                         <field name="occupancy_id" readonly="state not in ('draft', 'reserved')" />
-<<<<<<< HEAD
-<<<<<<< HEAD
+
                                         <field name="meal_plan_price" invisible="1" readonly="state not in ('draft', 'reserved')"/>
                                         <field name="meal_plan_ids" readonly="state not in ('draft', 'reserved')"/>
-=======
+
                                         <field name="meal_plan_price" invisible="1" />
-=======
+
                                         <field name="meal_plan_price" invisible="1"/>
->>>>>>> 119f7b5 (dev)
+
                                         <field name="meal_plan_ids" />
->>>>>>> 382631e (dev)
+
 
                                         <field name="categ_id" readonly="state not in ('draft', 'reserved')"/>
                                         <field name="today_date" invisible="1"/>
@@ -298,6 +297,7 @@
                                 <field name="amount_taxed_food"
                                        widget="monetary"/>
                                 <label for="amount_total_food"/>
+
                                 <field name="amount_total_food" nolabel="1"
                                        sum="Total amount" widget="monetary"/>
                             </group>
