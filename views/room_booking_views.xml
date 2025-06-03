@@ -156,7 +156,6 @@
                                         <field name="occupancy_id" readonly="state not in ('draft', 'reserved')" />
                                         <field name="meal_plan_price" invisible="1" readonly="state not in ('draft', 'reserved')"/>
                                         <field name="meal_plan_ids" readonly="state not in ('draft', 'reserved')"/>
-
                                         <field name="categ_id" readonly="state not in ('draft', 'reserved')"/>
                                         <field name="today_date" invisible="1"/>
                                         <field name="room_id" string="Room" required="1"
@@ -283,13 +282,14 @@
                             </field>
                             <group colspan="2"
                                    class="oe_subtotal_footer oe_right">
-                                <field name="amount_untaxed_food"
-                                       sum="Untaxed amount for Food"
+                                <field name="amount_untaxed_service"
+                                       sum="Untaxed amount for Service"
                                        widget="monetary"/>
-                                <field name="amount_taxed_food"
+                                <field name="amount_taxed_service"
                                        widget="monetary"/>
                                 <label for="amount_total_food"/>
-                                <field name="amount_total_food" nolabel="1"
+
+                                <field name="amount_total_service" nolabel="1"
                                        sum="Total amount" widget="monetary"/>
                             </group>
                             <div class="oe_clear"/>
