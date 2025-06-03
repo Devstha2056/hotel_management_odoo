@@ -41,13 +41,21 @@ class RestaurantOrder(models.Model):
             else:
                 rec.folio_ids = False
 
-
+    #
+    # @api.model
+    # def create(self, vals_list):
+    #     for vals in vals_list:
+    #         if vals.get('order_no', 'New') == 'New':
+    #             vals['order_no'] = self.env['ir.sequence'].next_by_code('restaurant.order') or 'New'
+    #     return super(RestaurantOrder, self).create(vals_list)
     @api.model
-    def create(self, vals_list):
-        for vals in vals_list:
-            if vals.get('order_no', 'New') == 'New':
-                vals['order_no'] = self.env['ir.sequence'].next_by_code('restaurant.order') or 'New'
-        return super(RestaurantOrder, self).create(vals_list)
+    def create(self, vals):
+        if not isinstance(vals, dict):
+            raise ValidationError("Unexpected data format in create. Expected dictionary.")
+
+        if vals.get('order_no', 'New') == 'New':
+            vals['order_no'] = self.env['ir.sequence'].next_by_code('restaurant.order') or '/'
+        return super(RestaurantOrder, self).create(vals)
 
     def action_confirm(self):
         for record in self:

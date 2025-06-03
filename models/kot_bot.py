@@ -34,12 +34,20 @@ class HotelRestaurantKitchenOrderTickets(models.Model):
     )
     active = fields.Boolean(string='Active', default=True)
 
+    # @api.model
+    # def create(self, vals_list):
+    #     for vals in vals_list:
+    #         if vals.get("order_no", "New") == "New":
+    #             vals["order_no"] = self.env["ir.sequence"].next_by_code("hotel.restaurant.kitchen.order.tickets") or 'New'
+    #     return super().create(vals_list)
     @api.model
-    def create(self, vals_list):
-        for vals in vals_list:
-            if vals.get("order_no", "New") == "New":
-                vals["order_no"] = self.env["ir.sequence"].next_by_code("hotel.restaurant.kitchen.order.tickets") or 'New'
-        return super().create(vals_list)
+    def create(self, vals):
+        if not isinstance(vals, dict):
+            raise ValidationError("Unexpected data format in create. Expected dictionary.")
+
+        if vals.get('order_no', 'New') == 'New':
+            vals['order_no'] = self.env['ir.sequence'].next_by_code('hotel.restaurant.kitchen.order.tickets') or '/'
+        return super(HotelRestaurantKitchenOrderTickets, self).create(vals)
 
     def unlink(self):
         if not self.env.user.has_group('base.group_no_one'):
@@ -81,12 +89,20 @@ class HotelRestaurantBarOrderTickets(models.Model):
     )
     active = fields.Boolean(string='Active', default=True)
 
+    # @api.model
+    # def create(self, vals_list):
+    #     for vals in vals_list:
+    #         if vals.get("order_no", "New") == "New":
+    #             vals["order_no"] = self.env["ir.sequence"].next_by_code("hotel.restaurant.bar.order.tickets") or 'New'
+    #     return super().create(vals_list)
     @api.model
-    def create(self, vals_list):
-        for vals in vals_list:
-            if vals.get("order_no", "New") == "New":
-                vals["order_no"] = self.env["ir.sequence"].next_by_code("hotel.restaurant.bar.order.tickets") or 'New'
-        return super().create(vals_list)
+    def create(self, vals):
+        if not isinstance(vals, dict):
+            raise ValidationError("Unexpected data format in create. Expected dictionary.")
+
+        if vals.get('order_no', 'New') == 'New':
+            vals['order_no'] = self.env['ir.sequence'].next_by_code('hotel.restaurant.bar.order.tickets') or '/'
+        return super(HotelRestaurantBarOrderTickets, self).create(vals)
 
     def unlink(self):
         if not self.env.user.has_group('base.group_no_one'):

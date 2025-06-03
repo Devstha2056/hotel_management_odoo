@@ -39,7 +39,7 @@ class RoomBooking(models.Model):
     #customaddons
     meal_plan_ids=fields.Many2one(related='room_line_ids.meal_plan_ids',string="Meal Plan",ondelate='cascade')
 
-    email_id = fields.Char(related='partner_id.email', string='Email', readonly=False, required=True,help="Email of Customer")
+    email_id = fields.Char(related='partner_id.email', string='Email', readonly=False,help="Email of Customer")
 
     phone_id = fields.Char(related='partner_id.phone', string='Mobile', readonly=False, required=True,help="Phone Number of Customer")
     street_id = fields.Char(related='partner_id.street', string='Street', readonly=False, required=False,help="Street of Customer")
@@ -63,7 +63,7 @@ class RoomBooking(models.Model):
     ], string='Via', required=True, default='fit')
 
     agent_id = fields.Many2one('res.partner',string='Agent' ,readonly=True,domain="[('isagenttype','=',True)]")
-    agent_company_id = fields.Many2one('res.partner', string='Company Agent', readonly=True,
+    company_agent_id = fields.Many2one('res.partner', string='Company Agent', readonly=True,
                                        domain="[('isagenttype','=',True)]")
 
 
@@ -295,20 +295,20 @@ class RoomBooking(models.Model):
             checkouts = booking.room_line_ids.filtered(lambda l: l.checkout_date).mapped('checkout_date')
             booking.room_checkin_date = min(checkins) if checkins else False
             booking.room_checkout_date = max(checkouts) if checkouts else False
-    @api.model
-    def create(self, vals_list):
-        for vals in vals_list:
-            if vals.get('name', 'New') == 'New':
-                vals['name'] = self.env['ir.sequence'].next_by_code('room.booking') or 'New'
-        return super(RoomBooking, self).create(vals_list)
     # @api.model
-    # def create(self, vals):
-    #     if not isinstance(vals, dict):
-    #         raise ValidationError("Unexpected data format in create. Expected dictionary.")
-    #
-    #     if vals.get('name', 'New') == 'New':
-    #         vals['name'] = self.env['ir.sequence'].next_by_code('room.booking') or '/'
-    #     return super(RoomBooking, self).create(vals)
+    # def create(self, vals_list):
+    #     for vals in vals_list:
+    #         if vals.get('name', 'New') == 'New':
+    #             vals['name'] = self.env['ir.sequence'].next_by_code('room.booking') or 'New'
+    #     return super(RoomBooking, self).create(vals_list)
+    @api.model
+    def create(self, vals):
+        if not isinstance(vals, dict):
+            raise ValidationError("Unexpected data format in create. Expected dictionary.")
+
+        if vals.get('name', 'New') == 'New':
+            vals['name'] = self.env['ir.sequence'].next_by_code('room.booking') or '/'
+        return super(RoomBooking, self).create(vals)
 
     @api.depends('partner_id')
     def _compute_user_id(self):

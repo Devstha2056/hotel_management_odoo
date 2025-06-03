@@ -76,11 +76,11 @@
                             <field name="partner_id"
                                    widget="res_partner_many2one"
                                    context="{'res_partner_search_mode': 'customer', 'show_address': 1, 'show_vat': True}"
-                                   options="{'always_reload': True}" readonly="state == 'done'"/>
-                            <field name="user_id"
-                                   domain="[('parent_id','=',partner_id)]"
-                                   context="{'default_type':'invoice'}"
-                                   options="{'always_reload': True}" readonly="state == 'done'"/>
+                                   options="{'always_reload': True}" readonly="state not in ('draft', 'reserved')"/>
+<!--                            <field name="user_id"-->
+<!--                                   domain="[('parent_id','=',partner_id)]"-->
+<!--                                   context="{'default_type':'invoice'}"-->
+<!--                                   options="{'always_reload': True}" readonly="state == 'done'"/>-->
                              <field name="phone_id" readonly="state not in ('draft', 'reserved')"/>
                             <field name="email_id" readonly="state not in ('draft', 'reserved')"/>
                             <field name="street_id" readonly="state not in ('draft', 'reserved')"/>
@@ -98,7 +98,8 @@
                               <field name="adults" readonly="state not in ('draft', 'reserved')"/>
                             <field name="child" readonly="state not in ('draft', 'reserved')"/>
                             <field name="via" readonly="state != 'draft'"/>
-                            <field name="agent_id" readonly="state != 'draft'" invisible="via == 'direct'"/>
+                            <field name="agent_id" readonly="state != 'draft'" context="{'default_isagenttype': True}" invisible="via == 'company'"/>
+                            <field name="company_agent_id" readonly="state != 'draft'" domain="[('is_company', '=', True)]" context="{'default_is_company': True, 'default_isagenttype': True}" invisible="via != 'company'"/>
                             <field name="source" readonly="state != 'draft'"/>
                            <field name="meal_plan_ids" readonly="state not in ('draft', 'reserved')"/>
                             <field name="issuing_auth" readonly="1"/>
@@ -153,14 +154,14 @@
                                 <form>
                                     <group>
                                         <field name="occupancy_id" readonly="state not in ('draft', 'reserved')" />
-                                        <field name="meal_plan_price" invisible="1"/>
-                                        <field name="meal_plan_ids" />
+                                        <field name="meal_plan_price" invisible="1" readonly="state not in ('draft', 'reserved')"/>
+                                        <field name="meal_plan_ids" readonly="state not in ('draft', 'reserved')"/>
 
-                                        <field name="categ_id"/>
+                                        <field name="categ_id" readonly="state not in ('draft', 'reserved')"/>
                                         <field name="today_date" invisible="1"/>
                                         <field name="room_id" string="Room" required="1"
 
-                                               options="{'no_open': True, 'no_create': True}"/>
+                                               options="{'no_open': True, 'no_create': True}" readonly="state not in ('draft', 'reserved')"/>
                                         <field name="checkin_date" readonly="state not in ('draft', 'reserved')"/>
                                         <field name="checkout_date" readonly="state not in ('draft', 'reserved')"/>
                                         <field name="discount"/>
@@ -225,22 +226,22 @@
                                     <field name="food_id" string="Product"
                                            required="1"
                                            options="{'no_open': True,'no_create': True}"
-                                           domain="[('is_foodtype', '=', True)]"/>
-                                    <field name="description"/>
+                                           domain="[('is_foodtype', '=', True)]" readonly="state not in ('draft', 'reserved')"/>
+                                    <field name="description" readonly="state not in ('draft', 'reserved')"/>
                                     <field name="uom_qty" string="Qty"
-                                           force_save="1"/>
+                                           force_save="1" readonly="state not in ('draft', 'reserved')"/>
                                     <field name="uom_id"
                                            string="Unit of Measure"
-                                           options="{'no_open': True,'no_create': True}"/>
-                                    <field name="price_unit"/>
+                                           options="{'no_open': True,'no_create': True}" readonly="state not in ('draft', 'reserved')"/>
+                                    <field name="price_unit" readonly="state not in ('draft', 'reserved')"/>
                                     <field name="tax_ids"
                                            options="{'no_create': True}"
-                                           widget="many2many_tags"/>
+                                           widget="many2many_tags" readonly="state not in ('draft', 'reserved')"/>
                                     <field name="price_subtotal"
-                                           widget="monetary"/>
+                                           widget="monetary" readonly="state not in ('draft', 'reserved')"/>
                                     <field groups="account.group_account_manager"
                                            name="price_total"
-                                           widget="monetary"/>
+                                           widget="monetary" readonly="state not in ('draft', 'reserved')"/>
                                 </list>
                             </field>
                             <group colspan="2"
@@ -262,22 +263,22 @@
                                 <list editable="bottom">
                                     <field name="service_id" string="Product"
                                            required="1"   domain="[('is_servicetype', '=', True)]"
-                                           options="{'no_open': True,'no_create': True}"/>
-                                    <field name="description"/>
+                                           options="{'no_open': True,'no_create': True}" readonly="state not in ('draft', 'reserved')"/>
+                                    <field name="description" readonly="state not in ('draft', 'reserved')"/>
                                     <field name="uom_qty" string="Qty"
-                                           force_save="1"/>
+                                           force_save="1" readonly="state not in ('draft', 'reserved')"/>
                                     <field name="uom_id"
                                            string="Unit of Measure"
-                                           options="{'no_open': True,'no_create': True}"/>
-                                    <field name="price_unit"/>
+                                           options="{'no_open': True,'no_create': True}" readonly="state not in ('draft', 'reserved')"/>
+                                    <field name="price_unit" readonly="state not in ('draft', 'reserved')"/>
                                     <field name="tax_ids"
                                            options="{'no_create': True}"
-                                           widget="many2many_tags"/>
+                                           widget="many2many_tags" readonly="state not in ('draft', 'reserved')"/>
                                     <field name="price_subtotal"
-                                           widget="monetary"/>
+                                           widget="monetary" readonly="state not in ('draft', 'reserved')"/>
                                     <field groups="account.group_account_manager"
                                            name="price_total"
-                                           widget="monetary"/>
+                                           widget="monetary" readonly="state not in ('draft', 'reserved')"/>
                                 </list>
                             </field>
                             <group colspan="2"
