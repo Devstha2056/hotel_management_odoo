@@ -247,6 +247,7 @@ class RoomBooking(models.Model):
     amount_untaxed_service = fields.Monetary(
         string="Service Untaxed", help="Untaxed Amount for Service",
         compute='_compute_amount_untaxed', tracking=5)
+
     amount_untaxed_fleet = fields.Monetary(string="Amount Untaxed",
                                            help="Untaxed amount for Fleet",
                                            compute='_compute_amount_untaxed',
