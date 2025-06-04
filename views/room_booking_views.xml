@@ -182,22 +182,24 @@
                                 <field name="amount_untaxed_food"
                                        sum="Untaxed amount for Food"
                                        widget="monetary"
-                                       invisible="need_food == False"/>
+                                       />
                                 <field name="amount_untaxed_service"
                                        sum="Untaxed amount for Service"
                                        widget="monetary"
-                                       invisible="need_service == False"/>
+                                       />
                                 <field name="amount_untaxed_fleet"
                                        sum="Untaxed amount for Fleet"
                                        widget="monetary"
-                                       invisible="need_fleet == False"/>
-                                <field name="amount_untaxed_event"
-                                       sum="Untaxed amount for Event"
-                                       widget="monetary"
-                                       invisible="need_event == False"/>
+                                       />
+<!--                                <field name="amount_untaxed_event"-->
+<!--                                       sum="Untaxed amount for Event"-->
+<!--                                       widget="monetary"-->
+<!--                                       />-->
                                 <field name="amount_untaxed"
                                        sum="Untaxed amount" widget="monetary"/>
+
                                 <field name="amount_tax" widget="monetary"/>
+
                                 <label for="amount_total"/>
                                 <field name="amount_total" nolabel="1"
                                        sum="Total amount" widget="monetary"/>
@@ -287,7 +289,7 @@
                                        widget="monetary"/>
                                 <field name="amount_taxed_service"
                                        widget="monetary"/>
-                                <label for="amount_total_food"/>
+                                <label for="amount_total_service"/>
 
                                 <field name="amount_total_service" nolabel="1"
                                        sum="Total amount" widget="monetary"/>

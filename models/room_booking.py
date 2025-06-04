@@ -232,20 +232,20 @@ class RoomBooking(models.Model):
                                    help="The total Amount including Tax",
                                    compute='_compute_amount_untaxed',
                                    tracking=4)
-    amount_untaxed_room = fields.Monetary(string="Room Untaxed",
+    amount_untaxed_room = fields.Monetary(string="Room Taxable",
                                           help="Untaxed Amount for Room",
                                           compute='_compute_amount_untaxed',
                                           tracking=5)
-    amount_untaxed_food = fields.Monetary(string="Food Untaxed",
+    amount_untaxed_food = fields.Monetary(string="Food Taxable",
                                           help="Untaxed Amount for Food",
                                           compute='_compute_amount_untaxed',
                                           tracking=5)
-    amount_untaxed_event = fields.Monetary(string="Event Untaxed",
+    amount_untaxed_event = fields.Monetary(string="Event Taxable",
                                            help="Untaxed Amount for Event",
                                            compute='_compute_amount_untaxed',
                                            tracking=5)
     amount_untaxed_service = fields.Monetary(
-        string="Service Untaxed", help="Untaxed Amount for Service",
+        string="Service Taxable", help="Taxable Amount for Service",
         compute='_compute_amount_untaxed', tracking=5)
 
     amount_untaxed_fleet = fields.Monetary(string="Amount Untaxed",
@@ -280,6 +280,7 @@ class RoomBooking(models.Model):
                                          compute='_compute_amount_untaxed',
                                          help="This is the Total Amount for "
                                               "Event", tracking=5)
+
     amount_total_service = fields.Monetary(string="Total Amount for Service",
                                            compute='_compute_amount_untaxed',
                                            help="This is the Total Amount for "
