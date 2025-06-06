@@ -10,4 +10,5 @@ class AccountMove(models.Model):
         string="Booking Reference",
         help="Choose the Booking Reference"
     )
+    booking_reference = fields.Char(string='Booking Reference', readonly=True)
 

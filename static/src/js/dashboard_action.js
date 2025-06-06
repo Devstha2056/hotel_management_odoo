@@ -55,7 +55,7 @@ async fetch_data() {
             self.food_items=result['food_items']
             self.food_order=result['food_order']
 
-            if(result['currency_position']=='before'){
+            if(result['currency_position']=='after'){
                 self.total_revenue=result['currency_symbol']+" "+result['total_revenue']
                 self.today_revenue=result['currency_symbol']+" "+result['today_revenue']
                 self.month_revenue=result['currency_symbol']+" "+result['month_revenue']
@@ -221,7 +221,7 @@ async fetch_data() {
         this.action.doAction({
             name: _t("Total Reservations"),
             type:'ir.actions.act_window',
-            res_model:'room.booking',
+            res_model:'room.booking.line',
             view_mode:'list,form',
             view_type:'form',
             views:[[false,'list'],[false,'form']],

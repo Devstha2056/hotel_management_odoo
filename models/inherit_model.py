@@ -51,6 +51,13 @@ class SaleOrder(models.Model):
                                  help="Indicates the Room",readonly=True,
                                  ondelete="cascade")
 
+    def _prepare_invoice(self):
+        invoice_vals = super()._prepare_invoice()
+        invoice_vals.update({
+            'booking_reference': self.booking_reference,
+        })
+        return invoice_vals
+
 class ResPartner(models.Model):
     _inherit = 'res.partner'
 

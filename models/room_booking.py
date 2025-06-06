@@ -1,10 +1,11 @@
-from datetime import datetime,timedelta,date
+from datetime import datetime, timedelta, date
 from odoo import api, fields, models, _
-from odoo.exceptions import ValidationError,UserError
+from odoo.exceptions import ValidationError, UserError
 from odoo.tools.safe_eval import pytz
 import logging
 
 _logger = logging.getLogger(__name__)
+
 
 class RoomBooking(models.Model):
     """Model that handles the hotel room booking and all operations related
@@ -16,8 +17,6 @@ class RoomBooking(models.Model):
     name = fields.Char(string="Folio Number", readonly=True, index=True,
                        default="New", help="Name of Folio")
     issuing_auth = fields.Char('Sale Person', default=lambda self: self.env.user.name)
-
-
 
     quotation_state = fields.Selection(
         related='sale_order_id.state',
@@ -36,24 +35,27 @@ class RoomBooking(models.Model):
                                  domain="[('type', '!=', 'private'),"
                                         " ('company_id', 'in', "
                                         "(False, company_id))]")
-    #customaddons
-    meal_plan_ids=fields.Many2one(related='room_line_ids.meal_plan_ids',string="Meal Plan",ondelate='cascade')
+    # customaddons
+    meal_plan_ids = fields.Many2one(related='room_line_ids.meal_plan_ids', string="Meal Plan", ondelate='cascade')
 
-    email_id = fields.Char(related='partner_id.email', string='Email', readonly=False,help="Email of Customer")
+    email_id = fields.Char(related='partner_id.email', string='Email', readonly=False, help="Email of Customer")
 
-    phone_id = fields.Char(related='partner_id.phone', string='Mobile', readonly=False, required=True,help="Phone Number of Customer")
-    street_id = fields.Char(related='partner_id.street', string='Street', readonly=False, required=False,help="Street of Customer")
-    city_id = fields.Char(related='partner_id.city', string='City', readonly=False, required=False,help="City of Customer")
+    phone_id = fields.Char(related='partner_id.phone', string='Mobile', readonly=False, required=True,
+                           help="Phone Number of Customer")
+    street_id = fields.Char(related='partner_id.street', string='Street', readonly=False, required=False,
+                            help="Street of Customer")
+    city_id = fields.Char(related='partner_id.city', string='City', readonly=False, required=False,
+                          help="City of Customer")
     country_id = fields.Many2one('res.country', related='partner_id.country_id', help="PAN no. of Company")
     pan_id = fields.Char(related='partner_id.vat', string='PAN', readonly=False, required=False,
                          help="PAN no. of Company")
     # country_id = fields.Char(related='partner_id.country', string='Country', readonly=False, required=False,help="Country Name OF Customer")
 
-    adults=fields.Integer(string='Adults',help="Number of Adults")
+    adults = fields.Integer(string='Adults', help="Number of Adults")
 
-    child=fields.Integer(string='Child',help="Number of Children")
+    child = fields.Integer(string='Child', help="Number of Children")
 
-    note=fields.Text(string='Note',help="Write some of Note")
+    note = fields.Text(string='Note', help="Write some of Note")
 
     via = fields.Selection([
         ('fit', "FIT"),
@@ -62,16 +64,15 @@ class RoomBooking(models.Model):
 
     ], string='Via', required=True, default='fit')
 
-    agent_id = fields.Many2one('res.partner',string='Agent' ,readonly=True,domain="[('isagenttype','=',True)]")
+    agent_id = fields.Many2one('res.partner', string='Agent', readonly=True, domain="[('isagenttype','=',True)]")
     company_agent_id = fields.Many2one('res.partner', string='Company Agent', readonly=True,
                                        domain="[('isagenttype','=',True)]")
 
-
     source = fields.Selection([
-        ('internal_reservation',"Internal Reservation"),
-        ('through_web','Through web'),
-        ('through_gds','Through GDS'),
-    ],string='Source')
+        ('internal_reservation', "Internal Reservation"),
+        ('through_web', 'Through web'),
+        ('through_gds', 'Through GDS'),
+    ], string='Source')
 
     date_order = fields.Datetime(string="Order Date",
                                  required=True, copy=False,
@@ -126,10 +127,9 @@ class RoomBooking(models.Model):
                                        copy=False)
 
     sale_order_id = fields.Many2one("sale.order",
-                                       string="Sale Order",
-                                       help="Indicates the Sale",
-                                       copy=False)
-
+                                    string="Sale Order",
+                                    help="Indicates the Sale",
+                                    copy=False)
 
     duration_visible = fields.Float(string="Duration",
                                     help="A dummy field for Duration")
@@ -165,7 +165,7 @@ class RoomBooking(models.Model):
                                     help="Hotel room reservation detail.")
 
     active = fields.Boolean(string='Active', default=True)
-# New field added
+    # New field added
     room_checkin_date = fields.Datetime(
         string="Check-In", compute="_compute_checkin_checkout_dates", store=True
     )
@@ -174,8 +174,8 @@ class RoomBooking(models.Model):
     )
 
     card_name_line_ids = fields.One2many("hotel.id.details.line",
-                                    "booking_id", string="ID Details",
-                                    help="Hotel room reservation ID detail.")
+                                         "booking_id", string="ID Details",
+                                         help="Hotel room reservation ID detail.")
     food_order_line_ids = fields.One2many("food.booking.line",
                                           "room_booking_id",
                                           string='Food',
@@ -297,6 +297,7 @@ class RoomBooking(models.Model):
             checkouts = booking.room_line_ids.filtered(lambda l: l.checkout_date).mapped('checkout_date')
             booking.room_checkin_date = min(checkins) if checkins else False
             booking.room_checkout_date = max(checkouts) if checkouts else False
+
     # @api.model
     # def create(self, vals_list):
     #     for vals in vals_list:
@@ -396,7 +397,7 @@ class RoomBooking(models.Model):
                             if rec['product_type'] == 'room':
                                 if booking_dict['name'] == rec['name'] and \
                                         booking_dict['price_unit'] == rec[
-                                    'price_unit'] and booking_dict['quantity']\
+                                    'price_unit'] and booking_dict['quantity'] \
                                         != rec['quantity']:
                                     booking_list.append(
                                         {'name': room.room_id.name,
@@ -646,12 +647,11 @@ class RoomBooking(models.Model):
 
     def action_done(self):
 
-
         for rec in self:
             if rec.quotation_state != 'sale':
                 raise ValidationError(_('Your Payment is Due, please solve it first.'))
 
-        _logger.info(f'=======aaaaaaaaaaalllllllllllllllllllll============{ self.name}==================')
+        _logger.info(f'=======aaaaaaaaaaalllllllllllllllllllll============{self.name}==================')
         self.write({"state": "done", "is_checkin": False})
 
         if self.room_line_ids:
@@ -665,7 +665,6 @@ class RoomBooking(models.Model):
                 }
             }
 
-
     def action_checkout(self):
         """Button action_heck_out function"""
         self.write({"state": "check_out"})
@@ -675,7 +674,6 @@ class RoomBooking(models.Model):
                 'is_room_avail': True
             })
             room.write({'checkout_date': datetime.today()})
-
 
     def action_invoice(self):
         """Method for creating invoice"""
@@ -724,7 +722,7 @@ class RoomBooking(models.Model):
         if booking_list:
             sale_order = self.env['sale.order'].create({
                 'partner_id': self.partner_id.id,
-                'booking_reference':self.name,
+                'booking_reference': self.name,
                 'date_order': fields.Datetime.now(),
                 'origin': self.name,
             })
@@ -761,7 +759,6 @@ class RoomBooking(models.Model):
             'context': "{'create': False}"
         }
 
-
     def action_checkin(self):
         """
         Check in the booking by validating room and ID details,
@@ -783,8 +780,11 @@ class RoomBooking(models.Model):
         for room in self.room_line_ids:
             room.room_id.write({'status': 'occupied'})
             room.room_id.is_room_avail = False
+            room.write({'checkin_date': datetime.today()})
 
         self.write({"state": "check_in"})
+
+
 
         return {
             'type': 'ir.actions.client',
@@ -796,7 +796,6 @@ class RoomBooking(models.Model):
                 'next': {'type': 'ir.actions.act_window_close'},
             }
         }
-
 
     def unlink(self):
         if not self.env.user.has_group('base.group_no_one'):
@@ -814,8 +813,8 @@ class RoomBooking(models.Model):
         check_in = self.env['room.booking'].search_count(
             [('state', '=', 'check_in')])
         available_room = self.env['product.template'].search(
-            [('status', '=', 'available'),('is_roomtype', '=', True)])
-        reservation = self.env['room.booking'].search_count(
+            [('status', '=', 'available'), ('is_roomtype', '=', True)])
+        reservation = self.env['room.booking.line'].search_count(
             [('state', '=', 'reserved')])
         check_outs = self.env['room.booking'].search([('state', '=', 'check_out')])
         check_out = 0
@@ -871,23 +870,23 @@ class RoomBooking(models.Model):
         ], limit=1)
         for rec in self.env['account.move'].search(
                 [('payment_state', '=', 'paid')]):
-            if rec.ref:
-                if 'BOOKING' in rec.ref:
-                    total_revenue += rec.amount_total
-                    if rec.date == fields.Date.today():
-                        today_revenue += rec.amount_total
+            if rec.booking_reference:
 
-                    if rec.date.month == current_month and rec.date.year == current_year:
-                        month_revenue += rec.amount_total
+                total_revenue += rec.amount_total
+                if rec.date == fields.Date.today():
+                    today_revenue += rec.amount_total
 
-                    if fiscal_year and fiscal_year.date_from <= rec.date < fiscal_year.date_to:
-                        year_revenue += rec.amount_total
+                if rec.date.month == current_month and rec.date.year == current_year:
+                    month_revenue += rec.amount_total
+
+                if fiscal_year and fiscal_year.date_from <= rec.date < fiscal_year.date_to:
+                    year_revenue += rec.amount_total
         _logger.info(f'============={year_revenue}==============================')
+
         for rec in self.env['account.move'].search(
                 [('payment_state', '=', 'not_paid')]):
-            if rec.ref:
-                if 'BOOKING' in rec.ref:
-                    pending_payment += rec.amount_total
+            if rec.booking_reference:
+                pending_payment += rec.amount_total
         return {
             'total_room': total_room,
             'available_room': len(available_room),
