@@ -12,11 +12,11 @@
                 <field name="uom_qty"/>
                 <field name="uom_id" optional="show"/>
                 <field name="phone_id" optional="show"/>
-                <field name="price_unit" optional="show"/>
+                <field name="price_unit" optional="show" sum="Total"/>
                 <field name="discount" optional="show"/>
-                <field name="price_subtotal" optional="hide"/>
-                <field name="price_tax" optional="hide"/>
-                <field name="price_total" optional="show"/>
+                <field name="price_subtotal" optional="hide" sum="Total"/>
+                <field name="price_tax" optional="hide" sum="Total"/>
+                <field name="price_total" optional="show" sum="Total"/>
                 <field name="booking_ref" optional="show"/>
                 <field name="state"/>
             </list>
