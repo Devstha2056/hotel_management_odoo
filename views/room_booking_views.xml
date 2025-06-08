@@ -119,10 +119,10 @@
                     </group>
                     <notebook>
                         <page name="folio" string="Folio">
-                            <field name="room_line_ids" mode="list,form" colspan="4"
+                            <field name="room_line_ids" mode="list,form" delete="0" colspan="4"
                                    string="Room Lines"
                                    context="{'default_checkin_date':checkin_date, 'default_checkout_date':checkout_date, 'default_uom_qty':duration}">
-                                <list>
+                                <list delete="0">
                                     <field name="room_id" string="Room" widget="product_configurator"
                                            required="1"
                                            options="{'no_open': True, 'no_create': True}" readonly="state == 'done'"
@@ -132,6 +132,9 @@
                                            invisible="1"/>
                                     <field name="checkout_date" readonly="state == 'done'"/>
                                     <field name="discount"/>
+
+
+
                                     <field name="uom_qty" string="Duration"
                                            readonly="1" force_save="1"/>
                                     <field name="uom_id"
@@ -150,6 +153,7 @@
                                     <field groups="account.group_account_manager"
                                            name="price_total" widget="monetary"
                                            readonly="booking_line_visible == True"/>
+                                    <button name="unlink" string="Delete" type="object" invisible="state in ('check_in','check_out','cancel','done')"/>
                                 </list>
                                 <form>
                                     <group>
@@ -172,6 +176,7 @@
                                         <field name="price_total" widget="monetary"
                                                groups="account.group_account_manager"/>
                                     </group>
+                                    <chatter/>
                                 </form>
                             </field>
                             <group colspan="2"
@@ -373,7 +378,9 @@
                         <!--                            <div class="oe_clear"/>-->
                         <!--                        </page>-->
                     </notebook>
+
                 </sheet>
+                <chatter/>
             </form>
         </field>
     </record>

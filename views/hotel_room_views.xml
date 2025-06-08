@@ -14,6 +14,44 @@
         </field>
     </record>
 
+    <record id="discount_sale_view_form" model="ir.ui.view">
+        <field name="name">discount.sale.order.form</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_order_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//group[@name='note_group']" position="replace">
+                <group name="note_group" col="6">
+                    <group colspan="4">
+                        <field name="note" nolabel="1"
+                               placeholder="Terms and conditions..."/>
+                    </group>
+                    <group class="oe_subtotal_footer oe_right" colspan="2"
+                           name="sale_total">
+                        <field name="amount_subtotal" widget='monetary'
+                               options="{'currency_field': 'currency_id'}"/>
+                        <field name="amount_untaxed" widget='monetary'
+                               options="{'currency_field': 'currency_id'}"/>
+
+                        <field name="amount_discount" widget='monetary'
+                               options="{'currency_field': 'currency_id'}"/>
+                        <field name="amount_tax" widget='monetary'
+                               options="{'currency_field': 'currency_id'}"/>
+
+                        <field name="amount_total"
+                               class="oe_subtotal_footer_separator"
+                               widget='monetary'
+                               options="{'currency_field': 'currency_id'}"/>
+
+                    </group>
+
+                    <div class="oe_clear"/>
+                </group>
+
+            </xpath>
+
+        </field>
+    </record>
+
     <record id="view_partner_form_agent_type" model="ir.ui.view">
         <field name="name">res.partner.form.inherit.agent.type</field>
         <field name="model">res.partner</field>
@@ -21,7 +59,7 @@
         <field name="arch" type="xml">
             <xpath expr="//field[@name='company_type']" position="after">
                 <field name="isagenttype" string="Agent"/>
-                   <label for="isagenttype">
+                <label for="isagenttype">
                 </label>
             </xpath>
         </field>
@@ -97,7 +135,7 @@
                         <label for="name" class="oe_edit_only"/>
                         <h1>
                             <field name="name"/>
-                             <field name="active" invisible="1"/>
+                            <field name="active" invisible="1"/>
                         </h1>
                     </div>
                     <group>
