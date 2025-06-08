@@ -31,7 +31,6 @@
         'views/hotel_room_views.xml',
         'views/lunch_product_views.xml',
         'views/fleet_vehicle_model_views.xml',
-
         'views/maintenance_team_views.xml',
         'views/maintenance_request_views.xml',
         'views/cleaning_team_views.xml',

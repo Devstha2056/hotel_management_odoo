@@ -154,25 +154,3 @@ class FoodBookingLine(models.Model):
         if not self.env.user.has_group('base.group_no_one'):
             raise UserError("You are not allowed to delete Restaurant Orders.")
         return super(FoodBookingLine, self).unlink()
-
-
-# @api.depends('uom_qty', 'price_unit', 'tax_ids', )
-    # def _compute_price_subtotal(self):
-    #     """Compute the amounts of the room booking line with discount."""
-    #     for line in self:
-    #         base_line = line.env['account.tax']._prepare_base_line_for_taxes_computation(
-    #             line,
-    #             **{
-    #                 'price_unit': line.price_unit,
-    #                 'quantity': line.uom_qty,
-    #                 'currency_id': line.currency_id,
-    #                 'partner': line.booking_id.partner_id,
-    #                 'tax_ids': line.tax_ids,
-    #             }
-    #         )
-    #
-    #         line.env['account.tax']._add_tax_details_in_base_line(base_line, line.env.company)
-    #
-    #         line.price_subtotal = base_line['tax_details']['raw_total_excluded_currency']
-    #         line.price_total = base_line['tax_details']['raw_total_included_currency']
-    #         line.price_tax = line.price_total - line.price_subtotal

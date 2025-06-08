@@ -298,12 +298,6 @@ class RoomBooking(models.Model):
             booking.room_checkin_date = min(checkins) if checkins else False
             booking.room_checkout_date = max(checkouts) if checkouts else False
 
-    # @api.model
-    # def create(self, vals_list):
-    #     for vals in vals_list:
-    #         if vals.get('name', 'New') == 'New':
-    #             vals['name'] = self.env['ir.sequence'].next_by_code('room.booking') or 'New'
-    #     return super(RoomBooking, self).create(vals_list)
     @api.model
     def create(self, vals):
         if not isinstance(vals, dict):
