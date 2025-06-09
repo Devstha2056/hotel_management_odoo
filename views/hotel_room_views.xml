@@ -51,6 +51,7 @@
 
         </field>
     </record>
+    
 
     <record id="view_partner_form_agent_type" model="ir.ui.view">
         <field name="name">res.partner.form.inherit.agent.type</field>
