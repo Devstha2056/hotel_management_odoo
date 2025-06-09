@@ -23,6 +23,11 @@
               sequence="12"
               parent="room_booking_menu"
               action="room_booking_action_checkin"/>
+    <menuitem id="room_booking_menu_reserved"
+              name="Reserved Room"
+              sequence="13"
+              parent="room_booking_menu"
+              action="room_booking_action_reserved"/>
 
     <!--    Configuration menu-->
     <menuitem id="hotel_config_menu"

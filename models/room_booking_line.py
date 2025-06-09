@@ -11,6 +11,7 @@ class RoomBookingLine(models.Model):
     _name = "room.booking.line"
     _description = "Hotel Folio Line"
     _rec_name = 'room_id'
+    _order = 'booking_ref desc'
 
     @tools.ormcache()
     def _set_default_uom_id(self):
