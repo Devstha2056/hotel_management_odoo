@@ -10,7 +10,7 @@ class HotelRestaurantKitchenOrderTickets(models.Model):
     _description = "Includes Hotel Restaurant Order"
     _inherit = ['mail.thread', 'mail.activity.mixin']
     _rec_name = 'order_no'
-
+    _order = 'order_no desc'
 
     order_no = fields.Char('KOT Number', readonly=True)
 
@@ -64,6 +64,7 @@ class HotelRestaurantBarOrderTickets(models.Model):
     _description = "Includes Hotel Restaurant Order"
     _inherit = ['mail.thread', 'mail.activity.mixin']
     _rec_name='order_no'
+    _order = 'order_no desc'
 
 
     order_no = fields.Char('BOT Number', readonly=True)

@@ -1,6 +1,6 @@
 from odoo import api, fields, models, tools, _
 from odoo.exceptions import ValidationError,UserError
-
+import odoo.addons.decimal_precision as dp
 class ProductTemplate(models.Model):
     _inherit = 'product.template'
 
@@ -50,6 +50,52 @@ class SaleOrder(models.Model):
     booking_id = fields.Many2one("room.booking", string="Booking",
                                  help="Indicates the Room",readonly=True,
                                  ondelete="cascade")
+
+
+
+    @api.depends('order_line.price_total')
+    def _amount_all(self):
+        """
+        Compute the total amounts of the SO.
+        """
+        for order in self:
+            amount_untaxed = amount_tax = amount_discount = amount_subtotal = 0.0
+            for line in order.order_line:
+
+                amount_untaxed += line.price_subtotal
+                amount_tax += line.price_tax
+                amount_discount += (line.product_uom_qty * line.price_unit * line.discount) / 100
+                amount_subtotal += (line.price_subtotal + amount_discount)
+            order.update({
+                'amount_untaxed': amount_untaxed,
+                'amount_tax': amount_tax,
+                'amount_discount': amount_discount,
+                'amount_subtotal':amount_subtotal,
+                'amount_total': amount_untaxed + amount_tax,
+            })
+
+
+    amount_untaxed = fields.Monetary(string='Taxable Amount', store=True, readonly=True, compute='_amount_all',
+                                     track_visibility='always')
+
+    amount_subtotal = fields.Monetary(string='Total', store=True, readonly=True, compute='_amount_all',
+                                     track_visibility='always')
+
+
+    amount_tax = fields.Monetary(string='Taxes', store=True, readonly=True, compute='_amount_all',
+                                 track_visibility='always')
+
+    amount_total = fields.Monetary(string=' Grand Total', store=True, readonly=True, compute='_amount_all',
+                                   track_visibility='always')
+    amount_discount = fields.Monetary(string='Discount Amount', store=True, readonly=True, compute='_amount_all',
+                                      digits=dp.get_precision('Account'), track_visibility='always')
+
+    def _prepare_invoice(self):
+        invoice_vals = super()._prepare_invoice()
+        invoice_vals.update({
+            'booking_reference': self.booking_reference,
+        })
+        return invoice_vals
 
 class ResPartner(models.Model):
     _inherit = 'res.partner'

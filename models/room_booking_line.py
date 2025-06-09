@@ -11,6 +11,7 @@ class RoomBookingLine(models.Model):
     _name = "room.booking.line"
     _description = "Hotel Folio Line"
     _rec_name = 'room_id'
+    _order = 'booking_ref desc'
 
     @tools.ormcache()
     def _set_default_uom_id(self):
@@ -32,23 +33,23 @@ class RoomBookingLine(models.Model):
     checkin_date = fields.Datetime(string="Check In",
                                    help="You can choose the date,"
                                         " Otherwise sets to current Date",
-                                   required=True)
+                                   required=True,tracking=True)
     checkout_date = fields.Datetime(string="Check Out",
                                     help="You can choose the date,"
                                          " Otherwise sets to current Date",
-                                    required=True)
+                                    required=True,tracking=True)
 
     hotel_id = fields.Many2one('hotel.plan', string='Hotel Plan')
 
-    meal_plan_price = fields.Float(string="Meal Plan Price", compute="_compute_price", store=True)
+    meal_plan_price = fields.Float(string="Meal Plan Price", compute="_compute_price", store=True,tracking=True)
 
-    meal_plan_ids = fields.Many2one(related='hotel_id.meal_plan_id', string="Meal Plan",store=True, readonly=False, required=True)
+    meal_plan_ids = fields.Many2one(related='hotel_id.meal_plan_id', string="Meal Plan",store=True, readonly=False, required=True,tracking=True)
 
-    occupancy_id = fields.Selection(related='hotel_id.occupancy', string='Occupancy',store=True, readonly=False,required=True)
+    occupancy_id = fields.Selection(related='hotel_id.occupancy', string='Occupancy',store=True, readonly=False,required=True,tracking=True)
 
-    categ_id = fields.Many2one('product.category', string='Category', domain="[('isroomtype','=',True)]")
+    categ_id = fields.Many2one('product.category', string='Category', domain="[('isroomtype','=',True)]",tracking=True)
 
-    room_id = fields.Many2one('product.product',string='Room',domain="[('is_roomtype','=',True),('categ_id', '=', categ_id)]")
+    room_id = fields.Many2one('product.product',string='Room',domain="[('is_roomtype','=',True),('categ_id', '=', categ_id)]",tracking=True)
 
     uom_qty = fields.Float(string="Duration", help="The quantity converted into the UoM used by " "the product",
                            readonly=True, compute='_onchange_checkin_date')
@@ -280,4 +281,10 @@ class RoomBookingLine(models.Model):
     def unlink(self):
         if not self.env.user.has_group('base.group_no_one'):
             raise UserError("You are not allowed to delete Restaurant Orders.")
+        for line in self:
+            if line.booking_id:
+                line.booking_id.message_post(
+                    body=f"Room Deleted:{line.room_id.name}"
+                )
         return super(RoomBookingLine, self).unlink()
+
