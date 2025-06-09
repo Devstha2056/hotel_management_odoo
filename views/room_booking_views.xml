@@ -408,8 +408,11 @@
             <list>
                 <field name="name"/>
                 <field name="partner_id"/>
+                <field name="room_checkin_date"/>
+                <field name="room_checkout_date"/>
                 <field name="date_order"/>
                 <field name="state"/>
+
 
             </list>
         </field>
@@ -461,13 +464,15 @@
         </field>
     </record>
 
-      <!--Today checkin action -->
+    <!--Today checkin action -->
     <record id="room_booking_action_checkin" model="ir.actions.act_window">
         <field name="name">Room Booking</field>
         <field name="type">ir.actions.act_window</field>
         <field name="res_model">room.booking</field>
         <field name="view_mode">list,form,calendar,search</field>
-        <field name="domain">[('state', '=', 'reserved'), ('room_checkin_date', '>=', context_today()),('room_checkin_date', '&lt;=', context_today())]</field>
+        <field name="domain">[('state', '=', 'reserved'), ('room_checkin_date', '>=',
+            context_today()),('room_checkin_date', '&lt;=', context_today())]
+        </field>
         <field name="help" type="html">
             <p class="oe_view_nocontent_create">
                 Book your rooms here!
@@ -476,7 +481,7 @@
     </record>
 
 
-          <!--Today reserved action -->
+    <!--Today reserved action -->
     <record id="room_booking_action_reserved" model="ir.actions.act_window">
         <field name="name">Room Booking</field>
         <field name="type">ir.actions.act_window</field>
