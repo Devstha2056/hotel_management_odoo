@@ -806,12 +806,17 @@ class RoomBooking(models.Model):
                                                   is_dst=False)
         context_today = today_utc.astimezone(pytz.timezone(tz_name))
         total_room = self.env['product.template'].search_count([('is_roomtype', '=', True)])
-        check_in = self.env['room.booking'].search_count(
+        check_in = self.env['room.booking.line'].search_count(
             [('state', '=', 'check_in')])
         available_room = self.env['product.template'].search(
             [('status', '=', 'available'), ('is_roomtype', '=', True)])
-        reservation = self.env['room.booking.line'].search_count(
-            [('state', '=', 'reserved')])
+        domain = [
+            ('state', '=', 'reserved'),
+            ('checkin_date', '>=', context_today.date()),
+            ('checkin_date', '<=', context_today.date())
+        ]
+        reservation = self.env['room.booking.line'].search_count(domain)
+        _logger.info(f'===================eeeeeeeeeesdfsdcs===={reservation}===========================================')
         check_outs = self.env['room.booking'].search([('state', '=', 'check_out')])
         check_out = 0
         staff = 0
@@ -885,6 +890,7 @@ class RoomBooking(models.Model):
                 pending_payment += rec.amount_total
         return {
             'total_room': total_room,
+            'context_today': str(context_today),
             'available_room': len(available_room),
             'staff': staff,
             'check_in': check_in,
