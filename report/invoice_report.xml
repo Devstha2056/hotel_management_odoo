@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="report_invoice_bill" model="ir.actions.report">
+        <field name="name">Print Invoice</field>
+        <field name="model">account.move</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">hotel_management_odoo.report_invoice_template</field>
+        <field name="report_file">hotel_management_odoo.report_invoice_template</field>
+    </record>
+
+    <template id="report_invoice_template">
+        <t t-call="web.external_layout">
+            <main>
+                <div class="page" style="padding:10px; height:100%">
+                    <header>
+                        <div class="col-6">
+                            <img t-att-src="'/hotel_management_odoo/static/description/icon.png'"
+                                 style="height: 120px;"/>
+                        </div>
+                        <div style="margin: 20px 0 100px 0;">
+                            <h1>
+                                <b>Hotel Niwas</b>
+                            </h1>
+                            <h5>Lakeside, Pokhara, Nepal</h5>
+                        </div>
+                    </header>
+                    <div class="oe_structure"/>
+                    <h3 style=" text-align: center;">Invoice</h3>
+                    <br/>
+                    <div>
+                        <t t-foreach="docs" t-as="doc">
+                            <table class="table"
+                                   style="border: 1px solid black; border-collapse: collapse; width: 50%; padding-right:10px;">
+                                <tr>
+                                    <td>
+                                        <p>
+                                            <b>Customer Invoice:</b>
+                                            <t t-esc="doc.name"/>
+                                        </p>
+
+                                        <p>
+                                            <b>Customer Name:</b>
+                                            <t t-esc="doc.partner_id.display_name"/>
+                                        </p>
+                                        <p>
+                                            <b>Invoice Date:</b>
+                                            <t t-esc="doc.invoice_date"/>
+                                        </p>
+                                        <p>
+                                            <b>Booking Reference:</b>
+                                            <t t-esc="doc.booking_reference"/>
+                                        </p>
+                                    </td>
+                                </tr>
+                            </table>
+                        </t>
+                    </div>
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Product</th>
+                                <th>Quantity</th>
+                                <th>Unit Price</th>
+                                <th>Discount %</th>
+                                <th>Taxes %</th>
+                                <th>Untaxed Amount</th>
+                                <th>Total Amount</th>
+                            </tr>
+                        </thead>
+                        <tr t-foreach="docs.invoice_line_ids" t-as="line">
+                            <td>
+                                <t t-esc="line.product_id.display_name"/>
+                            </td>
+                            <td>
+                                <t t-esc="line.quantity"/>
+                            </td>
+                            <td>
+                                <t t-esc="line.price_unit"/>
+                            </td>
+                            <td>
+                                <t t-esc="line.discount"/>
+                            </td>
+                            <td>
+                                <t t-esc="tax_ids"/>
+                            </td>
+                            <td>
+                               <t t-esc="line.price_total"/>
+                            </td>
+                            <td>
+                                <t t-esc="line.price_subtotal"/>
+                            </td>
+
+                        </tr>
+                    </table>
+
+                    <!--                    <t t-set="total_subtotal" t-value="0.0"/>-->
+                    <!--                    <t t-set="total_discount" t-value="0.0"/>-->
+                    <!--                    <t t-set="total_tax" t-value="0.0"/>-->
+                    <!--                    <t t-set="total_total" t-value="0.0"/>-->
+
+                    <!--                    <t t-foreach="doc.order_line" t-as="line">-->
+                    <!--                        <t t-set="unit_price" t-value="line.price_unit or 0.0"/>-->
+                    <!--                        <t t-set="qty" t-value="line.product_uom_qty or 0.0"/>-->
+                    <!--                        <t t-set="discount" t-value="line.discount or 0.0"/>-->
+                    <!--                        <t t-set="subtotal" t-value="line.price_subtotal or 0.0"/>-->
+                    <!--                        <t t-set="tax" t-value="line.price_tax or 0.0"/>-->
+                    <!--                        <t t-set="total" t-value="line.price_total or 0.0"/>-->
+
+                    <!--                        <t t-set="total_subtotal" t-value="total_subtotal + subtotal"/>-->
+                    <!--                        <t t-set="total_discount" t-value="total_discount + ((unit_price * qty * discount) / 100.0)"/>-->
+                    <!--                        <t t-set="total_tax" t-value="total_tax + tax"/>-->
+                    <!--                        <t t-set="total_total" t-value="total_total + total"/>-->
+                    <!--                    </t>-->
+
+<!--                       <div style=" text-align:left; ">-->
+<!--                        <table class="table" style=" width :35%%; float: right;">-->
+<!--                            <tr>-->
+<!--                                <p>-->
+<!--                                    <td>-->
+<!--                                        <strong>Sub Total:</strong>-->
+<!--                                    </td>-->
+<!--                                    <td>-->
+<!--                                        <span>-->
+<!--                                            <t t-esc="total_subtotal"/>-->
+<!--                                        </span>-->
+<!--                                    </td>-->
+<!--                                </p>-->
+<!--                            </tr>-->
+<!--                            <tr>-->
+<!--                                <p>-->
+<!--                                    <td>-->
+<!--                                        <strong>Discount:</strong>-->
+<!--                                    </td>-->
+<!--                                <span>-->
+<!--                                    <td>-->
+<!--                                    <t t-esc="total_discount"/>-->
+<!--                                    </td>-->
+<!--                                </span>-->
+<!--                            </p>-->
+<!--                        </tr>-->
+<!--                    <tr>-->
+<!--                        <p>-->
+<!--                            <td><strong>Taxable Amount:</strong></td>-->
+<!--                           <td> <span>-->
+<!--                                <t t-esc="total_subtotal"/>-->
+<!--                            </span></td>-->
+<!--                        </p>-->
+<!--                    </tr>-->
+<!--                    <tr>-->
+<!--                        <p>-->
+<!--                            <td><strong>VAT (13%):</strong></td>-->
+<!--                           <td> <span>-->
+<!--                                <t t-esc="total_tax"/>-->
+<!--                            </span></td>-->
+<!--                        </p>-->
+<!--                    </tr>-->
+<!--                    <tr>-->
+<!--                        <p>-->
+<!--                           <td> <strong>-->
+<!--                                <u>GRAND TOTAL:</u>-->
+<!--                            </strong></td>-->
+<!--                           <td> <span>-->
+<!--                                <t t-esc="total_total"/>-->
+<!--                            </span></td>-->
+<!--                        </p>-->
+<!--                    </tr>-->
+<!--                </table>-->
+<!--            </div>-->
+
+            <footer style="margin-top: 10px;">
+                <strong>Remarks:</strong>
+            </footer>
+
+                </div>
+            </main>
+        </t>
+    </template>
+
+
+</odoo>
+
