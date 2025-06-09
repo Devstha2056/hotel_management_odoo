@@ -19,7 +19,7 @@
               action="room_booking_action"/>
 
     <menuitem id="room_booking_menu_checkin"
-              name="Today's CheckIn"
+              name="Today's Arrival"
               sequence="12"
               parent="room_booking_menu"
               action="room_booking_action_checkin"/>
