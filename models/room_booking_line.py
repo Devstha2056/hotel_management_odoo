@@ -1,4 +1,3 @@
-
 from odoo import api, fields, models, tools, _
 from odoo.exceptions import ValidationError,UserError
 from datetime import datetime,time,timedelta,date
@@ -136,19 +135,7 @@ class RoomBookingLine(models.Model):
                 logger.info(f'===========aaaaaaaaa=={line.price_unit}==========')
                 line.tax_ids = line.room_id.taxes_id
 
-    @api.onchange("checkin_date", "checkout_date")
-    def _onchange_checkin_date(self):
-        for record in self:
-            if record.checkin_date and record.checkout_date:
-                if record.checkout_date < record.checkin_date:
-                    # raise ValidationError(
-                    #     _("Checkout must be greater or equal to check-in date"))
-                  pass
-                diffdate = record.checkout_date - record.checkin_date
-                qty = diffdate.days
-                if diffdate.total_seconds() > 0:
-                    qty += 1
-                record.uom_qty = qty
+
 
     @api.onchange("uom_qty")
     def _onchange_uom_qty(self):
@@ -277,6 +264,19 @@ class RoomBookingLine(models.Model):
                 local_dt = tz.localize(datetime.combine(rec.checkout_date.date(), time(12, 0)))
                 utc_dt = local_dt.astimezone(pytz.utc)
                 rec.checkout_date = utc_dt.replace(tzinfo=None)
+
+    @api.onchange("checkin_date", "checkout_date")
+    def _onchange_checkin_date(self):
+        for record in self:
+            if record.checkin_date and record.checkout_date:
+                if record.checkout_date < record.checkin_date:
+                    raise ValidationError(
+                        _("Checkout must be greater or equal to check-in date"))
+                diffdate = record.checkout_date - record.checkin_date
+                qty = diffdate.days
+                if qty < 1:
+                    qty = 1
+                record.uom_qty = qty
 
     def unlink(self):
         if not self.env.user.has_group('base.group_no_one'):

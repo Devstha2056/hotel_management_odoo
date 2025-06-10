@@ -1,7 +1,7 @@
-
 from odoo import fields, models,api
-
 import odoo.addons.decimal_precision as dp
+
+
 class AccountMove(models.Model):
     _inherit = "account.move"
 

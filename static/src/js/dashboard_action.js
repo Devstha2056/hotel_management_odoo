@@ -208,7 +208,7 @@ async fetch_data() {
             view_mode:'list,form',
             view_type:'form',
             views:[[false,'list'],[false,'form']],
-            domain: [['status', '=', 'available'],['is_roomtype', '=', true]],
+            domain: [['status', '=', 'available'],['is_roomtype', '=', true],],
             target:'current'
         },options)
     }
