@@ -98,7 +98,7 @@ async fetch_data() {
         this.action.doAction({
             name: _t("Check-In"),
             type:'ir.actions.act_window',
-            res_model:'room.booking',
+            res_model:'room.booking.line',
             view_mode:'list,form',
             view_type:'form',
             views:[[false,'list'],[false,'form']],
@@ -225,7 +225,7 @@ async fetch_data() {
             view_mode:'list,form',
             view_type:'form',
             views:[[false,'list'],[false,'form']],
-            domain: [['state', '=', 'reserved']],
+            domain: [['state', '=', 'reserved'], ['checkin_date', '>=', formattedDate],['checkin_date', '<=', formattedDate]],
             target:'current'
         },options)
     }
