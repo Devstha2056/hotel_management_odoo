@@ -145,8 +145,8 @@ class RoomBookingLine(models.Model):
                         _("Checkout must be greater or equal to check-in date"))
                 diffdate = record.checkout_date - record.checkin_date
                 qty = diffdate.days
-                if qty < 1:
-                    qty = 1
+                if diffdate.total_seconds() > 0:
+                    qty += 1
                 record.uom_qty = qty
 
     @api.onchange("uom_qty")
