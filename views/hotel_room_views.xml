@@ -111,12 +111,10 @@
         <field name="arch" type="xml">
             <!-- Inserting after the general_information page -->
             <xpath expr="//field[@name='categ_id']" position="after">
-
-                <field name="floor_id" options="{'no_create': True}" invisible="is_foodtype == True"/>
-                <field name="amenity_id_group" options="{'no_create': True}" invisible="is_foodtype == True"/>
-                <field name="product_nature" options="{'no_create': True}" invisible="is_roomtype == True"/>
-
-
+                <field name="default_code" string="Room Number" required="1" invisible="not is_roomtype"/>
+                <field name="floor_id" options="{'no_create': True}" invisible="is_foodtype"/>
+                <field name="amenity_id_group" options="{'no_create': True}" invisible="is_foodtype"/>
+                <field name="product_nature" options="{'no_create': True}" invisible="is_roomtype"/>
             </xpath>
 
             <xpath expr="//field[@name='purchase_ok']" position="before">

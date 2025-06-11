@@ -2,10 +2,14 @@
 <!--Dashboard template-->
 <template>
     <t t-name="CustomDashBoard">
-        <div class="oh_dashboards"
-             style="margin-top: 20px;">
+        <div class="oh_dashboards">
             <div class="container-fluid o_pj_dashboard">
-                <t t-call="HotelOrder"/>
+                <div class="row main-section">
+                    <!-- Original dashboard cards -->
+                    <t t-call="HotelOrder"/>
+                </div>
+                <!-- Room status dashboard -->
+                <RoomStatusDashboard room_categories="state.room_categories"/>
             </div>
         </div>
     </t>
@@ -314,6 +318,34 @@
                         </div>
                         <div class="dash-head">Pending Payment</div>
                     </div>
+                </div>
+            </div>
+        </div>
+    </t>
+    <t t-name="RoomStatusDashboard">
+        <div class="room-status-dashboard mt-4">
+            <div class="container">
+                <div class="row">
+                    <t t-foreach="room_categories" t-as="category" t-key="category.id">
+                        <div class="col-12 mb-4">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h4 class="mb-0"><t t-esc="category.name"/></h4>
+                                </div>
+                                <div class="card-body">
+                                    <div class="d-flex flex-wrap gap-2">
+                                        <t t-foreach="category.rooms" t-as="room" t-key="room.id">
+                                            <div t-attf-class="room-number-circle {{ room.state === 'check_in' ? 'bg-warning' : 'bg-success' }}"
+                                                 t-att-data-room-id="room.id"
+                                                 style="width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; cursor: pointer;">
+                                                <t t-esc="room.number"/>
+                                            </div>
+                                        </t>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
                 </div>
             </div>
         </div>

@@ -33,3 +33,35 @@ html .o_web_client > .o_action_manager{
     font-weight: 300;
     font-size: 18px;
 }
+
+.room-status-dashboard .room-number-circle {
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.room-status-dashboard .room-number-circle:hover {
+    transform: scale(1.1);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+.room-status-dashboard .bg-success {
+    background-color: #28a745 !important;
+}
+
+.room-status-dashboard .bg-warning {
+    background-color: #ffc107 !important;
+}
+
+.room-status-dashboard .card {
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.room-status-dashboard .card-header {
+    background-color: #f8f9fa;
+    border-bottom: 1px solid #dee2e6;
+}
+
+.room-status-dashboard .card-body {
+    padding: 1.5rem;
+}

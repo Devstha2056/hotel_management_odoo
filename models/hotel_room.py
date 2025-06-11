@@ -104,6 +104,53 @@ class HotelRoomCategory(models.Model):
             raise UserError("You are not allowed to delete Restaurant Orders.")
         return super(HotelRoomCategory, self).unlink()
 
+    @api.model
+    def get_rooms_by_category(self):
+        """Returns rooms grouped by category with their status"""
+        categories = self.search([('isroomtype', '=', True)])
+        result = []
+        
+        for category in categories:
+            rooms = self.env['product.template'].search([
+                ('is_roomtype', '=', True),
+                ('categ_id', '=', category.cat_id.id)
+            ])
+            
+            room_data = []
+            for room in rooms:
+                # Get the current booking status of the room
+                booking = self.env['room.booking.line'].search([
+                    ('room_id.product_tmpl_id', '=', room.id),
+                    ('state', 'in', ['check_in', 'reserved', 'check_out'])
+                ], limit=1)
+                
+                room_number = room.name.split()[-1] if room.name else ''
+
+                state = 'available'  # Default state (green)
+                if booking:
+                    if booking.state == 'check_in':
+                        state = 'check_in'  # Yellow for check-in
+                    elif booking.state == 'check_out':
+                        state = 'available'  # Green for check-out
+                    elif booking.state == 'reserved':
+                        state = 'reserved'
+                
+                room_data.append({
+                    'id': room.id,
+                    'number': room_number,
+                    'name': room.name,
+                    'state': state
+                })
+            
+            if room_data:
+                result.append({
+                    'id': category.id,
+                    'name': category.name,
+                    'rooms': room_data
+                })
+        
+        return result
+
 
 class HotelFoodCategory(models.Model):
     _name = 'hotel.food.category'

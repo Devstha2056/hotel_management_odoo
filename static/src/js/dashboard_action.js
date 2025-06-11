@@ -1,80 +1,124 @@
 /** @odoo-module */
-import { registry} from '@web/core/registry';
+import { registry } from '@web/core/registry';
 import { useService } from "@web/core/utils/hooks";
-const { Component, onWillStart, onMounted} = owl
+const { Component, useState, onWillStart, onMounted } = owl;
 import { rpc } from "@web/core/network/rpc";
 import { Domain } from "@web/core/domain";
 import { _t } from "@web/core/l10n/translation";
-import {serializeDate,serializeDateTime,} from "@web/core/l10n/dates";
+import { serializeDate, serializeDateTime } from "@web/core/l10n/dates";
+
 const today = new Date();
-const day = String(today.getDate()).padStart(2, '0');      // "12"
-const month = String(today.getMonth() + 1).padStart(2, '0'); // "05"
-const year = today.getFullYear();                           // 2025
-
+const day = String(today.getDate()).padStart(2, '0');
+const month = String(today.getMonth() + 1).padStart(2, '0');
+const year = today.getFullYear();
 const formattedDate = `${year}-${month}-${day}`;
+
+class RoomStatusDashboard extends Component {
+    setup() {
+        console.log('RoomStatusDashboard setup - props:', this.props);
+        this.room_categories = this.props.room_categories;
+    }
+}
+RoomStatusDashboard.template = 'RoomStatusDashboard';
+RoomStatusDashboard.props = {
+    room_categories: { type: Array },
+};
+
 export class CustomDashBoard extends Component {
-    /**
-     * Setup method to initialize required services and register event handlers.
-     */
-setup() {
-    this.action = useService("action");
-    this.orm = useService("orm");
-    onWillStart(this.onWillStart);
-    onMounted(this.onMounted);
-}
-async onWillStart() {
-    await this.fetch_data();
-}
-async onMounted() {
-// Render other components after fetching data
-// this.render_project_task();
-// this.render_top_employees_graph();
-// this.render_filter();
-}
-async fetch_data() {
-       var self = this;
-       //RPC call for retrieving data for displaying on dashboard tiles
-       var def1= await rpc('/web/dataset/call_kw/room.booking/get_details'
-       ,{ model:'room.booking',
-          method:'get_details',
-           args: [{}],
-           kwargs: {},
-       }).then(function(result){
-            document.getElementsByClassName("total_room").innerHTML=['total_room']
-            self.total_room=result['total_room']
-            self.available_room=result['available_room']
-            self.staff=result['staff']
-            self.check_in=result['check_in']
-            self.reservation=result['reservation']
-            self.check_out=result['check_out']
-            self.total_vehicle=result['total_vehicle']
-            self.available_vehicle=result['available_vehicle']
-            self.total_event=result['total_event']
-            self.today_events=result['today_events']
-            self.pending_events=result['pending_events']
-            self.food_items=result['food_items']
-            self.food_order=result['food_order']
+    setup() {
+        console.log('CustomDashBoard setup');
+        this.state = useState({
+            room_categories: [],
+            total_room: 0,
+            available_room: 0,
+            staff: 0,
+            check_in: 0,
+            reservation: 0,
+            check_out: 0,
+            total_vehicle: 0,
+            available_vehicle: 0,
+            total_event: 0,
+            today_events: 0,
+            pending_events: 0,
+            food_items: 0,
+            food_order: 0,
+            total_revenue: '',
+            today_revenue: '',
+            month_revenue: '',
+            year_revenue: '',
+            pending_payment: '',
+        });
+        
+        this.action = useService("action");
+        this.orm = useService("orm");
+        onWillStart(this.onWillStart);
+        onMounted(this.onMounted);
+    }
 
-            if(result['currency_position']=='after'){
-                self.total_revenue=result['currency_symbol']+" "+result['total_revenue']
-                self.today_revenue=result['currency_symbol']+" "+result['today_revenue']
-                self.month_revenue=result['currency_symbol']+" "+result['month_revenue']
-                self.year_revenue=result['currency_symbol']+" "+result['year_revenue']
-                self.pending_payment=result['currency_symbol']+" "+result['pending_payment']
-            }
-            else{
-                self.total_revenue=+result['total_revenue']+" "+result['currency_symbol']
-                self.today_revenue=result['today_revenue']+" "+result['currency_symbol']
-                self.month_revenue=result['month_revenue']+" "+result['currency_symbol']
-                self.year_revenue=result['year_revenue']+" "+result['currency_symbol']
-                self.pending_payment=result['pending_payment']+" "+result['currency_symbol']
-            }
+    async onWillStart() {
+        await this.fetch_data();
+    }
 
-       });
+    async onMounted() {
+        // Component mounted
+    }
 
-           return def1;
-     }
-     total_rooms(e){
+    async fetch_data() {
+        try {
+            console.log('Fetching dashboard data...');
+            // Fetch dashboard data
+            const dashboardData = await rpc('/web/dataset/call_kw/room.booking/get_details', {
+                model: 'room.booking',
+                method: 'get_details',
+                args: [{}],
+                kwargs: {},
+            });
+            console.log('Dashboard data received:', dashboardData);
+
+            // Update state with dashboard data
+            Object.assign(this.state, {
+                total_room: dashboardData.total_room,
+                available_room: dashboardData.available_room,
+                staff: dashboardData.staff,
+                check_in: dashboardData.check_in,
+                reservation: dashboardData.reservation,
+                check_out: dashboardData.check_out,
+                total_vehicle: dashboardData.total_vehicle,
+                available_vehicle: dashboardData.available_vehicle,
+                total_event: dashboardData.total_event,
+                today_events: dashboardData.today_events,
+                pending_events: dashboardData.pending_events,
+                food_items: dashboardData.food_items,
+                food_order: dashboardData.food_order,
+            });
+
+            // Format currency values
+            const currency_symbol = dashboardData.currency_symbol;
+            const currency_position = dashboardData.currency_position;
+            
+            ['total_revenue', 'today_revenue', 'month_revenue', 'year_revenue', 'pending_payment'].forEach(field => {
+                this.state[field] = currency_position === 'after' 
+                    ? `${dashboardData[field]} ${currency_symbol}`
+                    : `${currency_symbol} ${dashboardData[field]}`;
+            });
+
+            // Fetch room categories
+            console.log('Fetching room categories...');
+            const roomCategories = await this.orm.call(
+                'hotel.room.category',
+                'get_rooms_by_category',
+                [],
+                {}
+            );
+            console.log('Room categories received:', roomCategories);
+            this.state.room_categories = roomCategories;
+
+        } catch (error) {
+            console.error('Error fetching dashboard data:', error);
+        }
+    }
+
+    total_rooms(e){
         var self = this;
         e.stopPropagation();
         e.preventDefault();
@@ -123,7 +167,7 @@ async fetch_data() {
             target:'current'
         },options)
     }
-//        //    Today's Events
+    //        //    Today's Events
     fetch_today_events(e){
         var self = this;
         e.stopPropagation();
@@ -140,7 +184,7 @@ async fetch_data() {
             target:'current'
         },options)
     }
-//        //    Pending Events
+    //        //    Pending Events
     fetch_pending_events(e){
         var self = this;
         e.stopPropagation();
@@ -157,7 +201,7 @@ async fetch_data() {
             target:'current'
         },options)
     }
-//        //    Total staff
+    //        //    Total staff
     fetch_total_staff(e){
         var self = this;
         e.stopPropagation();
@@ -195,7 +239,7 @@ async fetch_data() {
             target:'current'
         },options)
     }
-//    Available rooms
+    //    Available rooms
     available_rooms(e){
         var self = this;
         e.stopPropagation();
@@ -212,7 +256,7 @@ async fetch_data() {
             target:'current'
         },options)
     }
-//    Reservations
+    //    Reservations
     reservations(e){
         var self = this;
         e.stopPropagation();
@@ -229,7 +273,7 @@ async fetch_data() {
             target:'current'
         },options)
     }
-//    Food Items
+    //    Food Items
     fetch_food_item(e){
         var self = this;
         e.stopPropagation();
@@ -246,7 +290,7 @@ async fetch_data() {
             target:'current'
         },options)
     }
-//    food Orders
+    //    food Orders
     async fetch_food_order(e){
         var self = this;
         const result = await this.orm.call('food.booking.line', 'search_food_orders',[{}],{});
@@ -264,7 +308,7 @@ async fetch_data() {
             target:'current'
         },options)
     }
-//    total vehicle
+    //    total vehicle
     fetch_total_vehicle(e){
         var self = this;
         e.stopPropagation();
@@ -279,7 +323,7 @@ async fetch_data() {
                     target:'current'
                 },options)
     }
-//    Available Vehicle
+    //    Available Vehicle
     async fetch_available_vehicle(e){
     const result = await this.orm.call('fleet.booking.line', 'search_available_vehicle',[{}],{});
         var self = this;
@@ -298,5 +342,8 @@ async fetch_data() {
         },options)
     }
 }
-CustomDashBoard.template = "CustomDashBoard"
-registry.category("actions").add("custom_dashboard_tags", CustomDashBoard)
+
+CustomDashBoard.template = 'CustomDashBoard';
+CustomDashBoard.components = { RoomStatusDashboard };
+
+registry.category("actions").add("custom_dashboard_tags", CustomDashBoard);
