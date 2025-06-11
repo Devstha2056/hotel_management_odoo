@@ -44,16 +44,16 @@ class RoomBooking(models.Model):
 
     phone_id = fields.Char(related='partner_id.phone', string='Mobile', readonly=False, required=True,
                            help="Phone Number of Customer")
-    street_id = fields.Char(related='partner_id.street', string='Street', readonly=False, required=False,
+    street_id = fields.Char(related='partner_id.street', string='Street', readonly=False, required=True,
                             help="Street of Customer")
-    city_id = fields.Char(related='partner_id.city', string='City', readonly=False, required=False,
+    city_id = fields.Char(related='partner_id.city', string='City', readonly=True, required=True,
                           help="City of Customer")
-    country_id = fields.Many2one('res.country', related='partner_id.country_id', help="PAN no. of Company")
+    country_id = fields.Many2one('res.country', related='partner_id.country_id', required=True, help="PAN no. of Company")
     pan_id = fields.Char(related='partner_id.vat', string='PAN', readonly=False, required=False,
                          help="PAN no. of Company")
     # country_id = fields.Char(related='partner_id.country', string='Country', readonly=False, required=False,help="Country Name OF Customer")
 
-    adults = fields.Integer(string='Adults', help="Number of Adults")
+    adults = fields.Integer(string='Pax', required=True, default=1,help="Number of Adults")
 
     child = fields.Integer(string='Child', help="Number of Children")
 
