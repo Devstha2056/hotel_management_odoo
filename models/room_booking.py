@@ -607,11 +607,6 @@ class RoomBooking(models.Model):
                 room.room_id.is_room_avail = True
         self.write({"state": "cancel"})
 
-    # def unlink(self):
-    #     for record in self:
-    #         if record.state != 'draft':
-    #             raise ValidationError("Records can be deleted in Draft state only")
-    #         return super(RoomBooking, self).unlink()
 
     def action_maintenance_request(self):
         """
@@ -794,6 +789,11 @@ class RoomBooking(models.Model):
         }
 
     def unlink(self):
+        if self.room_line_ids:
+            for room in self.room_line_ids:
+                room.room_id.write({
+                    'status': 'available',
+                })
         if not self.env.user.has_group('base.group_no_one'):
             raise UserError("You are not allowed to delete Restaurant Orders.")
         return super(RoomBooking, self).unlink()
