@@ -141,9 +141,9 @@ class RoomBookingLine(models.Model):
         for record in self:
             if record.checkin_date and record.checkout_date:
                 if record.checkout_date < record.checkin_date:
-                    # raise ValidationError(
-                    #     _("Checkout must be greater or equal to check-in date"))
-                  pass
+                    raise ValidationError(
+                        _("Checkout must be greater or equal to check-in date"))
+                  # pass
                 diffdate = record.checkout_date - record.checkin_date
                 qty = diffdate.days
                 if diffdate.total_seconds() > 0:
@@ -255,28 +255,28 @@ class RoomBookingLine(models.Model):
             if overlapping:
                 raise ValidationError(_("Room is not available for the selected dates."))
 
-    @api.onchange('checkin_date')
-    def _onchange_checkin_set_time(self):
-        user_tz = self.env.user.tz or 'UTC'
-        tz = pytz.timezone(user_tz)
-        for rec in self:
-            if rec.checkin_date:
-                # Build a datetime with 2:00 PM in user's timezone
-                local_dt = tz.localize(datetime.combine(rec.checkin_date.date(), time(14, 0)))
-                # Convert to UTC
-                utc_dt = local_dt.astimezone(pytz.utc)
-                # Make it naive (strip timezone info)
-                rec.checkin_date = utc_dt.replace(tzinfo=None)
-
-    @api.onchange('checkout_date')
-    def _onchange_checkout_set_time(self):
-        user_tz = self.env.user.tz or 'UTC'
-        tz = pytz.timezone(user_tz)
-        for rec in self:
-            if rec.checkout_date:
-                local_dt = tz.localize(datetime.combine(rec.checkout_date.date(), time(12, 0)))
-                utc_dt = local_dt.astimezone(pytz.utc)
-                rec.checkout_date = utc_dt.replace(tzinfo=None)
+    # @api.onchange('checkin_date')
+    # def _onchange_checkin_set_time(self):
+    #     user_tz = self.env.user.tz or 'UTC'
+    #     tz = pytz.timezone(user_tz)
+    #     for rec in self:
+    #         if rec.checkin_date:
+    #             # Build a datetime with 2:00 PM in user's timezone
+    #             local_dt = tz.localize(datetime.combine(rec.checkin_date.date(), time(14, 0)))
+    #             # Convert to UTC
+    #             utc_dt = local_dt.astimezone(pytz.utc)
+    #             # Make it naive (strip timezone info)
+    #             rec.checkin_date = utc_dt.replace(tzinfo=None)
+    #
+    # @api.onchange('checkout_date')
+    # def _onchange_checkout_set_time(self):
+    #     user_tz = self.env.user.tz or 'UTC'
+    #     tz = pytz.timezone(user_tz)
+    #     for rec in self:
+    #         if rec.checkout_date:
+    #             local_dt = tz.localize(datetime.combine(rec.checkout_date.date(), time(12, 0)))
+    #             utc_dt = local_dt.astimezone(pytz.utc)
+    #             rec.checkout_date = utc_dt.replace(tzinfo=None)
 
     def unlink(self):
         if not self.env.user.has_group('base.group_no_one'):
