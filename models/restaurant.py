@@ -10,6 +10,7 @@ class RestaurantOrder(models.Model):
     _name = "restaurant.order"
     _description = 'Hotel Restaurant order'
     _inherit = ['mail.thread', 'mail.activity.mixin']
+    _order = 'order_no desc'
 
     order_no = fields.Char('Order Number', readonly=True)
     name = fields.Char('Name')

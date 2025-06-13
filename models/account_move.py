@@ -1,9 +1,8 @@
 
 from odoo import fields, models,api
+
 import odoo.addons.decimal_precision as dp
 from num2words import num2words
-
-
 
 
 class AccountMove(models.Model):
@@ -39,6 +38,7 @@ class AccountMove(models.Model):
             result = f"{integer_in_words} {currency} and {decimal_in_words} {currency} only"
 
         return result.upper()
+
 
     #
     # @api.depends('invoice_line_ids.price_total')

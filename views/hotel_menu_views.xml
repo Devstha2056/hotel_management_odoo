@@ -19,10 +19,16 @@
               action="room_booking_action"/>
 
     <menuitem id="room_booking_menu_checkin"
-              name="Today's CheckIn"
+              name="Today's Arrival"
               sequence="12"
               parent="room_booking_menu"
               action="room_booking_action_checkin"/>
+
+    <menuitem id="room_booking_menu_reserved"
+              name="Reserved Room"
+              sequence="13"
+              parent="room_booking_menu"
+              action="room_booking_action_reserved"/>
 
     <!--    Configuration menu-->
     <menuitem id="hotel_config_menu"
@@ -30,6 +36,7 @@
               sequence="50"
               groups="hotel_group_admin"
               parent="hotel_management_menu_root"/>
+
     <!--    Folio menu-->
     <menuitem id="menu_room_booking_line"
               name="Folio"

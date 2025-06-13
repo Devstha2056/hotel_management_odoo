@@ -11,6 +11,7 @@ class RoomBookingLine(models.Model):
     _name = "room.booking.line"
     _description = "Hotel Folio Line"
     _rec_name = 'room_id'
+    _order = 'booking_ref desc'
 
     @tools.ormcache()
     def _set_default_uom_id(self):
@@ -140,9 +141,8 @@ class RoomBookingLine(models.Model):
         for record in self:
             if record.checkin_date and record.checkout_date:
                 if record.checkout_date < record.checkin_date:
-                    # raise ValidationError(
-                    #     _("Checkout must be greater or equal to check-in date"))
-                  pass
+                    raise ValidationError(
+                        _("Checkout must be greater or equal to check-in date"))
                 diffdate = record.checkout_date - record.checkin_date
                 qty = diffdate.days
                 if diffdate.total_seconds() > 0:
@@ -278,6 +278,9 @@ class RoomBookingLine(models.Model):
                 rec.checkout_date = utc_dt.replace(tzinfo=None)
 
     def unlink(self):
+        for rec in self:
+            if rec.room_id:
+                rec.room_id.status = 'available'
         if not self.env.user.has_group('base.group_no_one'):
             raise UserError("You are not allowed to delete Restaurant Orders.")
         for line in self:
