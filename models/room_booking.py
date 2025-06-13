@@ -38,6 +38,7 @@ class RoomBooking(models.Model):
                                         " ('company_id', 'in', "
                                         "(False, company_id))]")
     # customaddons
+
     meal_plan_ids = fields.Many2one(related='room_line_ids.meal_plan_ids', string="Meal Plan", ondelate='cascade')
 
     email_id = fields.Char(related='partner_id.email', string='Email', readonly=False, help="Email of Customer")
@@ -48,7 +49,9 @@ class RoomBooking(models.Model):
                             help="Street of Customer")
     city_id = fields.Char(related='partner_id.city', string='City', readonly=True, required=True,
                           help="City of Customer")
-    country_id = fields.Many2one('res.country', related='partner_id.country_id', required=True, help="PAN no. of Company")
+
+    country_id = fields.Many2one('res.country',string="Country", help="Country Name",store=True)
+
     pan_id = fields.Char(related='partner_id.vat', string='PAN', readonly=False, required=False,
                          help="PAN no. of Company")
     # country_id = fields.Char(related='partner_id.country', string='Country', readonly=False, required=False,help="Country Name OF Customer")
@@ -291,6 +294,31 @@ class RoomBooking(models.Model):
                                          compute='_compute_amount_untaxed',
                                          help="This is the Total Amount for "
                                               "Fleet", tracking=5)
+
+    total_quotation = fields.Integer(string='Quotation Count', compute='confirmed_count')
+
+    @api.depends('name','sale_order_id.state')
+    def confirmed_count(self):
+        for record in self:
+            confirmed_total = self.env['sale.order'].search_count([
+                ('booking_reference', '=', record.name),
+                ('state', 'in', ['sale', 'cancel']),
+            ])
+            record.total_quotation = confirmed_total
+
+    def action_open_quotations(self):
+        self.ensure_one()
+        return {
+            'type': 'ir.actions.act_window',
+            'name': 'Quotations',
+            'res_model': 'sale.order',
+            'view_mode': 'list,form',
+            'domain': [
+                ('booking_reference', '=', self.name),
+                ('state', 'in', ['sale', 'cancel']),
+            ],
+            'context': dict(self.env.context, default_booking_reference=self.name),
+        }
 
     @api.depends('room_line_ids.checkin_date', 'room_line_ids.checkout_date')
     def _compute_checkin_checkout_dates(self):
