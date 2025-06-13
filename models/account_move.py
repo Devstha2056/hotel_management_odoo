@@ -1,7 +1,6 @@
 
 from odoo import fields, models,api
 
-import odoo.addons.decimal_precision as dp
 class AccountMove(models.Model):
     _inherit = "account.move"
 
@@ -11,6 +10,8 @@ class AccountMove(models.Model):
         help="Choose the Booking Reference"
     )
     booking_reference = fields.Char(string='Booking Reference', readonly=True)
+
+
 
     #
     # @api.depends('invoice_line_ids.price_total')
