@@ -1,176 +1,180 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
+<record id="paperformat_invoice_bill" model="report.paperformat">
+            <field name="name">Invoice</field>
+            <field name="default" eval="True"/>
+            <field name="format">A4</field>
+            <field name="page_height">0</field>
+            <field name="page_width">0</field>
+            <field name="orientation">Portrait</field>
+            <field name="margin_top">30</field>
+            <field name="margin_bottom">30</field>
+            <field name="margin_left">15</field>
+            <field name="margin_right">5</field>
+            <field name="header_line" eval="False"/>
+            <field name="header_spacing">20</field>
+</record>
 
-    <record id="report_invoice_bill" model="ir.actions.report">
+
+<record id="report_invoice_bill" model="ir.actions.report">
         <field name="name">Print Invoice</field>
         <field name="model">account.move</field>
         <field name="report_type">qweb-pdf</field>
         <field name="report_name">hotel_management_odoo.report_invoice_template</field>
         <field name="report_file">hotel_management_odoo.report_invoice_template</field>
-    </record>
+        <field name="paperformat_id" ref="hotel_management_odoo.paperformat_invoice_bill"/>
+        <field name="binding_type">report</field>
+</record>
 
-    <template id="report_invoice_template">
-        <t t-call="web.external_layout">
-            <main>
-                <div class="page" style="padding:10px; height:100%">
-                    <header>
-                        <div class="col-6">
-                            <img t-att-src="'/hotel_management_odoo/static/description/icon.png'"
-                                 style="height: 120px;"/>
-                        </div>
-                        <div style="margin: 20px 0 100px 0;">
-                            <h1>
-                                <b>Hotel Niwas</b>
-                            </h1>
-                            <h5>Lakeside, Pokhara, Nepal</h5>
-                        </div>
-                    </header>
-                    <div class="oe_structure"/>
-                    <h3 style=" text-align: center;">Invoice</h3>
-                    <br/>
-                    <div>
-                        <t t-foreach="docs" t-as="doc">
-                            <table class="table"
-                                   style="border: 1px solid black; border-collapse: collapse; width: 50%; padding-right:10px;">
-                                <tr>
-                                    <td>
-                                        <p>
-                                            <b>Customer Invoice:</b>
-                                            <t t-esc="doc.name"/>
-                                        </p>
+<template id="report_invoice_template">
+  <t t-call="web.external_layout">
+     <main>
+      <div class="page">
+        <header >
+            <div class="col-6">
+                        <img t-att-src="'/hotel_management_odoo/static/description/icon.png'" style="height: 120px;"/>
+            </div>
+            <div style="margin: 20px ;">
+            <h1><b>Hotel Niwas</b>  </h1>
+             <h5>Lakeside, Pokhara, Nepal</h5>
+            </div>
+       </header>
+      <div class="oe_structure"/>
+        <h3 style=" text-align: center;">Estimated Bill</h3>
+       <br/>
 
-                                        <p>
-                                            <b>Customer Name:</b>
-                                            <t t-esc="doc.partner_id.display_name"/>
-                                        </p>
-                                        <p>
-                                            <b>Invoice Date:</b>
-                                            <t t-esc="doc.invoice_date"/>
-                                        </p>
-                                        <p>
-                                            <b>Booking Reference:</b>
-                                            <t t-esc="doc.booking_reference"/>
-                                        </p>
-                                    </td>
-                                </tr>
-                            </table>
-                        </t>
-                    </div>
-                    <table class="table">
-                        <thead>
-                            <tr>
-                                <th>Product</th>
-                                <th>Quantity</th>
-                                <th>Unit Price</th>
-                                <th>Discount %</th>
-                                <th>Taxes %</th>
-                                <th>Untaxed Amount</th>
-                                <th>Total Amount</th>
-                            </tr>
-                        </thead>
-                        <tr t-foreach="docs.invoice_line_ids" t-as="line">
-                            <td>
-                                <t t-esc="line.product_id.display_name"/>
-                            </td>
-                            <td>
-                                <t t-esc="line.quantity"/>
-                            </td>
-                            <td>
-                                <t t-esc="line.price_unit"/>
-                            </td>
-                            <td>
-                                <t t-esc="line.discount"/>
-                            </td>
-                            <td>
-                                <t t-esc="tax_ids"/>
-                            </td>
-                            <td>
-                               <t t-esc="line.price_total"/>
-                            </td>
-                            <td>
-                                <t t-esc="line.price_subtotal"/>
-                            </td>
 
-                        </tr>
-                    </table>
+          <div>
+  <t t-foreach="docs" t-as="doc">
+    <table class="table table-bordered table-condensed" style="width: 100%;">
+      <tr>
+        <!-- Left Column -->
+        <td width="50%" align="left">
 
-                    <!--                    <t t-set="total_subtotal" t-value="0.0"/>-->
-                    <!--                    <t t-set="total_discount" t-value="0.0"/>-->
-                    <!--                    <t t-set="total_tax" t-value="0.0"/>-->
-                    <!--                    <t t-set="total_total" t-value="0.0"/>-->
+          <b>Customer Name:</b>
+          <t t-esc="doc.partner_id.display_name"/>
+          <br/>
 
-                    <!--                    <t t-foreach="doc.order_line" t-as="line">-->
-                    <!--                        <t t-set="unit_price" t-value="line.price_unit or 0.0"/>-->
-                    <!--                        <t t-set="qty" t-value="line.product_uom_qty or 0.0"/>-->
-                    <!--                        <t t-set="discount" t-value="line.discount or 0.0"/>-->
-                    <!--                        <t t-set="subtotal" t-value="line.price_subtotal or 0.0"/>-->
-                    <!--                        <t t-set="tax" t-value="line.price_tax or 0.0"/>-->
-                    <!--                        <t t-set="total" t-value="line.price_total or 0.0"/>-->
+          <b>Phone No:</b>
+          <t t-esc="doc.partner_id.phone"/>
+          <br/>
 
-                    <!--                        <t t-set="total_subtotal" t-value="total_subtotal + subtotal"/>-->
-                    <!--                        <t t-set="total_discount" t-value="total_discount + ((unit_price * qty * discount) / 100.0)"/>-->
-                    <!--                        <t t-set="total_tax" t-value="total_tax + tax"/>-->
-                    <!--                        <t t-set="total_total" t-value="total_total + total"/>-->
-                    <!--                    </t>-->
+          <b>Email:</b>
+          <t t-esc="doc.partner_id.email"/>
+          <br/>
 
-<!--                       <div style=" text-align:left; ">-->
-<!--                        <table class="table" style=" width :35%%; float: right;">-->
-<!--                            <tr>-->
-<!--                                <p>-->
-<!--                                    <td>-->
-<!--                                        <strong>Sub Total:</strong>-->
-<!--                                    </td>-->
-<!--                                    <td>-->
-<!--                                        <span>-->
-<!--                                            <t t-esc="total_subtotal"/>-->
-<!--                                        </span>-->
-<!--                                    </td>-->
-<!--                                </p>-->
-<!--                            </tr>-->
-<!--                            <tr>-->
-<!--                                <p>-->
-<!--                                    <td>-->
-<!--                                        <strong>Discount:</strong>-->
-<!--                                    </td>-->
-<!--                                <span>-->
-<!--                                    <td>-->
-<!--                                    <t t-esc="total_discount"/>-->
-<!--                                    </td>-->
-<!--                                </span>-->
-<!--                            </p>-->
-<!--                        </tr>-->
-<!--                    <tr>-->
-<!--                        <p>-->
-<!--                            <td><strong>Taxable Amount:</strong></td>-->
-<!--                           <td> <span>-->
-<!--                                <t t-esc="total_subtotal"/>-->
-<!--                            </span></td>-->
-<!--                        </p>-->
-<!--                    </tr>-->
-<!--                    <tr>-->
-<!--                        <p>-->
-<!--                            <td><strong>VAT (13%):</strong></td>-->
-<!--                           <td> <span>-->
-<!--                                <t t-esc="total_tax"/>-->
-<!--                            </span></td>-->
-<!--                        </p>-->
-<!--                    </tr>-->
-<!--                    <tr>-->
-<!--                        <p>-->
-<!--                           <td> <strong>-->
-<!--                                <u>GRAND TOTAL:</u>-->
-<!--                            </strong></td>-->
-<!--                           <td> <span>-->
-<!--                                <t t-esc="total_total"/>-->
-<!--                            </span></td>-->
-<!--                        </p>-->
-<!--                    </tr>-->
-<!--                </table>-->
-<!--            </div>-->
+           <b>PAN:</b>
+          <t t-esc="doc.partner_id.vat"/>
+          <br/>
 
-            <footer style="margin-top: 10px;">
-                <strong>Remarks:</strong>
-            </footer>
+          <b>Printed On:</b>
+          <t t-esc="datetime.datetime.now(datetime.timezone(datetime.timedelta(hours=5, minutes=45))).strftime('%Y-%m-%d %I:%M:%S %p')"/>
+        </td>
+
+        <!-- Right Column -->
+
+        <td width="50%" align="left">
+          <b>Customer Invoice:</b>
+          <t t-esc="doc.name"/>
+          <br/>
+
+          <b>Invoice Date:</b>
+          <t t-esc="doc.invoice_date"/>
+          <br/>
+
+          <b>Booking Reference:</b>
+          <t t-esc="doc.booking_reference"/>
+          <br/>
+
+          <b>CheckIn Date:</b>
+          <t t-esc="doc.room_checkin"/>
+          <br/>
+
+          <b>Checkout Date:</b>
+          <t t-esc="doc.room_checkout"/>
+          <br/>
+
+        </td>
+      </tr>
+    </table>
+  </t>
+</div>
+
+
+
+   <table class="table" style="width: 100%; border: 1px solid black; border-collapse: collapse;">
+    <thead style="font-weight: bold;">
+        <tr>
+            <th style="border: 1px solid black; padding: 8px;">S.N</th>
+            <th style="border: 1px solid black; padding: 8px;">Product</th>
+            <th style="border: 1px solid black; padding: 8px;">Quantity</th>
+            <th style="border: 1px solid black; padding: 8px;">Rate</th>
+            <th style="border: 1px solid black; padding: 8px;">Amount</th>
+        </tr>
+    </thead>
+
+    <t t-set="count" t-value="0"/>
+    <t t-set="total_subtotal" t-value="0.0"/>
+    <t t-set="total_discount" t-value="0.0"/>
+    <t t-set="total_tax" t-value="0.0"/>
+    <t t-set="total_total" t-value="0.0"/>
+
+    <tbody>
+        <tr t-foreach="docs.invoice_line_ids" t-as="line">
+            <t t-set="count" t-value="count + 1"/>
+            <t t-set="unit_price" t-value="line.price_unit or 0.0"/>
+            <t t-set="quantity" t-value="line.quantity or 0.0"/>
+            <t t-set="discount" t-value="line.discount or 0.0"/>
+            <t t-set="subtotal" t-value="line.price_subtotal or 0.0"/>
+            <t t-set="total" t-value="line.price_total or 0.0"/>
+
+            <t t-set="total_subtotal" t-value="round(total_subtotal + subtotal, 2)"/>
+            <t t-set="total_discount" t-value="round(total_discount + ((unit_price * quantity * discount) / 100.0), 2)"/>
+            <t t-set="total_tax" t-value="round(total_tax + (total - subtotal), 2)"/>
+            <t t-set="total_total" t-value="total_total + total"/>
+
+            <td style="border: 1px solid black; padding: 8px;"><t t-esc="count"/></td>
+            <td style="border: 1px solid black; padding: 8px;"><t t-esc="line.product_id.display_name"/></td>
+            <td style="border: 1px solid black; padding: 8px;"><t t-esc="line.quantity"/></td>
+            <td style="border: 1px solid black; padding: 8px;"><t t-esc="line.price_unit"/></td>
+            <td style="border: 1px solid black; padding: 8px;"><t t-esc="line.price_total"/></td>
+        </tr>
+
+        <!-- Totals Row Section -->
+        <tr>
+            <td colspan="3" rowspan="5">In Words: <span style="border-bottom: 1px dotted" t-esc="doc.amount_to_text(total_total, 'NPR')"/></td>
+
+            <td  style="border: 1px solid black; padding: 8px; text-align: right;"><strong>Sub Total:</strong></td>
+            <td style="border: 1px solid black; padding: 8px;"><t t-esc="total_subtotal"/></td>
+
+        </tr>
+<!--        <tr>-->
+<!--            -->
+<!--        </tr>-->
+        <tr>
+            <td  style="border: 1px solid black; padding: 8px; text-align: right;"><strong>Discount:</strong></td>
+            <td style="border: 1px solid black; padding: 8px;"><t t-esc="total_discount"/></td>
+        </tr>
+        <tr>
+            <td  style="border: 1px solid black; padding: 8px; text-align: right;"><strong>Taxable Amount:</strong></td>
+            <td style="border: 1px solid black; padding: 8px;"><t t-esc="total_subtotal"/></td>
+        </tr>
+        <tr>
+            <td  style="border: 1px solid black; padding: 8px; text-align: right;"><strong>VAT (13%):</strong></td>
+            <td style="border: 1px solid black; padding: 8px;"><t t-esc="total_tax"/></td>
+        </tr>
+        <tr>
+            <td  style="border: 1px solid black; padding: 8px; text-align: right;">
+                <strong><u>GRAND TOTAL:</u></strong>
+            </td>
+            <td style="border: 1px solid black; padding: 8px;"><strong><t t-esc="total_total"/></strong></td>
+        </tr>
+    </tbody>
+</table>
+
+                    <footer style="margin-top: 10px;">
+                        <strong>Remarks:</strong>
+                    </footer>
 
                 </div>
             </main>
