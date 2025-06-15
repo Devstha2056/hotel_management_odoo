@@ -820,12 +820,11 @@ class RoomBooking(models.Model):
     def unlink(self):
         if self.room_line_ids:
             for room in self.room_line_ids:
-
                 room.room_id.write({
                     'status': 'available',
                 })
 
-             if room.room_id:
+            if room.room_id:
                 room.room_id.status = 'available'
 
         if not self.env.user.has_group('base.group_no_one'):
