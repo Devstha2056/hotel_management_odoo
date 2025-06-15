@@ -84,6 +84,7 @@ class RoomBooking(models.Model):
                                  help="Creation date of draft/sent orders,"
                                       " Confirmation date of confirmed orders",
                                  default=fields.Datetime.now)
+
     is_checkin = fields.Boolean(default=False, string="Is Checkin",
                                 help="sets to True if the room is occupied")
     maintenance_request_sent = fields.Boolean(default=False,
