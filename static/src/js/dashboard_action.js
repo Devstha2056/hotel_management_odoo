@@ -85,7 +85,7 @@ async fetch_data() {
                     res_model:'product.template',
                     view_mode:'list,form',
                     view_type:'form',
-                    views:[[false,'list'],[false,'form']],
+                    views:[[false,'list']],
                     domain: [['is_roomtype', '=', true]],
                     target:'current'
                 },options)
@@ -101,7 +101,7 @@ async fetch_data() {
             res_model:'room.booking.line',
             view_mode:'list,form',
             view_type:'form',
-            views:[[false,'list'],[false,'form']],
+            views:[[false,'list']],
             domain: [['state', '=', 'check_in']],
             target:'current'
         },options)
@@ -118,7 +118,7 @@ async fetch_data() {
             res_model:'event.event',
             view_mode:'kanban,list,form',
             view_type:'form',
-            views:[[false,'kanban'],[false,'list'],[false,'form']],
+            views:[[false,'kanban'],[false,'list']],
             domain: [],
             target:'current'
         },options)
@@ -135,7 +135,7 @@ async fetch_data() {
             res_model:'event.event',
             view_mode:'kanban,list,form',
             view_type:'form',
-            views:[[false,'kanban'],[false,'list'],[false,'form']],
+            views:[[false,'kanban'],[false,'list']],
             domain:  [['date_end', '=', formattedDate]],
             target:'current'
         },options)
@@ -152,7 +152,7 @@ async fetch_data() {
             res_model:'event.event',
             view_mode:'kanban,list,form',
             view_type:'form',
-            views:[[false,'kanban'],[false,'list'],[false,'form']],
+            views:[[false,'kanban'],[false,'list']],
             domain:  [['date_end', '>=', formattedDate]],
             target:'current'
         },options)
@@ -169,7 +169,7 @@ async fetch_data() {
             res_model:'res.users',
             view_mode:'list,form',
             view_type:'form',
-            views:[[false,'list'],[false,'form']],
+            views:[[false,'list']],
             domain: [['groups_id.name', 'in',['Admin',
                        'Cleaning Team User',
                        'Cleaning Team Head',
@@ -190,7 +190,7 @@ async fetch_data() {
             res_model:'room.booking',
             view_mode:'list,form',
             view_type:'list,form',
-            views:[[false,'list'],[false,'form']],
+            views:[[false,'list']],
             domain: [['state', '=', 'check_out']],
             target:'current'
         },options)
@@ -207,7 +207,7 @@ async fetch_data() {
             res_model:'product.template',
             view_mode:'list,form',
             view_type:'form',
-            views:[[false,'list'],[false,'form']],
+            views:[[false,'list']],
             domain: [['status', '=', 'available'],['is_roomtype', '=', true],],
             target:'current'
         },options)
@@ -224,7 +224,7 @@ async fetch_data() {
             res_model:'room.booking.line',
             view_mode:'list,form',
             view_type:'form',
-            views:[[false,'list'],[false,'form']],
+            views:[[false,'list']],
             domain: [['state', '=', 'reserved'], ['checkin_date', '>=', formattedDate],['checkin_date', '<=', formattedDate]],
             target:'current'
         },options)
@@ -241,7 +241,7 @@ async fetch_data() {
             res_model:'product.template',
             view_mode:'list,form',
             view_type:'form',
-            views:[[false,'list'],[false,'form']],
+            views:[[false,'list']],
             domain: [['is_foodtype', '=', true]],
             target:'current'
         },options)
@@ -259,7 +259,7 @@ async fetch_data() {
             res_model:'food.booking.line',
             view_mode:'list,form',
             view_type:'form',
-            views:[[false,'list'],[false,'form']],
+            views:[[false,'list']],
            domain: [['id','in', result]],
             target:'current'
         },options)
@@ -275,7 +275,7 @@ async fetch_data() {
                     res_model:'fleet.vehicle.model',
                     view_mode:'list,form',
                     view_type:'form',
-                    views:[[false,'list'],[false,'form']],
+                    views:[[false,'list']],
                     target:'current'
                 },options)
     }
@@ -292,7 +292,7 @@ async fetch_data() {
             res_model:'fleet.vehicle.model',
             view_mode:'list,form',
             view_type:'form',
-            views:[[false,'list'],[false,'form']],
+            views:[[false,'list']],
             domain: [['id','not in', result]],
             target:'current'
         },options)
