@@ -819,9 +819,14 @@ class RoomBooking(models.Model):
     def unlink(self):
         if self.room_line_ids:
             for room in self.room_line_ids:
+
                 room.room_id.write({
                     'status': 'available',
                 })
+
+             if room.room_id:
+                room.room_id.status = 'available'
+
         if not self.env.user.has_group('base.group_no_one'):
             raise UserError("You are not allowed to delete Restaurant Orders.")
         return super(RoomBooking, self).unlink()
@@ -836,15 +841,29 @@ class RoomBooking(models.Model):
         total_room = self.env['product.template'].search_count([('is_roomtype', '=', True)])
         check_in = self.env['room.booking.line'].search_count(
             [('state', '=', 'check_in')])
+
         available_room = self.env['product.template'].search(
-            [('status', '=', 'available'), ('is_roomtype', '=', True)])
+            [('status', '=', 'available'), ('is_roomtype', '=', True)],)
+
+        # domain1 = [
+        #     ('room_line_ids.state', '=', 'reserved'),
+        #     ('is_roomtype', '=', True),
+        #     ('room_line_ids.checkin_date', '>', context_today.date()),
+        #
+        # ]
+        #
+        # future_reserved = self.env['product.product'].search(domain1)
+        #
+        # _logger.info(f'===================sssssssssss===={future_reserved}===========================================')
+
         domain = [
             ('state', '=', 'reserved'),
             ('checkin_date', '>=', context_today.date()),
             ('checkin_date', '<=', context_today.date())
         ]
         reservation = self.env['room.booking.line'].search_count(domain)
-        _logger.info(f'===================eeeeeeeeeesdfsdcs===={reservation}===========================================')
+
+        # combined_rooms = available_room + future_reserved
         check_outs = self.env['room.booking'].search([('state', '=', 'check_out')])
         check_out = 0
         staff = 0

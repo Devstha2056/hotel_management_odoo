@@ -27,6 +27,9 @@ class ProductTemplate(models.Model):
                                ("bot", "BOT"),], string="Product Nature",
                               help="Nature of Product",
                               tracking=True)
+    room_line_ids = fields.One2many("room.booking.line",
+                                    "room_id", string="Room",
+                                    help="Hotel room reservation detail.")
 
     def unlink(self):
         if not self.env.user.has_group('base.group_no_one'):
