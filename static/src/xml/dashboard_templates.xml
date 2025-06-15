@@ -147,7 +147,7 @@
                 </div>
             </div>
             <!--            Total Revenue-->
-            <div groups="hotel_management_odoo.hotel_group_reception"
+            <div groups="hotel_management_odoo.hotel_group_Accountant"
                  class="col-md-3 col-sm-6 total_revenue dash-card">
                 <div class="card" style="width: 18rem;">
                     <div class="card-img-top dash-icon-1"
@@ -164,7 +164,7 @@
                 </div>
             </div>
             <!--            Today Revenue-->
-            <div groups="hotel_management_odoo.hotel_group_reception"
+            <div groups="hotel_management_odoo.hotel_group_Accountant"
                  class="col-md-3 col-sm-6 today_revenue dash-card">
                 <div class="card" style="width: 18rem;">
                     <div class="card-img-top dash-icon-1"
@@ -180,7 +180,7 @@
                     </div>
                 </div>
             </div>
-            <div groups="hotel_management_odoo.hotel_group_reception"
+            <div groups="hotel_management_odoo.hotel_group_Accountant"
                  class="col-md-3 col-sm-6 month_revenue dash-card">
                 <div class="card" style="width: 18rem;">
                     <div class="card-img-top dash-icon-1"
@@ -197,7 +197,7 @@
                 </div>
             </div>
             <!--            Yearly Revenue-->
-            <div groups="hotel_management_odoo.hotel_group_reception"
+            <div groups="hotel_management_odoo.hotel_group_Accountant"
                  class="col-md-3 col-sm-6 year_revenue dash-card">
                 <div class="card" style="width: 18rem;">
                     <div class="card-img-top dash-icon-1"
@@ -300,7 +300,7 @@
             </div>
 
             <!--            Pending Payment-->
-            <div groups="hotel_management_odoo.hotel_group_reception"
+            <div groups="hotel_management_odoo.hotel_group_Accountant"
                  class="col-md-3 col-sm-6 pending_payment dash-card">
                 <div class="card" style="width: 18rem;">
                     <div class="card-img-top dash-icon-1"
