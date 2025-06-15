@@ -47,15 +47,26 @@
                            invisible="1"/>
                 </header>
                 <sheet>
-                    <div name="button_box" position="inside">
-                        <button class="oe_stat_button" type="object"
-                                name="action_view_invoices"
-                                invisible="invoice_status != 'invoiced'"
+<!--                    <div name="button_box" position="inside">-->
+<!--                        <button class="oe_stat_button" type="object"-->
+<!--                                name="action_view_invoices"-->
+<!--                                invisible="invoice_status != 'invoiced'"-->
+<!--                                icon="fa-edit">-->
+<!--                            <field string="Invoices" name="invoice_count"-->
+<!--                                   widget="statinfo"/>-->
+<!--                        </button>-->
+<!--                    </div>-->
+
+                    <div class="oe_button_box" name="button_box">
+                        <button class="oe_stat_button"
+                                name="action_open_quotations"
+                                type="object"
                                 icon="fa-edit">
-                            <field string="Invoices" name="invoice_count"
-                                   widget="statinfo"/>
+                            <field name="total_quotation" widget="statinfo" string="Quotation"/>
                         </button>
                     </div>
+
+
                     <div>
                         <h1>
                             <field name="name" colspan="4"/>
@@ -93,7 +104,6 @@
 
                         <group>
                             <field name="date_order" readonly="state != 'draft'"/>
-
                             <field name="pricelist_id" readonly="state == 'done'"/>
                             <field name="adults" readonly="state not in ('draft', 'reserved')"/>
                             <field name="child" readonly="state not in ('draft', 'reserved')"/>
@@ -105,7 +115,7 @@
                                    context="{'default_is_company': True, 'default_isagenttype': True}"
                                    invisible="via != 'company'"/>
                             <field name="source" readonly="state != 'draft'"/>
-                            <field name="meal_plan_ids" readonly="state not in ('draft', 'reserved')"/>
+                            <field name="meal_plan_ids" readonly="1" options="{'no_open': True, 'no_create': True}"/>
                             <field name="issuing_auth" readonly="1"/>
                             <!--                            <field name="need_service"-->
                             <!--                                   invisible=" state not in ['check_in']" readonly="state == 'done'"/>-->
@@ -136,8 +146,6 @@
                                            invisible="1"/>
                                     <field name="checkout_date" readonly="state == 'done'"/>
                                     <field name="discount"/>
-
-
                                     <field name="uom_qty" string="Duration"
                                            readonly="1" force_save="1"/>
                                     <field name="uom_id"
@@ -161,11 +169,14 @@
                                 </list>
                                 <form>
                                     <group>
-                                        <field name="occupancy_id" readonly="state not in ('draft', 'reserved')"/>
+                                        <field name="occupancy_id" readonly="state not in ('draft', 'reserved')"
+                                               options="{'no_open': True, 'no_create': True}"/>
                                         <field name="meal_plan_price" invisible="1"
                                                readonly="state not in ('draft', 'reserved')"/>
-                                        <field name="meal_plan_ids" readonly="state not in ('draft', 'reserved')"/>
-                                        <field name="categ_id" readonly="state not in ('draft', 'reserved')"/>
+                                        <field name="meal_plan_ids" readonly="state not in ('draft', 'reserved')"
+                                               options="{'no_open': True, 'no_create': True}"/>
+                                        <field name="categ_id" readonly="state not in ('draft', 'reserved')"
+                                               options="{'no_open': True, 'no_create': True}"/>
                                         <field name="today_date" invisible="1"/>
                                         <field name="room_id" string="Room" required="1"
 
@@ -175,7 +186,8 @@
                                         <field name="checkout_date" readonly="state not in ('draft', 'reserved')"/>
                                         <field name="discount"/>
                                         <field name="uom_qty" string="Duration"/>
-                                        <field name="uom_id" string="Unit of Measure"/>
+                                        <field name="uom_id" string="Unit of Measure"
+                                               options="{'no_open': True, 'no_create': True}"/>
                                         <field name="price_unit" readonly="state not in ('draft', 'reserved')"/>
                                         <field name="tax_ids" widget="many2many_tags"/>
                                         <field name="price_subtotal" widget="monetary"/>
@@ -223,12 +235,14 @@
                                     <field name="guest_name" string="Guest Name"
                                            readonly="state not in ('draft', 'reserved')"/>
                                     <field name="doc_type_id" string="Document Type"
-                                           readonly="state not in ('draft', 'reserved')"/>
+                                           readonly="state not in ('draft', 'reserved')"
+                                           options="{'no_open': True, 'no_create': True}"/>
                                     <field name="card_name" string="Document Number"
                                            readonly="state not in ('draft', 'reserved')"/>
                                     <field name="issuing_auth" string="Issuing Authorized"
                                            readonly="state not in ('draft', 'reserved')"/>
-                                    <field name="gender" string="Gender" readonly="state not in ('draft', 'reserved')"/>
+                                    <field name="gender" string="Gender" readonly="state not in ('draft', 'reserved')"
+                                           options="{'no_open': True, 'no_create': True}"/>
                                     <field name="valid_from" string="Valid From"
                                            readonly="state not in ('draft', 'reserved')"/>
                                     <field name="valid_to" string="Valid To"

@@ -135,6 +135,18 @@ class RoomBookingLine(models.Model):
                 logger.info(f'===========aaaaaaaaa=={line.price_unit}==========')
                 line.tax_ids = line.room_id.taxes_id
 
+    @api.onchange("checkin_date", "checkout_date")
+    def _onchange_checkin_date(self):
+        for record in self:
+            if record.checkin_date and record.checkout_date:
+                if record.checkout_date < record.checkin_date:
+                    raise ValidationError(
+                        _("Checkout must be greater or equal to check-in date"))
+                diffdate = record.checkout_date - record.checkin_date
+                qty = diffdate.days
+                if diffdate.total_seconds() > 0:
+                    qty += 1
+                record.uom_qty = qty
 
 
     @api.onchange("uom_qty")
@@ -279,6 +291,9 @@ class RoomBookingLine(models.Model):
                 record.uom_qty = qty
 
     def unlink(self):
+        for rec in self:
+            if rec.room_id:
+                rec.room_id.status = 'available'
         if not self.env.user.has_group('base.group_no_one'):
             raise UserError("You are not allowed to delete Restaurant Orders.")
         for line in self:

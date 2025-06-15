@@ -38,22 +38,25 @@ class RoomBooking(models.Model):
                                         " ('company_id', 'in', "
                                         "(False, company_id))]")
     # customaddons
+
     meal_plan_ids = fields.Many2one(related='room_line_ids.meal_plan_ids', string="Meal Plan", ondelate='cascade')
 
     email_id = fields.Char(related='partner_id.email', string='Email', readonly=False, help="Email of Customer")
 
     phone_id = fields.Char(related='partner_id.phone', string='Mobile', readonly=False, required=True,
                            help="Phone Number of Customer")
-    street_id = fields.Char(related='partner_id.street', string='Street', readonly=False, required=False,
+    street_id = fields.Char(related='partner_id.street', string='Street', readonly=False, required=True,
                             help="Street of Customer")
-    city_id = fields.Char(related='partner_id.city', string='City', readonly=False, required=False,
+    city_id = fields.Char(related='partner_id.city', string='City', readonly=True, required=True,
                           help="City of Customer")
-    country_id = fields.Many2one('res.country', related='partner_id.country_id', help="PAN no. of Company")
+
+    country_id = fields.Many2one('res.country',string="Country", help="Country Name",store=True)
+
     pan_id = fields.Char(related='partner_id.vat', string='PAN', readonly=False, required=False,
                          help="PAN no. of Company")
     # country_id = fields.Char(related='partner_id.country', string='Country', readonly=False, required=False,help="Country Name OF Customer")
 
-    adults = fields.Integer(string='Adults', help="Number of Adults")
+    adults = fields.Integer(string='Pax', required=True, default=1,help="Number of Adults")
 
     child = fields.Integer(string='Child', help="Number of Children")
 
@@ -291,6 +294,31 @@ class RoomBooking(models.Model):
                                          compute='_compute_amount_untaxed',
                                          help="This is the Total Amount for "
                                               "Fleet", tracking=5)
+
+    total_quotation = fields.Integer(string='Quotation Count', compute='confirmed_count')
+
+    @api.depends('name','sale_order_id.state')
+    def confirmed_count(self):
+        for record in self:
+            confirmed_total = self.env['sale.order'].search_count([
+                ('booking_reference', '=', record.name),
+                ('state', 'in', ['sale', 'cancel']),
+            ])
+            record.total_quotation = confirmed_total
+
+    def action_open_quotations(self):
+        self.ensure_one()
+        return {
+            'type': 'ir.actions.act_window',
+            'name': 'Quotations',
+            'res_model': 'sale.order',
+            'view_mode': 'list,form',
+            'domain': [
+                ('booking_reference', '=', self.name),
+                ('state', 'in', ['sale', 'cancel']),
+            ],
+            'context': dict(self.env.context, default_booking_reference=self.name),
+        }
 
     @api.depends('room_line_ids.checkin_date', 'room_line_ids.checkout_date')
     def _compute_checkin_checkout_dates(self):
@@ -607,11 +635,6 @@ class RoomBooking(models.Model):
                 room.room_id.is_room_avail = True
         self.write({"state": "cancel"})
 
-    # def unlink(self):
-    #     for record in self:
-    #         if record.state != 'draft':
-    #             raise ValidationError("Records can be deleted in Draft state only")
-    #         return super(RoomBooking, self).unlink()
 
     def action_maintenance_request(self):
         """
@@ -796,8 +819,14 @@ class RoomBooking(models.Model):
     def unlink(self):
         if self.room_line_ids:
             for room in self.room_line_ids:
+
+                room.room_id.write({
+                    'status': 'available',
+                })
+
              if room.room_id:
                 room.room_id.status = 'available'
+
         if not self.env.user.has_group('base.group_no_one'):
             raise UserError("You are not allowed to delete Restaurant Orders.")
         return super(RoomBooking, self).unlink()
