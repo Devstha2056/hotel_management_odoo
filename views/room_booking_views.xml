@@ -419,8 +419,13 @@
         <field name="name">room.booking.view.tree</field>
         <field name="model">room.booking</field>
         <field name="arch" type="xml">
-            <list>
-                <field name="name"/>
+            <list string="Room Bookings"
+                  decoration-info="state == 'draft'"
+                  decoration-success="state == 'reserved'"
+                  decoration-primary="state == 'check_in'"
+                  decoration-muted="state == 'check_out'"
+                  decoration-danger="state == 'cancel'">
+                <field name="name"/>git
                 <field name="partner_id"/>
                 <field name="room_checkin_date"/>
                 <field name="room_checkout_date"/>
