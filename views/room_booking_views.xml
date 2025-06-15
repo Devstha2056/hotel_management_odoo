@@ -17,7 +17,7 @@
                     <button name="action_maintenance_request"
                             string="Maintenance Request" type="object"
                             class="btn-primary"
-                            invisible=" maintenance_request_sent == True or ( state not in ['check_in', 'reserved'])"/>
+                            invisible="1git "/>
                     <button name="action_checkout" string="Check-Out"
                             class="btn-primary" invisible="state != 'check_in'"
                             type="object"/>
@@ -425,7 +425,7 @@
                   decoration-primary="state == 'check_in'"
                   decoration-muted="state == 'check_out'"
                   decoration-danger="state == 'cancel'">
-                <field name="name"/>git
+                <field name="name"/>
                 <field name="partner_id"/>
                 <field name="room_checkin_date"/>
                 <field name="room_checkout_date"/>
