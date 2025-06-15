@@ -84,6 +84,7 @@ class RoomBooking(models.Model):
                                  help="Creation date of draft/sent orders,"
                                       " Confirmation date of confirmed orders",
                                  default=fields.Datetime.now)
+
     is_checkin = fields.Boolean(default=False, string="Is Checkin",
                                 help="sets to True if the room is occupied")
     maintenance_request_sent = fields.Boolean(default=False,
@@ -819,12 +820,11 @@ class RoomBooking(models.Model):
     def unlink(self):
         if self.room_line_ids:
             for room in self.room_line_ids:
-
                 room.room_id.write({
                     'status': 'available',
                 })
 
-             if room.room_id:
+            if room.room_id:
                 room.room_id.status = 'available'
 
         if not self.env.user.has_group('base.group_no_one'):
