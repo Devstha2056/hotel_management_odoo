@@ -1,7 +1,10 @@
 from odoo import api, fields, models, tools, _
 from odoo.exceptions import ValidationError,UserError
 import odoo.addons.decimal_precision as dp
+
+
 class ProductTemplate(models.Model):
+
     _inherit = 'product.template'
 
     status = fields.Selection([("available", "Available"),
@@ -104,3 +107,9 @@ class ResPartner(models.Model):
     _inherit = 'res.partner'
 
     isagenttype = fields.Boolean(string="Is Agent Type")
+
+# class ResUsers(models.Model):
+#     _inherit = 'res.users'
+#
+#     is_admin = fields.Boolean()
+#

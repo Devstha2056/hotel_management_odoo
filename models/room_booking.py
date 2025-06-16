@@ -45,16 +45,16 @@ class RoomBooking(models.Model):
 
     phone_id = fields.Char(related='partner_id.phone', string='Mobile', readonly=False, required=True,
                            help="Phone Number of Customer")
+
     street_id = fields.Char(related='partner_id.street', string='Street', readonly=False, required=True,
-                            help="Street of Customer")
-    city_id = fields.Char(related='partner_id.city', string='City', readonly=True, required=True,
-                          help="City of Customer")
+                            help="Street of Customer", store=True)
+
+    city_id = fields.Char(related='partner_id.city', string='City', readonly=True, required=True,help="City of Customer",store=True)
 
     country_id = fields.Many2one('res.country',string="Country", help="Country Name",store=True)
 
     pan_id = fields.Char(related='partner_id.vat', string='PAN', readonly=False, required=False,
-                         help="PAN no. of Company")
-    # country_id = fields.Char(related='partner_id.country', string='Country', readonly=False, required=False,help="Country Name OF Customer")
+                         help="PAN no. of Company" ,store=True)
 
     adults = fields.Integer(string='Pax', required=True, default=1,help="Number of Adults")
 
@@ -818,17 +818,14 @@ class RoomBooking(models.Model):
         }
 
     def unlink(self):
-        if self.room_line_ids:
-            for room in self.room_line_ids:
-                room.room_id.write({
-                    'status': 'available',
-                })
+        for booking in self:
+            for room_line in booking.room_line_ids:
+                if room_line.room_id:
+                    room_line.room_id.write({'status': 'available'})
 
-            if room.room_id:
-                room.room_id.status = 'available'
+            if not self.env.user.has_group('base.group_no_one'):
+                raise UserError("You are not allowed to delete Restaurant Orders.")
 
-        if not self.env.user.has_group('base.group_no_one'):
-            raise UserError("You are not allowed to delete Restaurant Orders.")
         return super(RoomBooking, self).unlink()
 
     def get_details(self):
@@ -838,23 +835,14 @@ class RoomBooking(models.Model):
         today_utc = pytz.timezone('UTC').localize(today,
                                                   is_dst=False)
         context_today = today_utc.astimezone(pytz.timezone(tz_name))
+
         total_room = self.env['product.template'].search_count([('is_roomtype', '=', True)])
+
         check_in = self.env['room.booking.line'].search_count(
             [('state', '=', 'check_in')])
 
         available_room = self.env['product.template'].search(
             [('status', '=', 'available'), ('is_roomtype', '=', True)],)
-
-        # domain1 = [
-        #     ('room_line_ids.state', '=', 'reserved'),
-        #     ('is_roomtype', '=', True),
-        #     ('room_line_ids.checkin_date', '>', context_today.date()),
-        #
-        # ]
-        #
-        # future_reserved = self.env['product.product'].search(domain1)
-        #
-        # _logger.info(f'===================sssssssssss===={future_reserved}===========================================')
 
         domain = [
             ('state', '=', 'reserved'),
@@ -863,8 +851,8 @@ class RoomBooking(models.Model):
         ]
         reservation = self.env['room.booking.line'].search_count(domain)
 
-        # combined_rooms = available_room + future_reserved
         check_outs = self.env['room.booking'].search([('state', '=', 'check_out')])
+
         check_out = 0
         staff = 0
         for rec in check_outs:
