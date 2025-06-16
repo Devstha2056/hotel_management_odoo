@@ -848,7 +848,20 @@ class RoomBooking(models.Model):
         ]
         reservation = self.env['room.booking.line'].search_count(domain)
 
-        # combined_rooms = available_room + future_reserved
+        domain1 = [
+            ('room_line_ids.state', '=', 'reserved'),
+            ('is_roomtype', '=', True),
+            ('room_line_ids.checkin_date', '>', context_today.date()),
+
+        ]
+
+        future_reserved = self.env['product.template'].search(domain1)
+
+        _logger.info(f'===================sssssssssss===={future_reserved}===========================================')
+
+
+
+        combined_rooms = available_room + future_reserved
         check_outs = self.env['room.booking'].search([('state', '=', 'check_out')])
         check_out = 0
         staff = 0
@@ -923,7 +936,7 @@ class RoomBooking(models.Model):
         return {
             'total_room': total_room,
             'context_today': str(context_today),
-            'available_room': len(available_room),
+            'available_room': len(combined_rooms),
             'staff': staff,
             'check_in': check_in,
             'reservation': reservation,
