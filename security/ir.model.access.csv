@@ -74,7 +74,7 @@ access_hotel_room_developer,access.hotel.room.user,model_hotel_room,base.group_n
 access_room_booking_user,access.room.booking.user,model_room_booking,base.group_user,1,1,0,0
 access_room_booking_reception,access.room.booking.user,model_room_booking,hotel_management_odoo.hotel_group_reception,1,1,0,0
 access_room_booking_admin,access.room.booking.user,model_room_booking,hotel_management_odoo.hotel_group_admin,1,1,1,0
-access_room_booking_developer,access.room.booking.user,model_room_booking,base.group_no_one,1,1,1,1
+access_room_booking_developer,access.room.booking.user,model_room_booking,base.group_no_one,1,1,1,0
 
 
 access_room_booking_line_user,access.room.booking.line.user,model_room_booking_line,base.group_user,1,1,0,0

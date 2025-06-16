@@ -108,8 +108,3 @@ class ResPartner(models.Model):
 
     isagenttype = fields.Boolean(string="Is Agent Type")
 
-# class ResUsers(models.Model):
-#     _inherit = 'res.users'
-#
-#     is_admin = fields.Boolean()
-#

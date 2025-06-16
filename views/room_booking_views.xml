@@ -17,7 +17,7 @@
                     <button name="action_maintenance_request"
                             string="Maintenance Request" type="object"
                             class="btn-primary"
-                            invisible="1git "/>
+                            invisible="1"/>
                     <button name="action_checkout" string="Check-Out"
                             class="btn-primary" invisible="state != 'check_in'"
                             type="object"/>
