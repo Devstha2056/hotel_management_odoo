@@ -61,7 +61,7 @@
                     </div>
                 </div>
             </div>
-            <!--            Total Reservations-->
+            <!--            Today Reservations-->
             <div groups="hotel_management_odoo.hotel_group_reception"
                  class="col-md-3 col-sm-6 reservations dash-card"
                  t-on-click="(e)=> this.reservations(e)">
@@ -74,7 +74,7 @@
                         <div class="dash-count">
                             <t t-esc="reservation"/>
                         </div>
-                        <div class="dash-head">Total Reservations</div>
+                        <div class="dash-head">Today Reservations</div>
                     </div>
                 </div>
             </div>
@@ -113,39 +113,39 @@
                 </div>
             </div>
             <!--            Total Vehicle-->
-            <div groups="hotel_management_odoo.hotel_group_reception"
-                 class="col-md-3 col-sm-6 total_vehicle dash-card"
-                 t-on-click="(e)=> this.fetch_total_vehicle(e)">
-                <div class="card" style="width: 18rem;">
-                    <div class="card-img-top dash-icon-1"
-                         style="color:#f5f39f;">
-                        <i class="fa fa-car fa-lg"/>
-                    </div>
-                    <div class="card-body">
-                        <div class="dash-count">
-                            <t t-esc="total_vehicle"/>
-                        </div>
-                        <div class="dash-head">Total Vehicle</div>
-                    </div>
-                </div>
-            </div>
+<!--            <div groups="hotel_management_odoo.hotel_group_reception"-->
+<!--                 class="col-md-3 col-sm-6 total_vehicle dash-card"-->
+<!--                 t-on-click="(e)=> this.fetch_total_vehicle(e)">-->
+<!--                <div class="card" style="width: 18rem;">-->
+<!--                    <div class="card-img-top dash-icon-1"-->
+<!--                         style="color:#f5f39f;">-->
+<!--                        <i class="fa fa-car fa-lg"/>-->
+<!--                    </div>-->
+<!--                    <div class="card-body">-->
+<!--                        <div class="dash-count">-->
+<!--                            <t t-esc="total_vehicle"/>-->
+<!--                        </div>-->
+<!--                        <div class="dash-head">Total Vehicle</div>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--            </div>-->
             <!--            Available Vehicle-->
-            <div groups="hotel_management_odoo.hotel_group_reception"
-                 class="col-md-3 col-sm-6 available_vehicle dash-card"
-                 t-on-click="(e)=> this.fetch_available_vehicle(e)">
-                <div class="card" style="width: 18rem;">
-                    <div class="card-img-top dash-icon-1"
-                         style="color:#269138;">
-                        <i class="fa fa-car fa-lg"/>
-                    </div>
-                    <div class="card-body">
-                        <div class="dash-count">
-                            <t t-esc="available_vehicle"/>
-                        </div>
-                        <div class="dash-head">Available Vehicle</div>
-                    </div>
-                </div>
-            </div>
+<!--            <div groups="hotel_management_odoo.hotel_group_reception"-->
+<!--                 class="col-md-3 col-sm-6 available_vehicle dash-card"-->
+<!--                 t-on-click="(e)=> this.fetch_available_vehicle(e)">-->
+<!--                <div class="card" style="width: 18rem;">-->
+<!--                    <div class="card-img-top dash-icon-1"-->
+<!--                         style="color:#269138;">-->
+<!--                        <i class="fa fa-car fa-lg"/>-->
+<!--                    </div>-->
+<!--                    <div class="card-body">-->
+<!--                        <div class="dash-count">-->
+<!--                            <t t-esc="available_vehicle"/>-->
+<!--                        </div>-->
+<!--                        <div class="dash-head">Available Vehicle</div>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--            </div>-->
             <!--            Total Revenue-->
             <div groups="hotel_management_odoo.hotel_group_Accountant"
                  class="col-md-3 col-sm-6 total_revenue dash-card">
