@@ -836,32 +836,37 @@ class RoomBooking(models.Model):
                                                   is_dst=False)
         context_today = today_utc.astimezone(pytz.timezone(tz_name))
         total_room = self.env['product.template'].search_count([('is_roomtype', '=', True)])
-        check_in = self.env['room.booking.line'].search_count(
-            [('state', '=', 'check_in')])
+        # check_in = self.env['room.booking.line'].search_count(
+        #     [('state', '=', 'check_in')])
+
+        check_in = self.env['product.template'].search_count(
+            [('status', '=', 'occupied'), ('is_roomtype', '=', True)],)
 
         available_room = self.env['product.template'].search(
             [('status', '=', 'available'), ('is_roomtype', '=', True)],)
-        domain = [
-            ('state', '=', 'reserved'),
-            ('checkin_date', '>=', context_today.date()),
-            ('checkin_date', '<=', context_today.date())
-        ]
-        reservation = self.env['room.booking.line'].search_count(domain)
+        # domain = [
+        #     ('state', '=', 'reserved'),
+        #     ('checkin_date', '>=', context_today.date()),
+        #     ('checkin_date', '<=', context_today.date())
+        # ]
+        # reservation = self.env['room.booking.line'].search_count(domain)
+        reservation = self.env['product.template'].search(
+            [('status', '=', 'reserved'), ('is_roomtype', '=', True)], )
 
-        domain1 = [
-            ('room_line_ids.state', '=', 'reserved'),
-            ('is_roomtype', '=', True),
-            ('room_line_ids.checkin_date', '>', context_today.date()),
+        # domain1 = [
+        #     ('room_line_ids.state', '=', 'reserved'),
+        #     ('is_roomtype', '=', True),
+        #     ('room_line_ids.checkin_date', '>', context_today.date()),
+        #
+        # ]
+        #
+        # future_reserved = self.env['product.template'].search(domain1)
+        #
+        # _logger.info(f'===================sssssssssss===={future_reserved}===========================================')
 
-        ]
-
-        future_reserved = self.env['product.template'].search(domain1)
-
-        _logger.info(f'===================sssssssssss===={future_reserved}===========================================')
 
 
-
-        combined_rooms = available_room + future_reserved
+        # combined_rooms = available_room + future_reserved
         check_outs = self.env['room.booking'].search([('state', '=', 'check_out')])
         check_out = 0
         staff = 0
@@ -936,10 +941,11 @@ class RoomBooking(models.Model):
         return {
             'total_room': total_room,
             'context_today': str(context_today),
-            'available_room': len(combined_rooms),
+            'available_room': len(available_room),
+
             'staff': staff,
             'check_in': check_in,
-            'reservation': reservation,
+            'reservation':len(reservation),
             'check_out': check_out,
             'total_vehicle': total_vehicle,
             'available_vehicle': available_vehicle,

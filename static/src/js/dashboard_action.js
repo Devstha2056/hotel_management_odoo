@@ -221,11 +221,11 @@ async fetch_data() {
         this.action.doAction({
             name: _t("Total Reservations"),
             type:'ir.actions.act_window',
-            res_model:'room.booking.line',
+            res_model:'product.template',
             view_mode:'list,form',
             view_type:'form',
             views:[[false,'list']],
-            domain: [['state', '=', 'reserved'], ['checkin_date', '>=', formattedDate],['checkin_date', '<=', formattedDate]],
+            domain: [['status', '=', 'reserved'],],
             target:'current'
         },options)
     }

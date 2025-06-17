@@ -16,7 +16,7 @@
     </record>
     <!--    Restaurant Team Leader group-->
     <record id="restaurant_group_leader" model="res.groups">
-        <field name="name">Restaurant Caption</field>
+        <field name="name">Restaurant Captain</field>
         <field name="category_id"
                ref="hotel_management_odoo.module_category_hotel_management"/>
         <field name="implied_ids"

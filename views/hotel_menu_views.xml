@@ -26,13 +26,13 @@
 
     <menuitem id="room_booking_menu_checkout"
               name="Today's Departure"
-              sequence="14"
+              sequence="13"
               parent="room_booking_menu"
               action="room_booking_action_checkout"/>
 
     <menuitem id="room_booking_menu_reserved"
               name="Reserved Room"
-              sequence="13"
+              sequence="14"
               parent="room_booking_menu"
               action="room_booking_action_reserved"/>
 

@@ -1,34 +1,68 @@
 import io
 import json
+from odoo.tools.safe_eval import pytz
 from odoo import fields, models, _
 from odoo.exceptions import ValidationError
 from odoo.tools import json_default
+from datetime import datetime, timedelta, date
+import logging
+
+_logger = logging.getLogger(__name__)
 
 try:
     from odoo.tools.misc import xlsxwriter
 except ImportError:
     import xlsxwriter
 
-
 class RoomBookingWizard(models.TransientModel):
-    """Pdf Report for room Booking"""
+    """PDF Report for Room Booking"""
 
     _name = "room.booking.detail"
     _description = "Room Booking Details"
 
-    checkin = fields.Date(help="Choose the Checkin Date", string="Checkin")
-    checkout = fields.Date(help="Choose the Checkout Date", string="Checkout")
-    room_id = fields.Many2one("hotel.room", string="Room",
-                              help="Choose The Room")
+    report_date = fields.Date(string="Report Date", required=True, default=fields.Date.context_today)
 
     def action_room_booking_pdf(self):
-        """Button action_room_booking_pdf function"""
+        """Generate and trigger Room Booking PDF report"""
         data = {
             "booking": self.generate_data(),
         }
         return self.env.ref(
             "hotel_management_odoo.action_report_room_booking"
         ).report_action(self, data=data)
+
+    def generate_data(self):
+        result = []
+
+        # Use the selected date from the wizard
+        selected_date = self.report_date
+
+        all_rooms = self.env['product.template'].search([('is_roomtype', '=', True)])
+
+        for room in all_rooms:
+            room_data = {
+                'room_name': room.name,
+                'status': room.status,
+                'partner_id': '',
+                'checkin_date': '',
+                'checkout_date': '',
+            }
+
+            if room.status in ['reserved', 'occupied']:
+                booking_line = self.env['room.booking.line'].search([
+                    ('room_id.product_tmpl_id', '=', room.id),
+                    ('checkin_date', '>=', selected_date),
+                    ('checkout_date', '>=', selected_date),
+                ], limit=1)
+
+                if booking_line:
+                    room_data['partner_id'] = booking_line.booking_id.partner_id.name or ''
+                    room_data['checkin_date'] = booking_line.checkin_date
+                    room_data['checkout_date'] = booking_line.checkout_date
+
+            result.append(room_data)
+
+        return result
 
     def action_room_booking_excel(self):
         """Button action for creating Room Booking Excel report"""
@@ -46,46 +80,6 @@ class RoomBookingWizard(models.TransientModel):
             "report_type": "xlsx",
         }
 
-    def generate_data(self):
-        """Generate data to be printed in the report"""
-        domain = []
-        room_list = []
-        if self.checkin and self.checkout:
-            if self.checkin > self.checkout:
-                raise ValidationError(
-                    _("Check-in date should be less than Check-out date")
-                )
-        if self.checkin:
-            domain.append(
-                ("checkin_date", ">=", self.checkin),
-            )
-        if self.checkout:
-            domain.append(
-                ("checkout_date", "<=", self.checkout),
-            )
-        room_booking = self.env["room.booking"].search_read(
-            domain=domain,
-            fields=["partner_id", "name", "checkin_date", "checkout_date"],
-        )
-        for rec in room_booking:
-            rooms = (
-                self.env["room.booking"]
-                .browse(rec["id"])
-                .room_line_ids.room_id.mapped("name")
-            )
-            rec["partner_id"] = rec["partner_id"][1]
-            for room in rooms:
-                if self.room_id:
-                    if self.room_id.name == room:
-                        rec_copy = rec.copy()
-                        rec_copy["room"] = room  # Ensure this key is added
-                        room_list.append(rec_copy)
-                else:
-                    rec_copy = rec.copy()
-                    rec_copy["room"] = room  # Ensure this key is added
-                    room_list.append(rec_copy)
-
-        return room_list
 
     def get_xlsx_report(self, data, response):
         """Organizing xlsx report"""
