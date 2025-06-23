@@ -853,16 +853,16 @@ class RoomBooking(models.Model):
         reservation = self.env['product.template'].search(
             [('status', '=', 'reserved'), ('is_roomtype', '=', True)], )
 
-        domain1 = [
-            ('room_line_ids.state', '=', 'reserved'),
-            ('is_roomtype', '=', True),
-            ('room_line_ids.checkin_date', '>', context_today.date()),
-
-        ]
-
-        future_reserved = self.env['product.template'].search(domain1)
-
-        _logger.info(f'===================sssssssssss===={future_reserved}===========================================')
+        # domain1 = [
+        #     ('room_line_ids.state', '=', 'reserved'),
+        #     ('is_roomtype', '=', True),
+        #     ('room_line_ids.checkin_date', '>', context_today.date()),
+        #
+        # ]
+        #
+        # future_reserved = self.env['product.template'].search(domain1)
+        #
+        # _logger.info(f'===================sssssssssss===={future_reserved}===========================================')
 
 
 
@@ -942,7 +942,6 @@ class RoomBooking(models.Model):
             'total_room': total_room,
             'context_today': str(context_today),
             'available_room': len(available_room),
-
             'staff': staff,
             'check_in': check_in,
             'reservation':len(reservation),
