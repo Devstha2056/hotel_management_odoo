@@ -853,16 +853,16 @@ class RoomBooking(models.Model):
         reservation = self.env['product.template'].search(
             [('status', '=', 'reserved'), ('is_roomtype', '=', True)], )
 
-        # domain1 = [
-        #     ('room_line_ids.state', '=', 'reserved'),
-        #     ('is_roomtype', '=', True),
-        #     ('room_line_ids.checkin_date', '>', context_today.date()),
-        #
-        # ]
-        #
-        # future_reserved = self.env['product.template'].search(domain1)
-        #
-        # _logger.info(f'===================sssssssssss===={future_reserved}===========================================')
+        domain1 = [
+            ('room_line_ids.state', '=', 'reserved'),
+            ('is_roomtype', '=', True),
+            ('room_line_ids.checkin_date', '>', context_today.date()),
+
+        ]
+
+        future_reserved = self.env['product.template'].search(domain1)
+
+        _logger.info(f'===================sssssssssss===={future_reserved}===========================================')
 
 
 
@@ -932,7 +932,7 @@ class RoomBooking(models.Model):
 
                 if fiscal_year and fiscal_year.date_from <= rec.date < fiscal_year.date_to:
                     year_revenue += rec.amount_total
-        _logger.info(f'============={year_revenue}==============================')
+        _logger.info(f'=======dddddd======{year_revenue}==============================')
 
         for rec in self.env['account.move'].search(
                 [('payment_state', '=', 'not_paid')]):
