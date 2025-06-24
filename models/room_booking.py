@@ -844,25 +844,35 @@ class RoomBooking(models.Model):
 
         available_room = self.env['product.template'].search(
             [('status', '=', 'available'), ('is_roomtype', '=', True)],)
-        # domain = [
-        #     ('state', '=', 'reserved'),
-        #     ('checkin_date', '>=', context_today.date()),
-        #     ('checkin_date', '<=', context_today.date())
-        # ]
-        # reservation = self.env['room.booking.line'].search_count(domain)
-        reservation = self.env['product.template'].search(
-            [('status', '=', 'reserved'), ('is_roomtype', '=', True)], )
+        domain = [
+            ('state', '=', 'reserved'),
+            ('checkin_date', '>=', context_today.date()),
+            ('checkin_date', '<=', context_today.date())
+        ]
+        reservation = self.env['room.booking.line'].search(domain)
 
-        # domain1 = [
-        #     ('room_line_ids.state', '=', 'reserved'),
-        #     ('is_roomtype', '=', True),
-        #     ('room_line_ids.checkin_date', '>', context_today.date()),
-        #
-        # ]
-        #
-        # future_reserved = self.env['product.template'].search(domain1)
-        #
-        # _logger.info(f'===================sssssssssss===={future_reserved}===========================================')
+        # reservation = self.env['product.template'].search(
+        #     [('status', '=', 'reserved'), ('is_roomtype', '=', True)], )
+
+        reserved_lines = self.env['room.booking.line'].search([
+            ('state', '=', 'reserved'),
+            ('checkin_date', '<=', context_today.date()),
+            ('checkout_date', '>', context_today.date()),  # Optional if you have it
+        ])
+        booked_room_ids = reserved_lines.mapped('room_id.id')
+
+        # Step 2: Get rooms currently occupied
+        check_in_rooms = self.env['product.template'].search([
+            ('status', '=', 'occupied'),
+            ('is_roomtype', '=', True)
+        ])
+
+        # Step 3: Available today = not reserved today and not occupied
+        today_available = self.env['product.template'].search([
+            ('is_roomtype', '=', True),
+            ('id', 'not in', booked_room_ids),
+            ('id', 'not in', check_in_rooms.ids),
+        ])
 
 
 
@@ -941,7 +951,7 @@ class RoomBooking(models.Model):
         return {
             'total_room': total_room,
             'context_today': str(context_today),
-            'available_room': len(available_room),
+            'available_room': len(today_available),
             'staff': staff,
             'check_in': check_in,
             'reservation':len(reservation),
