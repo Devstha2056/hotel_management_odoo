@@ -874,31 +874,30 @@ class RoomBooking(models.Model):
             ('id', 'not in', check_in_rooms.ids),
         ])
 
-
-
         # combined_rooms = available_room + future_reserved
-        check_outs = self.env['room.booking'].search([('state', '=', 'check_out')])
+        check_outs = self.env['room.booking.line'].search([('state', '=', 'check_out'),('checkout_date', '>=', context_today.date()),
+            ('checkout_date', '<=', context_today.date())])
         check_out = 0
         staff = 0
-        for rec in check_outs:
-            for room in rec.room_line_ids:
-                if room.checkout_date.date() == context_today.date():
-                    check_out += 1
-            """staff"""
-            staff = self.env['res.users'].search_count(
-                [('groups_id', 'in',
-                  [self.env.ref('hotel_management_odoo.hotel_group_admin').id,
-                   self.env.ref(
-                       'hotel_management_odoo.cleaning_team_group_head').id,
-                   self.env.ref(
-                       'hotel_management_odoo.cleaning_team_group_user').id,
-                   self.env.ref(
-                       'hotel_management_odoo.hotel_group_reception').id,
-                   self.env.ref(
-                       'hotel_management_odoo.maintenance_team_group_leader').id,
-                   self.env.ref(
-                       'hotel_management_odoo.maintenance_team_group_user').id
-                   ])])
+        # for rec in check_outs:
+        #     for room in rec.room_line_ids:
+        #         if room.checkout_date.date() == context_today.date():
+        #             check_out += 1
+        """staff"""
+        staff = self.env['res.users'].search_count(
+            [('groups_id', 'in',
+              [self.env.ref('hotel_management_odoo.hotel_group_admin').id,
+               self.env.ref(
+                   'hotel_management_odoo.cleaning_team_group_head').id,
+               self.env.ref(
+                   'hotel_management_odoo.cleaning_team_group_user').id,
+               self.env.ref(
+                   'hotel_management_odoo.hotel_group_reception').id,
+               self.env.ref(
+                   'hotel_management_odoo.maintenance_team_group_leader').id,
+               self.env.ref(
+                   'hotel_management_odoo.maintenance_team_group_user').id
+               ])])
         total_vehicle = self.env['fleet.vehicle.model'].search_count([])
         available_vehicle = total_vehicle - self.env[
             'fleet.booking.line'].search_count(
@@ -955,7 +954,7 @@ class RoomBooking(models.Model):
             'staff': staff,
             'check_in': check_in,
             'reservation':len(reservation),
-            'check_out': check_out,
+            'check_out': len(check_outs),
             'total_vehicle': total_vehicle,
             'available_vehicle': available_vehicle,
             'total_event': total_event,
