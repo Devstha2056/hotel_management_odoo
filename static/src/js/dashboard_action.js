@@ -187,11 +187,11 @@ async fetch_data() {
         this.action.doAction({
             name: _t("Today's Check-Out"),
             type:'ir.actions.act_window',
-            res_model:'room.booking',
+            res_model:'room.booking.line',
             view_mode:'list,form',
             view_type:'list,form',
             views:[[false,'list']],
-            domain: [['state', '=', 'check_out']],
+            domain: [['state', '=', 'check_out'],['checkout_date', '>=', formattedDate]],
             target:'current'
         },options)
     }
