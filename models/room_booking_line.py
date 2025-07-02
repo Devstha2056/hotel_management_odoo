@@ -147,6 +147,7 @@ class RoomBookingLine(models.Model):
                 if diffdate.total_seconds() > 0:
                     qty += 1
                 record.uom_qty = qty
+
     @api.onchange("uom_qty")
     def _onchange_uom_qty(self):
         for line in self:
