@@ -794,6 +794,10 @@ class RoomBooking(models.Model):
         if not self.room_line_ids:
             raise ValidationError(_("Please Enter Room Details"))
 
+        for room in record.room_line_ids:
+            if room.room_id.status == 'occupied':
+                raise ValidationError("Room is already occupied. Please ensure availability before check-in.")
+
         if not self.card_name_line_ids:
             raise UserError(_('Please add Your ID Details Before Checkin.'))
 
