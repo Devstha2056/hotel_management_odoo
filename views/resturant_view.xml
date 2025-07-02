@@ -68,8 +68,13 @@
                     </group>
                     <notebook>
                         <page name="food" string="Food">
+
                             <field name="food_order_restaurant_line_ids"  delete="0" colspan="4" string="Food Lines">
                                 <list editable="bottom" delete="0">
+
+                            <field name="food_order_restaurant_line_ids"   colspan="4" string="Food Lines">
+                                <list editable="bottom" >
+
                                     <field name="food_id" string="Product" required="1"
                                            options="{'no_open': True,'no_create': True}" readonly="state == 'order'"/>
                                     <field name="description" readonly="state == 'order'"/>

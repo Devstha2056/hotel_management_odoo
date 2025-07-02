@@ -281,7 +281,7 @@ class RoomBookingLine(models.Model):
             if rec.room_id:
                 rec.room_id.status = 'available'
         if not self.env.user.has_group('base.group_no_one'):
-            raise UserError("You are not allowed to delete Restaurant Orders.")
+            raise UserError("You are not allowed to delete Room Booking Line.")
         for line in self:
             if line.booking_id:
                 line.booking_id.message_post(
