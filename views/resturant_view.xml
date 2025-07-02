@@ -34,20 +34,19 @@
                             type="object"
                             string="Generate KOT/BOT"
                             invisible="state != 'confirm'"
-
                             class="btn btn-primary"/>
 
 
                     <button name="action_cancel"
                             type="object"
                             string="Cancel"
-                            invisible="state == 'cancel'"
+                            invisible="state  in ('cancel','order')"
                             class="btn btn-primary"/>
 
                     <button name="action_order_done"
                             type="object"
                             string="Order Done"
-
+                            invisible="state != 'done'"
                             class="btn btn-primary"/>
 
                     <field name="state" widget="statusbar"/>
@@ -60,29 +59,32 @@
                     </div>
                     <group>
                          <field name="active" invisible="1"/>
-                        <field name="room_no"/>
-                        <field name="partner_id"/>
-                        <field name="folio_ids"/>
-                        <field name="guest_name"/>
-                        <field name="o_date"/>
-                        <field name="waiter_name"/>
+                        <field name="room_no"  readonly="state == 'order'" options="{'no_open': True,'no_create': True}"/>
+                        <field name="partner_id" readonly="state == 'order'" options="{'no_open': True,'no_create': True}"/>
+                        <field name="folio_ids" readonly="state == 'order'" options="{'no_open': True,'no_create': True}"/>
+                        <field name="guest_name" readonly="state == 'order'" options="{'no_open': True,'no_create': True}"/>
+                        <field name="o_date" readonly="state == 'order'" />
+                        <field name="waiter_name" readonly="state == 'order'" options="{'no_open': True,'no_create': True}"/>
                     </group>
                     <notebook>
                         <page name="food" string="Food">
-                            <field name="food_order_restaurant_line_ids"  colspan="4" string="Food Lines">
-                                <list editable="bottom">
+                            <field name="food_order_restaurant_line_ids"  delete="0" colspan="4" string="Food Lines">
+                                <list editable="bottom" delete="0">
                                     <field name="food_id" string="Product" required="1"
-                                           options="{'no_open': True,'no_create': True}"/>
-                                    <field name="description"/>
-                                    <field name="uom_qty" string="Qty" force_save="1"/>
+                                           options="{'no_open': True,'no_create': True}" readonly="state == 'order'"/>
+                                    <field name="description" readonly="state == 'order'"/>
+                                    <field name="uom_qty" string="Qty" force_save="1" readonly="state == 'order'"/>
                                     <field name="uom_id" string="Unit of Measure"
                                            options="{'no_open': True,'no_create': True}"/>
-                                    <field name="price_unit"/>
+                                    <field name="price_unit" readonly="state == 'order'"/>
                                     <field name="tax_ids" widget="many2many_tags"
-                                           options="{'no_create': True}"/>
-                                    <field name="price_subtotal" widget="monetary"/>
+                                           options="{'no_create': True}" readonly="state == 'order'"/>
+                                    <field name="price_subtotal" widget="monetary" readonly="state == 'order'"/>
                                     <field name="price_total" widget="monetary"
-                                           groups="account.group_account_manager"/>
+                                           groups="account.group_account_manager" readonly="state == 'order'"/>
+<!--                                       <button name="unlink" string="Delete" type="object"-->
+<!--                                               groups="hotel_management_odoo.restaurant_group_leader"-->
+<!--                                               invisible="state == 'order'"/>-->
                                 </list>
                             </field>
                               <group colspan="2"
