@@ -28,10 +28,21 @@ class RestaurantOrder(models.Model):
                              string='State', default='draft', index=True, required=True)
 
     folio_ids = fields.Many2one('room.booking', string='Booking Reference')
+    currency_id = fields.Many2one('res.currency', string='Currency')
 
     food_order_restaurant_line_ids = fields.One2many('food.booking.line','restaurant_order_id',
                                                      string='Restaurant Order Line',help='Linked food items for this kitchen order' )
-
+    amount_untaxed_food = fields.Monetary(string="Food Taxable",
+                                          help="Untaxed Amount for Food",
+                                          compute='_compute_amount_untaxed',
+                                          tracking=5)
+    amount_taxed_food = fields.Monetary(string="Food Tax", help="Tax for Food",
+                                        compute='_compute_amount_untaxed',
+                                        tracking=5)
+    amount_total_food = fields.Monetary(string="Total Amount for Food",
+                                        compute='_compute_amount_untaxed',
+                                        help="This is the Total Amount for "
+                                             "Food", tracking=5)
     active = fields.Boolean(string='Active', default=True)
 
     @api.onchange('room_no')
@@ -42,13 +53,6 @@ class RestaurantOrder(models.Model):
             else:
                 rec.folio_ids = False
 
-    #
-    # @api.model
-    # def create(self, vals_list):
-    #     for vals in vals_list:
-    #         if vals.get('order_no', 'New') == 'New':
-    #             vals['order_no'] = self.env['ir.sequence'].next_by_code('restaurant.order') or 'New'
-    #     return super(RestaurantOrder, self).create(vals_list)
     @api.model
     def create(self, vals):
         if not isinstance(vals, dict):
@@ -80,6 +84,83 @@ class RestaurantOrder(models.Model):
         if not self.env.user.has_group('base.group_no_one'):
             raise UserError("You are not allowed to delete Restaurant Orders.")
         return super(RestaurantOrder, self).unlink()
+
+
+    def _compute_amount_untaxed(self, flag=False):
+        """Compute the total amounts of the Sale Order"""
+        amount_untaxed_food = 0.0
+        amount_taxed_food = 0.0
+        amount_total_food = 0.0
+
+        food_lines = self.food_order_restaurant_line_ids
+
+        booking_list = []
+        account_move_line = self.env['account.move.line'].search_read(
+            domain=[('ref', '=', self.name),
+                    ('display_type', '!=', 'payment_term')],
+            fields=['name', 'quantity', 'price_unit', 'product_type'], )
+        for rec in account_move_line:
+            del rec['id']
+
+        if food_lines:
+            for food in food_lines:
+                booking_list.append(self.create_list(food))
+            amount_untaxed_food += sum(food_lines.mapped('price_subtotal'))
+            amount_taxed_food += sum(food_lines.mapped('price_tax'))
+            amount_total_food += sum(food_lines.mapped('price_total'))
+
+        for rec in self:
+            rec.amount_untaxed_food = amount_untaxed_food
+            rec.amount_taxed_food = amount_taxed_food
+            rec.amount_total_food = amount_total_food
+        return booking_list
+    
+    def create_list(self, line_ids):
+        """Returns a List of Dictionaries for Booking Lines"""
+        booking_list = []
+        for line in line_ids:
+            model_name = line._name
+            name = ""
+            product_type = ""
+            product_id = None
+
+            if model_name == 'room.booking.line':
+                name = line.room_id.name
+                product_id = line.room_id.id
+                product_type = 'room'
+            elif model_name == 'food.booking.line':
+                name = line.food_id.name
+                product_id = line.food_id.id
+                product_type = 'food'
+            elif model_name == 'fleet.booking.line':
+                name = line.fleet_id.name
+                product_id = line.fleet_id.id
+                product_type = 'fleet'
+            elif model_name == 'service.booking.line':
+                name = line.service_id.name
+                product_id = line.service_id.id
+                product_type = 'service'
+            elif model_name == 'event.booking.line':
+                name = line.event_id.name
+                product_id = line.event_id.id
+                product_type = 'event'
+            else:
+                continue  # Unknown model
+
+            # Check for missing product
+            if not product_id:
+                raise ValidationError("Product is missing in one of the booking lines.")
+
+            booking_list.append({
+                'name': name,
+                'quantity': line.uom_qty,
+                'price_unit': line.price_unit,
+                'discount': getattr(line, 'discount', 0.0),
+                'product_type': product_type,
+                'product_id': product_id,
+            })
+
+        return booking_list
 
     def action_create_kot_bot_orders(self):
         for record in self:

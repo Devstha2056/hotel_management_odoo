@@ -85,6 +85,17 @@
                                            groups="account.group_account_manager"/>
                                 </list>
                             </field>
+                              <group colspan="2"
+                                   class="oe_subtotal_footer oe_right">
+                                <field name="amount_untaxed_food"
+                                       sum="Untaxed amount for Food"
+                                       widget="monetary"/>
+                                <field name="amount_taxed_food"
+                                       widget="monetary"/>
+                                <label for="amount_total_food"/>
+                                <field name="amount_total_food" nolabel="1"
+                                       sum="Total amount" widget="monetary"/>
+                            </group>
                             <div class="oe_clear"/>
                         </page>
                     </notebook>
