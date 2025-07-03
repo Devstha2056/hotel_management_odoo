@@ -51,7 +51,7 @@ class ProductCategory(models.Model):
 class SaleOrder(models.Model):
     _inherit = 'sale.order'
 
-    booking_reference=fields.Char(string='Booking Reference')
+    booking_reference=fields.Char(string='Booking Reference',readonly=True)
 
     booking_id = fields.Many2one("room.booking", string="Booking",
                                  help="Indicates the Room",readonly=True,

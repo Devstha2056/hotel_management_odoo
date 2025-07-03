@@ -220,18 +220,13 @@ class RoomBookingLine(models.Model):
             if line.checkout_date <= line.checkin_date:
                 raise ValidationError(_("Checkout date must be after check-in date."))
 
-            # Search for overlapping bookings for the same room
+            # More accurate overlapping logic
             overlapping_bookings = self.env['room.booking.line'].search([
-                ('id', '!=', line.id),  # Exclude the current line
+                ('id', '!=', line.id),
                 ('room_id', '=', line.room_id.id),
                 ('booking_id.state', 'in', ['reserved', 'check_in']),
-                '|',
-                '&',
-                ('checkin_date', '<=', line.checkin_date),
-                ('checkout_date', '>=', line.checkin_date),
-                '&',
-                ('checkin_date', '<=', line.checkout_date),
-                ('checkout_date', '>=', line.checkout_date),
+                ('checkin_date', '<', line.checkout_date),
+                ('checkout_date', '>', line.checkin_date),
             ])
 
             if overlapping_bookings:
@@ -239,17 +234,21 @@ class RoomBookingLine(models.Model):
                     "Sorry, the room is already reserved or checked in between these dates."
                 ))
 
+
     @api.constrains('checkin_date', 'checkout_date', 'room_id')
     def _check_room_availability(self):
         for line in self:
+            if not line.checkin_date or not line.checkout_date or not line.room_id:
+                continue
+
             overlapping = self.env['room.booking.line'].search([
                 ('id', '!=', line.id),
                 ('room_id', '=', line.room_id.id),
                 ('booking_id.state', 'in', ['reserved', 'check_in']),
-                '|',
-                '&', ('checkin_date', '<=', line.checkin_date), ('checkout_date', '>=', line.checkin_date),
-                '&', ('checkin_date', '<=', line.checkout_date), ('checkout_date', '>=', line.checkout_date),
+                ('checkin_date', '<', line.checkout_date),
+                ('checkout_date', '>', line.checkin_date),
             ])
+
             if overlapping:
                 raise ValidationError(_("Room is not available for the selected dates."))
 
