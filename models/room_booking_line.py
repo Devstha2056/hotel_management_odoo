@@ -280,7 +280,7 @@ class RoomBookingLine(models.Model):
         for rec in self:
             if rec.room_id:
                 rec.room_id.status = 'available'
-        if not self.env.user.has_group('base.group_no_one'):
+        if not self.env.user.has_group('hotel_management_odoo.hotel_group_admin'):
             raise UserError("You are not allowed to delete Room Booking Line.")
         for line in self:
             if line.booking_id:
