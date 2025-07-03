@@ -139,14 +139,14 @@ class RoomBookingLine(models.Model):
     def _onchange_checkin_date(self):
         for record in self:
             if record.checkin_date and record.checkout_date:
-                if record.checkout_date < record.checkin_date:
-                    raise ValidationError(
-                        _("Checkout must be greater or equal to check-in date"))
-                diffdate = record.checkout_date - record.checkin_date
-                qty = diffdate.days
-                if diffdate.total_seconds() > 0:
-                    qty += 1
-                record.uom_qty = qty
+                if record.checkout_date <= record.checkin_date:
+                    raise ValidationError(_("Checkout datetime must be after check-in datetime."))
+
+                # Get number of nights
+                duration = (record.checkout_date.date() - record.checkin_date.date()).days
+                if duration == 0:
+                    duration = 1
+                record.uom_qty = duration
 
     @api.onchange("uom_qty")
     def _onchange_uom_qty(self):
