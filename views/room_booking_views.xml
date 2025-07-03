@@ -164,7 +164,7 @@
                                     <field groups="account.group_account_manager"
                                            name="price_total" widget="monetary"
                                            readonly="booking_line_visible == True"/>
-                                    <button name="unlink" string="Delete" type="object"
+                                    <button name="unlink" groups="hotel_management_odoo.hotel_group_admin" string="Delete" type="object"
                                             invisible="state in ('check_in','check_out','cancel','done')"/>
                                 </list>
                                 <form>
