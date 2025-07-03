@@ -47,8 +47,7 @@ class RoomBooking(models.Model):
                            help="Phone Number of Customer")
     street_id = fields.Char(related='partner_id.street', string='Street', readonly=False, required=True,
                             help="Street of Customer")
-    city_id = fields.Char(related='partner_id.city', string='City', readonly=True, required=True,
-                          store=True,help="City of Customer")
+    city_id = fields.Char(related='partner_id.city', string='City', readonly=True,help="City of Customer")
 
     country_id = fields.Many2one('res.country',string="Country", help="Country Name",store=True)
 
@@ -822,13 +821,14 @@ class RoomBooking(models.Model):
         }
 
     def unlink(self):
-        for booking in self:
-            for room_line in booking.room_line_ids:
-                if room_line.room_id:
-                    room_line.room_id.write({'status': 'available'})
+        for room in self.room_line_ids:
+            room.room_id.write({
+                    'status': 'available',
+                    'is_room_avail': True
+                })
 
             if not self.env.user.has_group('base.group_no_one'):
-                raise UserError("You are not allowed to delete Restaurant Orders.")
+                raise UserError("You are not allowed to delete Room.")
 
         return super(RoomBooking, self).unlink()
 
