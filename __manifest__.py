@@ -7,10 +7,10 @@
     'description': """The module helps you to manage rooms, amenities, 
      services, food, events and vehicles. End Users can book rooms and reserve 
      foods from hotel.""",
-    'author': 'Cybrosys Techno Solutions',
-    'company': 'Cybrosys Techno Solutions',
-    'maintainer': 'Cybrosys Techno Solutions',
-    'website': 'https://www.cybrosys.com',
+    'author': 'Devendra Kumar Shrestha',
+    'company': 'CRMIC',
+    'maintainer': 'CRMIC DEVELOPER',
+    'website': 'https://www.crmictech.com',
     'depends': ['contacts', 'base', 'account', 'event', 'fleet', 'product', 'stock', 'sale_management', 'purchase'],
     'data': [
         'security/hotel_management_odoo_groups.xml',
