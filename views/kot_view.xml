@@ -6,7 +6,7 @@
         <field name="name">hotel.restaurant.kitchen.order.tickets.list</field>
         <field name="model">hotel.restaurant.kitchen.order.tickets</field>
         <field name="arch" type="xml">
-            <list>
+            <list create="0" edit="0" delete="0" >
                 <field name="order_no"/>
                 <field name="res_no"/>
                 <field name="kot_date"/>
@@ -76,7 +76,7 @@
         <field name="name">hotel.restaurant.bar.order.tickets.list</field>
         <field name="model">hotel.restaurant.bar.order.tickets</field>
         <field name="arch" type="xml">
-            <list>
+            <list create="0" edit="0" delete="0">
                 <field name="order_no"/>
                 <field name="res_no"/>
                 <field name="kot_date"/>
