@@ -53,8 +53,6 @@ class RoomBooking(models.Model):
 
     pan_id = fields.Char(related='partner_id.vat', string='PAN', readonly=False, required=False,
                          help="PAN no. of Company")
-    # country_id = fields.Char(related='partner_id.country', string='Country', readonly=False, required=False,help="Country Name OF Customer")
-
     adults = fields.Integer(string='Pax', required=True, default=1,help="Number of Adults")
 
     child = fields.Integer(string='Child', help="Number of Children")
