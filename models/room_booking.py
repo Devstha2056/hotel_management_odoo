@@ -51,6 +51,8 @@ class RoomBooking(models.Model):
 
     country_id = fields.Many2one('res.country',string="Country", help="Country Name",store=True)
 
+    company_type = fields.Selection(related='partner_id.company_type',readonly=False, string='Company Type', store=True)
+
     pan_id = fields.Char(related='partner_id.vat', string='PAN', readonly=False, required=False,
                          help="PAN no. of Company")
     adults = fields.Integer(string='Pax', required=True, default=1,help="Number of Adults")
@@ -326,14 +328,28 @@ class RoomBooking(models.Model):
             booking.room_checkin_date = min(checkins) if checkins else False
             booking.room_checkout_date = max(checkouts) if checkouts else False
 
+    @api.onchange('partner_id')
+    def _onchange_partner_id_set_country(self):
+        if self.partner_id and self.partner_id.country_id:
+            self.country_id = self.partner_id.country_id
+
     @api.model
     def create(self, vals):
-        if not isinstance(vals, dict):
-            raise ValidationError("Unexpected data format in create. Expected dictionary.")
 
         if vals.get('name', 'New') == 'New':
             vals['name'] = self.env['ir.sequence'].next_by_code('room.booking') or '/'
-        return super(RoomBooking, self).create(vals)
+        record = super(RoomBooking, self).create(vals)
+
+        if record.partner_id and record.country_id:
+            record.partner_id.country_id = record.country_id.id
+        return record
+
+    def write(self, vals):
+        res = super(RoomBooking, self).write(vals)
+        for rec in self:
+            if rec.partner_id and rec.country_id:
+                rec.partner_id.country_id = rec.country_id.id
+        return res
 
     @api.depends('partner_id')
     def _compute_user_id(self):
@@ -483,6 +499,8 @@ class RoomBooking(models.Model):
             rec.amount_total_event = amount_total_event
             rec.amount_total_service = amount_total_service
         return booking_list
+
+
 
     @api.onchange('need_food')
     def _onchange_need_food(self):
