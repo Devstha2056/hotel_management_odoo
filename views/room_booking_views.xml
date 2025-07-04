@@ -69,7 +69,9 @@
 
                     <div>
                         <h1>
+
                             <field name="name" colspan="4"/>
+
                         </h1>
                     </div>
                     <group>
@@ -84,6 +86,7 @@
                         <field name="invoice_button_visible" invisible="1"/>
                         <field name="maintenance_request_sent" invisible="1"/>
                         <group>
+                            <field name="company_type" widget="radio" options="{'horizontal': true}"/>
                             <field name="partner_id"
                                    widget="res_partner_many2one"
                                    context="{'res_partner_search_mode': 'customer', 'show_address': 1, 'show_vat': True}"
