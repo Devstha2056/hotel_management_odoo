@@ -100,7 +100,7 @@
                             <field name="street_id" readonly="state not in ('draft', 'reserved')"/>
                             <field name="city_id" readonly="state not in ('draft', 'reserved')"/>
                             <field name="country_id" readonly="state not in ('draft', 'reserved')"/>
-                            <field name="pan_id" readonly="state not in ('draft', 'reserved')"/>
+                            <field name="pan_id" required="company_type in 'company'" readonly="state not in ('draft', 'reserved')"/>
 
 
                         </group>
