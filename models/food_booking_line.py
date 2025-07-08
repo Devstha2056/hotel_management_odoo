@@ -1,4 +1,3 @@
-
 from odoo import api, fields, models, tools
 from odoo.exceptions import ValidationError, UserError
 
@@ -8,10 +7,6 @@ class FoodBookingLine(models.Model):
     _description = "Hotel Food Line"
     _rec_name = 'food_id'
 
-    @tools.ormcache()
-    def _get_default_uom_id(self):
-        """Method for getting the default uom id"""
-        return self.env.ref('uom.product_uom_unit')
 
     booking_id = fields.Many2one("room.booking", string="Booking",
                                  help="Shows the room Booking",
@@ -57,11 +52,10 @@ class FoodBookingLine(models.Model):
     uom_qty = fields.Float(string="Qty", default=1,
                            help="The quantity converted into the UoM used by "
                                 "the product")
-    uom_id = fields.Many2one('uom.uom', readonly=True,
-                             string="Unit of Measure",
-                             default=_get_default_uom_id, help="This will set "
-                                                               "the unit of"
-                                                               " measure used")
+    uom_id = fields.Many2one('uom.uom', readonly=False,
+                             string="Unit of Measure",compute="_onchange_product_id_set_uom",
+                              help="This will set "  "the unit of" " measure used")
+
     price_unit = fields.Float(string='Rent',
                               digits='Product Price',
                               help="The rent price of the selected room.")
@@ -101,6 +95,11 @@ class FoodBookingLine(models.Model):
 
     discount = fields.Float(string="Discount (%)", default=0.0)
     active = fields.Boolean(string='Active', default=True)
+
+    @api.onchange('food_id')
+    def _onchange_product_id_set_uom(self):
+        if self.food_id:
+            self.uom_id = self.food_id.uom_id
 
     @api.onchange("food_id")
     def _get_list_price(self):
