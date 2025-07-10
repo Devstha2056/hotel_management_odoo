@@ -52,9 +52,8 @@ class FoodBookingLine(models.Model):
     uom_qty = fields.Float(string="Qty", default=1,
                            help="The quantity converted into the UoM used by "
                                 "the product")
-    uom_id = fields.Many2one('uom.uom', readonly=False,
-                             string="Unit of Measure",compute="_onchange_product_id_set_uom",
-                              help="This will set "  "the unit of" " measure used")
+    uom_id = fields.Many2one('uom.uom', string="Unit of Measure",
+                             help="This will set the unit of measure used")
 
     price_unit = fields.Float(string='Rent',
                               digits='Product Price',
@@ -100,6 +99,22 @@ class FoodBookingLine(models.Model):
     def _onchange_product_id_set_uom(self):
         if self.food_id:
             self.uom_id = self.food_id.uom_id
+
+    @api.onchange('food_id', 'uom_id')
+    def _onchange_food_uom_price(self):
+        for line in self:
+            if line.food_id and line.uom_id:
+                # Convert price to selected UoM
+                product_uom = line.food_id.uom_id
+                selected_uom = line.uom_id
+
+                # Compute price according to UoM
+                price_unit = line.food_id.list_price
+                if selected_uom != product_uom:
+                    price_unit = line.food_id.uom_id._compute_price(price_unit, selected_uom)
+
+                line.price_unit = price_unit
+                line.tax_ids = line.food_id.taxes_id
 
     @api.onchange("food_id")
     def _get_list_price(self):
