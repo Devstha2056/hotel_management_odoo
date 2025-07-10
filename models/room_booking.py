@@ -600,6 +600,7 @@ class RoomBooking(models.Model):
             booking_list.append({
                 'name': name,
                 'quantity': line.uom_qty,
+                'product_uom': line.uom_id.id,
                 'price_unit': line.price_unit,
                 'discount': getattr(line, 'discount', 0.0),
                 'product_type': product_type,
@@ -767,6 +768,7 @@ class RoomBooking(models.Model):
                     'order_id': sale_order.id,
                     'name': rec['name'],
                     'product_uom_qty': rec['quantity'],
+                    'product_uom': rec['product_uom'],
                     'price_unit': rec['price_unit'],
                     'discount': rec.get('discount', 0.0),
                     'product_id': rec['product_id'],
