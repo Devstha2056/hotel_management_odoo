@@ -24,7 +24,7 @@ class RoomBooking(models.Model):
         related='sale_order_id.state',
         string="Order Status",
         help="Status of the Order",
-        store=True  # <-- ADD THIS
+        store=True
     )
 
     company_id = fields.Many2one('res.company', string="Company",
