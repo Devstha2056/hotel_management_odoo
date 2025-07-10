@@ -564,6 +564,7 @@ class RoomBooking(models.Model):
     def create_list(self, line_ids):
         """Returns a List of Dictionaries for Booking Lines"""
         booking_list = []
+
         for line in line_ids:
             model_name = line._name
             name = ""
@@ -574,38 +575,50 @@ class RoomBooking(models.Model):
                 name = line.room_id.name
                 product_id = line.room_id.id
                 product_type = 'room'
+
             elif model_name == 'food.booking.line':
                 name = line.food_id.name
                 product_id = line.food_id.id
                 product_type = 'food'
+
             elif model_name == 'fleet.booking.line':
                 name = line.fleet_id.name
                 product_id = line.fleet_id.id
                 product_type = 'fleet'
+
             elif model_name == 'service.booking.line':
                 name = line.service_id.name
                 product_id = line.service_id.id
                 product_type = 'service'
+
             elif model_name == 'event.booking.line':
                 name = line.event_id.name
                 product_id = line.event_id.id
                 product_type = 'event'
+
             else:
-                continue  # Unknown model
+                continue  # Unknown model, skip
 
             # Check for missing product
             if not product_id:
                 raise ValidationError(_("Product is missing in one of the booking lines."))
 
-            booking_list.append({
+            # Build the line dictionary
+            line_data = {
                 'name': name,
                 'quantity': line.uom_qty,
-                'product_uom': line.uom_id.id,
                 'price_unit': line.price_unit,
                 'discount': getattr(line, 'discount', 0.0),
                 'product_type': product_type,
                 'product_id': product_id,
-            })
+            }
+
+            # ✅ Only for food lines: include UoM and tag line_type
+            if model_name == 'food.booking.line':
+                line_data['product_uom'] = line.uom_id.id
+                line_data['line_type'] = 'food'
+
+            booking_list.append(line_data)
 
         return booking_list
 
@@ -764,17 +777,19 @@ class RoomBooking(models.Model):
             })
 
             for rec in booking_list:
-                self.env['sale.order.line'].create({
+                line_vals = {
                     'order_id': sale_order.id,
                     'name': rec['name'],
                     'product_uom_qty': rec['quantity'],
-                    'product_uom': rec['product_uom'],
                     'price_unit': rec['price_unit'],
                     'discount': rec.get('discount', 0.0),
                     'product_id': rec['product_id'],
-                })
+                }
 
-            self.write({'sale_order_id': sale_order.id})
+                if rec.get('line_type') == 'food':
+                    line_vals['product_uom'] = rec.get('product_uom')
+
+                self.env['sale.order.line'].create(line_vals)
 
             return {
                 'type': 'ir.actions.act_window',
