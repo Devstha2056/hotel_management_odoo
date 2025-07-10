@@ -108,3 +108,5 @@ class ResPartner(models.Model):
 
     isagenttype = fields.Boolean(string="Is Agent Type")
 
+
+
