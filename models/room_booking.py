@@ -613,7 +613,7 @@ class RoomBooking(models.Model):
                 'product_id': product_id,
             }
 
-            # ✅ Only for food lines: include UoM and tag line_type
+
             if model_name == 'food.booking.line':
                 line_data['product_uom'] = line.uom_id.id
                 line_data['line_type'] = 'food'
