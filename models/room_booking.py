@@ -782,7 +782,15 @@ class RoomBooking(models.Model):
                     'price_unit': rec['price_unit'],
                     'discount': rec.get('discount', 0.0),
                     'product_id': rec['product_id'],
+
+                }
+                if rec.get('line_type') == 'food':
+                    line_vals['product_uom'] = rec.get('product_uom')
+
+                self.env['sale.order.line'].create(line_vals)
+
                 })
+
 
             self.write({'sale_order_id': sale_order.id})
 
