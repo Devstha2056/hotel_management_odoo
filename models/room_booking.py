@@ -21,15 +21,10 @@ class RoomBooking(models.Model):
     issuing_auth = fields.Char('Sale Person', default=lambda self: self.env.user.name)
 
     quotation_state = fields.Selection(
-        selection=[('draft', 'Quotation'), ('sent', 'Quotation Sent'), ('sale', 'Sales Order'), ('done', 'Locked'),
-                   ('cancel', 'Cancelled')],
         related='sale_order_id.state',
-
-        string="Quotation Status",
-        help="Status of the related quotation/sale order.",
-        store=True,
-        readonly=True
-
+        string="Order Status",
+        help="Status of the Order",
+        store=True  # <-- ADD THIS
     )
 
     company_id = fields.Many2one('res.company', string="Company",
@@ -565,7 +560,7 @@ class RoomBooking(models.Model):
                         % line.room_id.name
                     )
                 ids.add(line.room_id.id)
-
+                
     def create_list(self, line_ids):
         """Returns a List of Dictionaries for Booking Lines"""
         booking_list = []
@@ -618,7 +613,6 @@ class RoomBooking(models.Model):
                 'product_id': product_id,
             }
 
-
             if model_name == 'food.booking.line':
                 line_data['product_uom'] = line.uom_id.id
                 line_data['line_type'] = 'food'
@@ -626,7 +620,6 @@ class RoomBooking(models.Model):
             booking_list.append(line_data)
 
         return booking_list
-
     def action_reserve(self):
         """Button Reserve Function"""
         if self.state == 'reserved':
@@ -769,13 +762,10 @@ class RoomBooking(models.Model):
         """Create a Sales Quotation (Sale Order) from room booking"""
         if not self.room_line_ids:
             raise ValidationError(_("Please Enter Room Details"))
-
         # Combine all booking lines
         all_lines = list(self.room_line_ids) + list(self.food_order_line_ids) + list(self.service_line_ids)
-
         # Generate booking list
         booking_list = self.create_list(all_lines)
-
         if booking_list:
             sale_order = self.env['sale.order'].create({
                 'partner_id': self.partner_id.id,
@@ -785,18 +775,22 @@ class RoomBooking(models.Model):
             })
 
             for rec in booking_list:
-                line_vals = {
+                self.env['sale.order.line'].create({
                     'order_id': sale_order.id,
                     'name': rec['name'],
                     'product_uom_qty': rec['quantity'],
                     'price_unit': rec['price_unit'],
                     'discount': rec.get('discount', 0.0),
                     'product_id': rec['product_id'],
+
                 }
                 if rec.get('line_type') == 'food':
                     line_vals['product_uom'] = rec.get('product_uom')
 
                 self.env['sale.order.line'].create(line_vals)
+
+                })
+
 
             self.write({'sale_order_id': sale_order.id})
 

@@ -53,8 +53,9 @@ class FoodBookingLine(models.Model):
     uom_qty = fields.Float(string="Qty", default=1,
                            help="The quantity converted into the UoM used by "
                                 "the product")
-    uom_id = fields.Many2one('uom.uom', string="Unit of Measure",
-                             help="This will set the unit of measure used")
+    uom_id = fields.Many2one('uom.uom', readonly=False,
+                             string="Unit of Measure",compute="_onchange_product_id_set_uom",
+                              help="This will set "  "the unit of" " measure used")
 
     price_unit = fields.Float(string='Rent',
                               digits='Product Price',
@@ -97,14 +98,6 @@ class FoodBookingLine(models.Model):
     active = fields.Boolean(string="Active", default=True)
 
 
-    @api.onchange("food_id")
-    def _get_list_price(self):
-        for line in self:
-            if line.food_id:
-                line.uom_id = line.food_id.uom_id
-                line.price_unit = line.food_id.list_price
-                line.tax_ids = line.food_id.taxes_id
-
     @api.onchange('food_id', 'uom_id')
     def _onchange_food_uom_price(self):
         for line in self:
@@ -112,12 +105,21 @@ class FoodBookingLine(models.Model):
                 # Convert price to selected UoM
                 product_uom = line.food_id.uom_id
                 selected_uom = line.uom_id
+
                 # Compute price according to UoM
                 price_unit = line.food_id.list_price
                 if selected_uom != product_uom:
                     price_unit = line.food_id.uom_id._compute_price(price_unit, selected_uom)
 
                 line.price_unit = price_unit
+                line.tax_ids = line.food_id.taxes_id
+
+    @api.onchange("food_id")
+    def _get_list_price(self):
+        for line in self:
+            if line.food_id:
+                line.uom_id = line.food_id.uom_id
+                line.price_unit = line.food_id.list_price
                 line.tax_ids = line.food_id.taxes_id
 
     @api.depends('uom_qty', 'price_unit', 'tax_ids')
