@@ -21,10 +21,13 @@ class RoomBooking(models.Model):
     issuing_auth = fields.Char('Sale Person', default=lambda self: self.env.user.name)
 
     quotation_state = fields.Selection(
+        selection=[('draft', 'Quotation'), ('sent', 'Quotation Sent'), ('sale', 'Sales Order'), ('done', 'Locked'),
+                   ('cancel', 'Cancelled')],
         related='sale_order_id.state',
-        string="Order Status",
-        help="Status of the Order",
-        store=True
+        string="Quotation Status",
+        help="Status of the related quotation/sale order.",
+        store=True,
+        readonly=True
     )
 
     company_id = fields.Many2one('res.company', string="Company",
