@@ -762,10 +762,13 @@ class RoomBooking(models.Model):
         """Create a Sales Quotation (Sale Order) from room booking"""
         if not self.room_line_ids:
             raise ValidationError(_("Please Enter Room Details"))
+
         # Combine all booking lines
         all_lines = list(self.room_line_ids) + list(self.food_order_line_ids) + list(self.service_line_ids)
+
         # Generate booking list
         booking_list = self.create_list(all_lines)
+
         if booking_list:
             sale_order = self.env['sale.order'].create({
                 'partner_id': self.partner_id.id,
@@ -775,22 +778,18 @@ class RoomBooking(models.Model):
             })
 
             for rec in booking_list:
-                self.env['sale.order.line'].create({
+                line_vals = {
                     'order_id': sale_order.id,
                     'name': rec['name'],
                     'product_uom_qty': rec['quantity'],
                     'price_unit': rec['price_unit'],
                     'discount': rec.get('discount', 0.0),
                     'product_id': rec['product_id'],
-
                 }
                 if rec.get('line_type') == 'food':
                     line_vals['product_uom'] = rec.get('product_uom')
 
                 self.env['sale.order.line'].create(line_vals)
-
-                })
-
 
             self.write({'sale_order_id': sale_order.id})
 
@@ -801,7 +800,6 @@ class RoomBooking(models.Model):
                 'res_model': 'sale.order',
                 'res_id': sale_order.id,
             }
-
     def action_view_invoices(self):
         """Method for Returning invoice View"""
         return {
