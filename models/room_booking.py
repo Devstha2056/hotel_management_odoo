@@ -566,6 +566,52 @@ class RoomBooking(models.Model):
                     )
                 ids.add(line.room_id.id)
 
+    # def create_list(self, line_ids):
+    #     """Returns a List of Dictionaries for Booking Lines"""
+    #     booking_list = []
+    #     for line in line_ids:
+    #         model_name = line._name
+    #         name = ""
+    #         product_type = ""
+    #         product_id = None
+    #
+    #         if model_name == 'room.booking.line':
+    #             name = line.room_id.name
+    #             product_id = line.room_id.id
+    #             product_type = 'room'
+    #         elif model_name == 'food.booking.line':
+    #             name = line.food_id.name
+    #             product_id = line.food_id.id
+    #             product_type = 'food'
+    #         elif model_name == 'fleet.booking.line':
+    #             name = line.fleet_id.name
+    #             product_id = line.fleet_id.id
+    #             product_type = 'fleet'
+    #         elif model_name == 'service.booking.line':
+    #             name = line.service_id.name
+    #             product_id = line.service_id.id
+    #             product_type = 'service'
+    #         elif model_name == 'event.booking.line':
+    #             name = line.event_id.name
+    #             product_id = line.event_id.id
+    #             product_type = 'event'
+    #         else:
+    #             continue  # Unknown model
+    #
+    #         # Check for missing product
+    #         if not product_id:
+    #             raise ValidationError(_("Product is missing in one of the booking lines."))
+    #
+    #         booking_list.append({
+    #             'name': name,
+    #             'quantity': line.uom_qty,
+    #             'price_unit': line.price_unit,
+    #             'discount': getattr(line, 'discount', 0.0),
+    #             'product_type': product_type,
+    #             'product_id': product_id,
+    #         })
+    #
+    #     return booking_list
     def create_list(self, line_ids):
         """Returns a List of Dictionaries for Booking Lines"""
         booking_list = []
@@ -618,7 +664,10 @@ class RoomBooking(models.Model):
                 'product_id': product_id,
             }
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> 351ca58 (ctreate change)
             if model_name == 'food.booking.line':
                 line_data['product_uom'] = line.uom_id.id
                 line_data['line_type'] = 'food'
@@ -626,7 +675,6 @@ class RoomBooking(models.Model):
             booking_list.append(line_data)
 
         return booking_list
-
     def action_reserve(self):
         """Button Reserve Function"""
         if self.state == 'reserved':
