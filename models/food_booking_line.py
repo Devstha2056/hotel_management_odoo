@@ -94,7 +94,7 @@ class FoodBookingLine(models.Model):
                                                "will be visible")
 
     discount = fields.Float(string="Discount (%)", default=0.0)
-    active = fields.Boolean(string='Active', default=True)
+    active = fields.Boolean(string="Active", default=True)
 
     @api.onchange('food_id')
     def _onchange_product_id_set_uom(self):
@@ -121,7 +121,23 @@ class FoodBookingLine(models.Model):
     def _get_list_price(self):
         for line in self:
             if line.food_id:
+                line.uom_id = line.food_id.uom_id
                 line.price_unit = line.food_id.list_price
+                line.tax_ids = line.food_id.taxes_id
+
+    @api.onchange('food_id', 'uom_id')
+    def _onchange_food_uom_price(self):
+        for line in self:
+            if line.food_id and line.uom_id:
+                # Convert price to selected UoM
+                product_uom = line.food_id.uom_id
+                selected_uom = line.uom_id
+                # Compute price according to UoM
+                price_unit = line.food_id.list_price
+                if selected_uom != product_uom:
+                    price_unit = line.food_id.uom_id._compute_price(price_unit, selected_uom)
+
+                line.price_unit = price_unit
                 line.tax_ids = line.food_id.taxes_id
 
     @api.depends('uom_qty', 'price_unit', 'tax_ids')
@@ -167,5 +183,5 @@ class FoodBookingLine(models.Model):
 
     def unlink(self):
         if not self.env.user.has_group('base.group_no_one'):
-            raise UserError("You are not allowed to delete Restaurant Orders.")
+            raise UserError("You are not allowed to delete Food Orders.")
         return super(FoodBookingLine, self).unlink()

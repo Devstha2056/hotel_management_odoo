@@ -21,10 +21,15 @@ class RoomBooking(models.Model):
     issuing_auth = fields.Char('Sale Person', default=lambda self: self.env.user.name)
 
     quotation_state = fields.Selection(
+        selection=[('draft', 'Quotation'), ('sent', 'Quotation Sent'), ('sale', 'Sales Order'), ('done', 'Locked'),
+                   ('cancel', 'Cancelled')],
         related='sale_order_id.state',
-        string="Order Status",
-        help="Status of the Order",
-        store=True
+
+        string="Quotation Status",
+        help="Status of the related quotation/sale order.",
+        store=True,
+        readonly=True
+
     )
 
     company_id = fields.Many2one('res.company', string="Company",
@@ -613,7 +618,7 @@ class RoomBooking(models.Model):
                 'product_id': product_id,
             }
 
-            # ✅ Only for food lines: include UoM and tag line_type
+
             if model_name == 'food.booking.line':
                 line_data['product_uom'] = line.uom_id.id
                 line_data['line_type'] = 'food'
@@ -764,10 +769,13 @@ class RoomBooking(models.Model):
         """Create a Sales Quotation (Sale Order) from room booking"""
         if not self.room_line_ids:
             raise ValidationError(_("Please Enter Room Details"))
+
         # Combine all booking lines
         all_lines = list(self.room_line_ids) + list(self.food_order_line_ids) + list(self.service_line_ids)
+
         # Generate booking list
         booking_list = self.create_list(all_lines)
+
         if booking_list:
             sale_order = self.env['sale.order'].create({
                 'partner_id': self.partner_id.id,
@@ -791,6 +799,10 @@ class RoomBooking(models.Model):
 
                 self.env['sale.order.line'].create(line_vals)
 
+
+
+                self.env['sale.order.line'].create(line_vals)
+
             return {
                 'type': 'ir.actions.act_window',
                 'name': 'Quotation',
@@ -798,7 +810,6 @@ class RoomBooking(models.Model):
                 'res_model': 'sale.order',
                 'res_id': sale_order.id,
             }
-
     def action_view_invoices(self):
         """Method for Returning invoice View"""
         return {
