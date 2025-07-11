@@ -24,10 +24,12 @@ class RoomBooking(models.Model):
         selection=[('draft', 'Quotation'), ('sent', 'Quotation Sent'), ('sale', 'Sales Order'), ('done', 'Locked'),
                    ('cancel', 'Cancelled')],
         related='sale_order_id.state',
+
         string="Quotation Status",
         help="Status of the related quotation/sale order.",
         store=True,
         readonly=True
+
     )
 
     company_id = fields.Many2one('res.company', string="Company",
@@ -791,12 +793,15 @@ class RoomBooking(models.Model):
                     'discount': rec.get('discount', 0.0),
                     'product_id': rec['product_id'],
                 }
+
                 if rec.get('line_type') == 'food':
                     line_vals['product_uom'] = rec.get('product_uom')
 
                 self.env['sale.order.line'].create(line_vals)
 
-            self.write({'sale_order_id': sale_order.id})
+
+
+                self.env['sale.order.line'].create(line_vals)
 
             return {
                 'type': 'ir.actions.act_window',
