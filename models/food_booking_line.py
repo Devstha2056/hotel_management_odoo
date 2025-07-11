@@ -162,5 +162,5 @@ class FoodBookingLine(models.Model):
 
     def unlink(self):
         if not self.env.user.has_group('base.group_no_one'):
-            raise UserError("You are not allowed to delete Restaurant Orders.")
+            raise UserError("You are not allowed to delete Food Orders.")
         return super(FoodBookingLine, self).unlink()
