@@ -307,7 +307,7 @@ class RoomBooking(models.Model):
         for record in self:
             confirmed_total = self.env['sale.order'].search_count([
                 ('booking_reference', '=', record.name),
-                ('state', 'in', ['sale', 'cancel']),
+                ('state', 'in', ['draft','sale', 'cancel']),
             ])
             record.total_quotation = confirmed_total
 
@@ -320,7 +320,7 @@ class RoomBooking(models.Model):
             'view_mode': 'list,form',
             'domain': [
                 ('booking_reference', '=', self.name),
-                ('state', 'in', ['sale', 'cancel']),
+                ('state', 'in', ['draft','sale', 'cancel']),
             ],
             'context': dict(self.env.context, default_booking_reference=self.name),
         }

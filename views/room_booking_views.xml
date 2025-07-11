@@ -34,7 +34,7 @@
 
                             type="object" class="btn-primary"
 
-                            invisible="state != 'check_out' or quotation_state == 'sale'"/>
+                            invisible="state != 'check_out' or quotation_state in ('draft','sale')"/>
 
                     <button name="action_cancel" string="Cancel"
                             invisible="state not in ['draft','reserved']"
