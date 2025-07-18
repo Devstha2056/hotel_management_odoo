@@ -10,14 +10,17 @@
                     <button name="action_reserve" string="Reserve"
                             invisible="state != 'draft'" type="object"
                             class="btn-primary"/>
+
                     <button name="action_checkin" string="Check-In"
                             class="btn-primary"
                             invisible="is_checkin == True or (state in ['check_in','check_out','done','cancel'])"
                             type="object"/>
+
                     <button name="action_maintenance_request"
                             string="Maintenance Request" type="object"
                             class="btn-primary"
                             invisible="1"/>
+
                     <button name="action_checkout" string="Check-Out"
                             class="btn-primary" invisible="state != 'check_in'"
                             type="object"/>
@@ -26,6 +29,7 @@
                             class="btn-primary"
                             invisible="state != 'check_out'"
                             type="object"/>
+
                     <!--                    <button name="action_invoice" string="Create Invoice"-->
                     <!--                            type="object" class="btn-primary"-->
                     <!--                            invisible="state not in ['draft', 'check_out'] or invoice_button_visible == True"/>-->
@@ -165,6 +169,7 @@
                                            widget="monetary"
                                            readonly="booking_line_visible == True"/>
                                     <field groups="account.group_account_manager"
+
                                            name="price_total" widget="monetary"
                                            readonly="booking_line_visible == True"/>
                                     <button name="unlink" groups="hotel_management_odoo.hotel_group_admin" string="Delete" type="object"
