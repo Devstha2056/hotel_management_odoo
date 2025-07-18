@@ -13,7 +13,7 @@ class RoomBooking(models.Model):
     _name = "room.booking"
     _description = "Hotel Room Reservation"
     _inherit = ['mail.thread', 'mail.activity.mixin']
-    _order = 'name desc'
+    _order = 'date_order desc'
 
 
     name = fields.Char(string="Folio Number", readonly=True, index=True,
