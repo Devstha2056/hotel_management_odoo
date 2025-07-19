@@ -54,7 +54,7 @@ class FoodBookingLine(models.Model):
                            help="The quantity converted into the UoM used by "
                                 "the product")
     uom_id = fields.Many2one('uom.uom', readonly=False,
-                             string="Unit of Measure",compute="_onchange_product_id_set_uom",
+                             string="Unit of Measure",compute="_get_list_price",
                               help="This will set "  "the unit of" " measure used")
 
     price_unit = fields.Float(string='Rent',
