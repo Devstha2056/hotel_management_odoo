@@ -31,10 +31,36 @@ class RoomBookingWizard(models.TransientModel):
             "hotel_management_odoo.action_report_room_booking"
         ).report_action(self, data=data)
 
+
+    def action_show_booking_lines(self):
+        """Prepare data and open tree view"""
+        # Clear old records for this wizard (optional)
+        self.env['room.booking.line.temp'].search([('wizard_id', '=', self.id)]).unlink()
+
+        data = self.generate_data()
+
+        for line in data:
+            self.env['room.booking.line.temp'].create({
+                'room_name': line['room_name'],
+                'status': line['status'],
+                'partner_id': line['partner_id'],
+                'checkin_date': line['checkin_date'],
+                'checkout_date': line['checkout_date'],
+                'wizard_id': self.id,
+            })
+
+        return {
+            'type': 'ir.actions.act_window',
+            'name': 'Room Booking Details',
+            'res_model': 'room.booking.line.temp',
+            'view_mode': 'list',
+            'target': 'current',
+            'domain': [('wizard_id', '=', self.id)],
+        }
+
     def generate_data(self):
         result = []
 
-        # Use the selected date from the wizard
         selected_date = self.report_date
 
         all_rooms = self.env['product.template'].search([('is_roomtype', '=', True)])
@@ -44,21 +70,20 @@ class RoomBookingWizard(models.TransientModel):
                 'room_name': room.name,
                 'status': room.status,
                 'partner_id': '',
-                'checkin_date': '',
-                'checkout_date': '',
+                'checkin_date': False,  # use False instead of ''
+                'checkout_date': False,  # use False instead of ''
             }
 
             if room.status in ['reserved', 'occupied']:
                 booking_line = self.env['room.booking.line'].search([
                     ('room_id.product_tmpl_id', '=', room.id),
-                    ('checkin_date', '>=', selected_date),
-                    ('checkout_date', '>=', selected_date),
+                    ('checkin_date', '<=', selected_date),
                 ], limit=1)
 
                 if booking_line:
                     room_data['partner_id'] = booking_line.booking_id.partner_id.name or ''
-                    room_data['checkin_date'] = booking_line.checkin_date
-                    room_data['checkout_date'] = booking_line.checkout_date
+                    room_data['checkin_date'] = booking_line.checkin_date or False
+                    room_data['checkout_date'] = booking_line.checkout_date or False
 
             result.append(room_data)
 
