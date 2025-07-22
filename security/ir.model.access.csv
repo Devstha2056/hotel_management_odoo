@@ -108,7 +108,7 @@ access_room_booking_detail_developer,access.room.booking.detail.user,model_room_
 
 
 access_sale_order_detail_user,access.sale.order.detail.user,model_sale_order_detail,base.group_user,1,1,1,1
-access_room_shift_wizard,access.room.shift.wizard,model_room_shift_wizard,base.group_user,1,1,1,1
+
 access_room_booking_line_temp,access.room.booking.line.temp,model_room_booking_line_temp,base.group_user,1,1,1,1
 
 access_maintenance_team_maintenance_team_group_leader,access.maintenance.team.maintenance_team_group_leader,model_maintenance_team,hotel_management_odoo.maintenance_team_group_leader,1,1,1,1
