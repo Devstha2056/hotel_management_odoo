@@ -10,21 +10,21 @@
     </record>
 
     <!-- Room booking template -->
-    <template id="report_room_booking">
+<template id="report_room_booking">
     <t t-call="web.html_container">
         <t t-call="web.external_layout">
             <div class="page">
-                <h2>Room Booking Status</h2>
-                <br/>
-                <table class="table table-sm table-bordered">
-                    <thead>
+                <h3 class="text-center" style="margin-bottom: 10px; font-size:16px;">Room Booking Status</h3>
+
+                <table class="table table-sm table-bordered" style="width:100%; border-collapse: collapse; font-size:10px;">
+                    <thead style="background-color: #f2f2f2;">
                         <tr>
-                            <th>SN No.</th>
-                            <th>Guest Name</th>
-                            <th>Room No.</th>
-                            <th>Status</th>
-                            <th>Check-in Date</th>
-                            <th>Check-out Date</th>
+                            <th style="width:4%; text-align:center; padding: 4px;">SN</th>
+                            <th style="width:22%; padding: 4px;">Guest Name</th>
+                            <th style="width:12%; padding: 4px;">Room No.</th>
+                            <th style="width:12%; padding: 4px;">Status</th>
+                            <th style="width:20%; padding: 4px;">Check-in Date</th>
+                            <th style="width:20%; padding: 4px;">Check-out Date</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -32,12 +32,12 @@
                         <t t-foreach="booking" t-as="line">
                             <t t-set="i" t-value="i+1"/>
                             <tr>
-                                <td><t t-esc="i"/></td>
-                                <td><t t-esc="line.get('partner_id', '')"/></td>
-                                <td><t t-esc="line.get('room_name', '')"/></td>
-                                <td><t t-esc="line.get('status', 'Available')"/></td>
-                                <td><t t-esc="line.get('checkin_date', '')"/></td>
-                                <td><t t-esc="line.get('checkout_date', '')"/></td>
+                                <td style="text-align:center; padding: 4px;"><t t-esc="i"/></td>
+                                <td style="padding: 4px;"><t t-esc="line.get('partner_id', '')"/></td>
+                                <td style="padding: 4px;"><t t-esc="line.get('room_name', '')"/></td>
+                                <td style="padding: 4px;"><t t-esc="line.get('status', '')"/></td>
+                                <td style="padding: 4px;"><t t-esc="line.get('checkin_date', '')"/></td>
+                                <td style="padding: 4px;"><t t-esc="line.get('checkout_date', '')"/></td>
                             </tr>
                         </t>
                     </tbody>
