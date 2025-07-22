@@ -78,6 +78,7 @@ class RoomBookingWizard(models.TransientModel):
                 booking_line = self.env['room.booking.line'].search([
                     ('room_id.product_tmpl_id', '=', room.id),
                     ('checkin_date', '<=', selected_date),
+                    ('checkout_date', '>=', selected_date),
                 ], limit=1)
 
                 if booking_line:
