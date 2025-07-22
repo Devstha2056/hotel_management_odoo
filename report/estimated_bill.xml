@@ -13,22 +13,13 @@
         <t t-call="web.external_layout">
             <main>
                 <div class="page" style="padding:10px;">
-                    <div class="col-6">
-                        <img t-att-src="'/hotel_management_odoo/static/description/icon.png'" style="height: 120px;"/>
-                    </div>
-                    <div style="margin: 20px 0 100px 0;">
-                        <h1>
-                            <b>Hotel Niwas</b>
-                        </h1>
-                        <h5>Lakeside, Pokhara, Nepal</h5>
-                    </div>
                     <div class="oe_structure"/>
                     <h3 style=" text-align: center;">Estimated Bill</h3>
                     <br/>
                     <div>
                         <t t-foreach="docs" t-as="doc">
                             <h5>
-                                 <b>Sale Number:</b>
+                                <b>Sale Number:</b>
                                 <t t-esc="doc.name"/>
                             </h5>
                             <p>
@@ -39,7 +30,7 @@
                                 <b>Quotation Date:</b>
                                 <t t-esc="doc.date_order"/>
                             </p>
-                              <p>
+                            <p>
                                 <b>Booking Reference:</b>
                                 <t t-esc="doc.booking_reference"/>
                             </p>
@@ -65,7 +56,7 @@
                             <td>
                                 <t t-esc="line.price_unit"/>
                             </td>
-                             <td>
+                            <td>
                                 <t t-esc="line.discount"/>
                             </td>
 
@@ -107,7 +98,7 @@
                                 <t t-esc="total_discount"/>
                             </span>
                         </p>
-                           <p>
+                        <p>
                             <strong>Taxable Amount:</strong>
                             <span>
                                 <t t-esc="total_subtotal"/>
